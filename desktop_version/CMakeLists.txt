@@ -1,7 +1,7 @@
 # CMake File for VVVVVV
 # Written by Ethan "flibitijibibo" Lee
-
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
+
 
 # CMake Options
 OPTION(ENABLE_WARNINGS "Enable compilation warnings" ON)
@@ -19,7 +19,7 @@ IF(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebI
 ENDIF()
 
 # Set standard to C++98/C++03
-SET(CMAKE_CXX_STANDARD 98)
+SET(CMAKE_CXX_STANDARD 14)
 SET(CMAKE_CXX_EXTENSIONS OFF) # prevent mixing stdlib implementations (dangerous!)
 
 # Architecture Flags
@@ -39,6 +39,8 @@ IF(APPLE)
 ENDIF()
 
 PROJECT(VVVVVV)
+SET(exec VVVVVV_run)
+SET(lib VVVVVV_lib)
 
 IF(APPLE)
 	MESSAGE(STATUS "Using macOS SDK at ${CMAKE_OSX_SYSROOT}")
@@ -143,16 +145,18 @@ SET(PNG_SRC ../third_party/lodepng/lodepng.c)
 
 # Executable information
 IF(WIN32)
-	ADD_EXECUTABLE(VVVVVV WIN32 ${VVV_SRC})
+	# ADD_EXECUTABLE(VVVVVV ${VVV_SRC})
+	ADD_LIBRARY(${lib} WIN32 ${VVV_SRC})
 ELSE()
-	ADD_EXECUTABLE(VVVVVV ${VVV_SRC})
+	# ADD_EXECUTABLE(VVVVVV ${VVV_SRC})
+	ADD_LIBRARY(${lib} ${VVV_SRC})
 ENDIF()
 
 # Build options
 IF(ENABLE_WARNINGS)
 	# The weird syntax is due to CMake generator expressions.
 	# Saves quite a few lines and boilerplate at the price of readability.
-	TARGET_COMPILE_OPTIONS(VVVVVV PRIVATE
+	TARGET_COMPILE_OPTIONS(${lib} PRIVATE
 		$<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
 			-Wall $<$<BOOL:${ENABLE_WERROR}>:-Werror>>
 		$<$<CXX_COMPILER_ID:MSVC>:
@@ -179,11 +183,11 @@ ENDIF()
 
 
 IF(SUPPORTS_IMPLICIT_FALLTHROUGH)
-	TARGET_COMPILE_OPTIONS(VVVVVV PRIVATE -Werror=implicit-fallthrough)
+	TARGET_COMPILE_OPTIONS(${lib} PRIVATE -Werror=implicit-fallthrough)
 ENDIF()
 
-SET_PROPERTY(TARGET VVVVVV PROPERTY CXX_STANDARD 98)
-SET_PROPERTY(TARGET VVVVVV PROPERTY CXX_EXTENSIONS FALSE)
+SET_PROPERTY(TARGET ${lib} PROPERTY CXX_STANDARD 98)
+SET_PROPERTY(TARGET ${lib} PROPERTY CXX_EXTENSIONS FALSE)
 
 # Library information
 ADD_LIBRARY(tinyxml2-static STATIC ${XML2_SRC})
@@ -191,27 +195,35 @@ ADD_LIBRARY(physfs-static STATIC ${PFS_SRC} ${PFSP_SRC})
 ADD_LIBRARY(lodepng-static STATIC ${PNG_SRC})
 
 # Static Dependencies
-TARGET_LINK_LIBRARIES(VVVVVV physfs-static tinyxml2-static lodepng-static)
+TARGET_LINK_LIBRARIES(${lib} physfs-static tinyxml2-static lodepng-static)
 
 # SDL2 Dependency (Detection pulled from FAudio)
 if (DEFINED SDL2_INCLUDE_DIRS AND DEFINED SDL2_LIBRARIES)
 	message(STATUS "Using pre-defined SDL2 variables SDL2_INCLUDE_DIRS and SDL2_LIBRARIES")
-	target_include_directories(VVVVVV PUBLIC "$<BUILD_INTERFACE:${SDL2_INCLUDE_DIRS}>")
-	target_link_libraries(VVVVVV ${SDL2_LIBRARIES})
+	target_include_directories(${lib} PUBLIC "$<BUILD_INTERFACE:${SDL2_INCLUDE_DIRS}>")
+	target_link_libraries(${lib} ${SDL2_LIBRARIES})
 else()
 	# Only try to autodetect if both SDL2 variables aren't explicitly set
-	find_package(SDL2 CONFIG)
+	IF(APPLE)
+		include(FindPkgConfig) 	
+		PKG_SEARCH_MODULE(SDL2 REQUIRED SDL2)
+		PKG_SEARCH_MODULE(SDL2_MIXER REQUIRED SDL2_mixer)
+		message(${SDL2_MIXER_LIBRARIES})
+	ELSE()
+		find_package(SDL2 CONFIG)
+	ENDIF()
+
 	if (TARGET SDL2::SDL2)
 		message(STATUS "Using TARGET SDL2::SDL2")
-		target_link_libraries(VVVVVV SDL2::SDL2 SDL2_mixer)
+		target_link_libraries(${lib} PUBLIC SDL2::SDL2 SDL2_mixer)
 	elseif (TARGET SDL2)
 		message(STATUS "Using TARGET SDL2")
-		target_link_libraries(VVVVVV SDL2 SDL2_mixer)
+		target_link_libraries(${lib} PUBLIC SDL2 SDL2_mixer)
 	else()
 		message(STATUS "No TARGET SDL2::SDL2, or SDL2, using variables")
 		find_path(SDL2_MIXER_INCLUDE_DIRS NAMES SDL_mixer.h PATH_SUFFIXES SDL2)
-		target_include_directories(VVVVVV PUBLIC "$<BUILD_INTERFACE:${SDL2_INCLUDE_DIRS}>" ${SDL2_MIXER_INCLUDE_DIRS})
-		target_link_libraries(VVVVVV ${SDL2_LIBRARIES} SDL2_mixer)
+		target_include_directories(${lib} PUBLIC "$<BUILD_INTERFACE:${SDL2_INCLUDE_DIRS}>" ${SDL2_MIXER_INCLUDE_DIRS})
+		target_link_libraries(${lib} ${SDL2_MIXER_LIBRARIES} ${SDL2_LIBRARIES})
 	endif()
 endif()
 
@@ -219,11 +231,16 @@ endif()
 IF(APPLE)
 	FIND_LIBRARY(FOUNDATION NAMES Foundation)
 	FIND_LIBRARY(IOKIT NAMES IOKit)
-	TARGET_LINK_LIBRARIES(VVVVVV objc ${IOKIT} ${FOUNDATION})
+	TARGET_LINK_LIBRARIES(${lib} objc ${IOKIT} ${FOUNDATION})
 ENDIF()
 # But hey, also some Haiku crap
 IF(HAIKU)
 	FIND_LIBRARY(BE_LIBRARY be)
 	FIND_LIBRARY(ROOT_LIBRARY root)
-	TARGET_LINK_LIBRARIES(VVVVVV ${BE_LIBRARY} ${ROOT_LIBRARY})
+	TARGET_LINK_LIBRARIES(${lib} ${BE_LIBRARY} ${ROOT_LIBRARY})
 ENDIF()
+
+add_executable(${exec} src/main.cpp)
+target_link_libraries(${exec} PRIVATE ${lib})
+
+add_subdirectory(tests)
