@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 
+
+bool GetButtonFromString(const char* pText, SDL_GameControllerButton* button);
+
 struct MenuOption
 {
     char text[161]; // 40 chars (160 bytes) covers the entire screen, + 1 more for null terminator
