@@ -14,6 +14,14 @@ SET(TEST_SOURCES
     tst_game.cpp
     )
 
+IF(WIN32)
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    # set_property(TARGET ${BINARY} PROPERTY
+    #     MSVC_RUNTIME_LIBRARY "MultiThreaded Debug")
+    #     # MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug> DLL")
+    # message("RUNTIME LIB Setting")
+ENDIF()
+
 
 ADD_EXECUTABLE(${BINARY} ${TEST_SOURCES})
 ADD_TEST(NAME ${BINARY} COMMAND ${BINARY})

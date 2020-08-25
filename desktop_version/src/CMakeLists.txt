@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10.2)
 
 # CMake Options
-OPTION(ENABLE_WARNINGS "Enable compilation warnings" ON)
+OPTION(ENABLE_WARNINGS "Enable compilation warnings" OFF)
 OPTION(ENABLE_WERROR "Treat compilation warnings as errors" OFF)
 
 SET(CUSTOM_LEVEL_SUPPORT ENABLED CACHE STRING "Optionally disable playing and/or editing of custom levels")
@@ -110,13 +110,7 @@ ENDIF()
 SET(PNG_SRC ../../third_party/lodepng/lodepng.c)
 
 # Executable information
-IF(WIN32)
-	# ADD_EXECUTABLE(VVVVVV ${VVV_SRC})
-	ADD_LIBRARY(${vvv_lib} WIN32 ${VVV_SRC})
-ELSE()
-	# ADD_EXECUTABLE(VVVVVV ${VVV_SRC})
-	ADD_LIBRARY(${vvv_lib} ${VVV_SRC})
-ENDIF()
+ADD_LIBRARY(${vvv_lib} ${VVV_SRC})
 
 # Build options
 IF(ENABLE_WARNINGS)
@@ -203,6 +197,13 @@ IF(HAIKU)
 	TARGET_LINK_LIBRARIES(${vvv_lib} ${BE_LIBRARY} ${ROOT_LIBRARY})
 ENDIF()
 
-add_executable(${exec} main.cpp)
+IF(WIN32)
+	# ADD_EXECUTABLE(VVVVVV ${VVV_SRC})
+	add_executable(${exec} WIN32 main.cpp)
+ELSE()
+	# ADD_EXECUTABLE(VVVVVV ${VVV_SRC})
+	add_executable(${exec} main.cpp)
+ENDIF()
+
 target_link_libraries(${exec} PRIVATE ${vvv_lib})
 

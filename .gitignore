@@ -1,3 +1,4 @@
 build 
 .vscode
-**/googletest
+third_party/SDL2*
+desktop_version/Debug
