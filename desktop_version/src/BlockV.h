@@ -4,6 +4,11 @@
 #include <SDL.h>
 #include <string>
 
+struct RGB
+{
+    Uint8 r, g, b;
+};
+
 class blockclass
 {
 public:

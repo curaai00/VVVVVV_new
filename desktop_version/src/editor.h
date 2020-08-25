@@ -157,7 +157,7 @@ class editorclass{
   bool save(std::string& _path);
   void generatecustomminimap();
   int edgetile(int x, int y);
-  int warpzoneedgetile(int x, int y);
+  int warpzoneedgetile(int x, int y, int(editorclass::*match_func)(int, int)=&editorclass::backmatch);
   int outsideedgetile(int x, int y);
 
   int backedgetile(int x, int y);

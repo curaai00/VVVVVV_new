@@ -1,6 +1,7 @@
 #if !defined(NO_CUSTOM_LEVELS)
 
 #include "editor.h"
+#include <unordered_map>
 
 #include <physfs.h>
 #include <stdio.h>
@@ -326,28 +327,18 @@ void editorclass::reset()
     edentity.clear();
     levmusic=0;
 
-    for (int j = 0; j < maxheight; j++)
-    {
-        for (int i = 0; i < maxwidth; i++)
-        {
-            level[i+(j*maxwidth)].tileset=0;
-            level[i+(j*maxwidth)].tilecol=(i+j)%32;
-            level[i+(j*maxwidth)].roomname="";
-            level[i+(j*maxwidth)].warpdir=0;
-            level[i+(j*maxwidth)].platx1=0;
-            level[i+(j*maxwidth)].platy1=0;
-            level[i+(j*maxwidth)].platx2=320;
-            level[i+(j*maxwidth)].platy2=240;
-            level[i+(j*maxwidth)].platv=4;
-            level[i+(j*maxwidth)].enemyx1=0;
-            level[i+(j*maxwidth)].enemyy1=0;
-            level[i+(j*maxwidth)].enemyx2=320;
-            level[i+(j*maxwidth)].enemyy2=240;
-            level[i+(j*maxwidth)].enemytype=0;
-            level[i+(j*maxwidth)].directmode=0;
-            kludgewarpdir[i+(j*maxwidth)]=0;
+    auto clear_levels = [](edlevelclass* levels, const int w, const int h) {
+        edlevelclass lvl_template;
+        lvl_template.roomname = "";
+        for(int j=0; j<h; j++) {
+            for(int i=0; i<w; i++) {
+                levels[i] = lvl_template;
+                levels[i].tilecol=(i+j)%32;
+            }
         }
-    }
+    };
+    clear_levels(level, maxheight, maxwidth);
+    memset(kludgewarpdir, 0, sizeof(int) * numrooms);
 
     for (int j = 0; j < 30 * maxheight; j++)
     {
@@ -1224,6 +1215,11 @@ int editorclass::absfree( int x, int y )
     return 1;
 }
 
+int editorclass::warpzonematch( int x, int y )
+{
+    return match(x, y);
+}
+
 int editorclass::match( int x, int y )
 {
     if(free(x-1,y)==0 && free(x,y-1)==0 && free(x+1,y)==0 && free(x,y+1)==0) return 0;
@@ -1241,36 +1237,6 @@ int editorclass::match( int x, int y )
     if(free(x+1,y-1)==0) return 6;
     if(free(x-1,y+1)==0) return 7;
     if(free(x+1,y+1)==0) return 8;
-
-    return 0;
-}
-
-int editorclass::warpzonematch( int x, int y )
-{
-    if(free(x-1,y)==0 && free(x,y-1)==0 && free(x+1,y)==0 && free(x,y+1)==0) return 0;
-
-    if(free(x-1,y)==0 && free(x,y-1)==0) return 10;
-    if(free(x+1,y)==0 && free(x,y-1)==0) return 11;
-    if(free(x-1,y)==0 && free(x,y+1)==0) return 12;
-    if(free(x+1,y)==0 && free(x,y+1)==0) return 13;
-
-    if(free(x,y-1)==0) return 1;
-    if(free(x-1,y)==0) return 2;
-    if(free(x,y+1)==0) return 3;
-    if(free(x+1,y)==0) return 4;
-    if(free(x-1,y-1)==0) return 5;
-    if(free(x+1,y-1)==0) return 6;
-    if(free(x-1,y+1)==0) return 7;
-    if(free(x+1,y+1)==0) return 8;
-
-    return 0;
-}
-
-int editorclass::outsidematch( int x, int y )
-{
-
-    if(backonlyfree(x-1,y)==0 && backonlyfree(x+1,y)==0) return 2;
-    if(backonlyfree(x,y-1)==0 && backonlyfree(x,y+1)==0) return 1;
 
     return 0;
 }
@@ -1300,106 +1266,47 @@ int editorclass::backmatch( int x, int y )
     return 0;
 }
 
-int editorclass::edgetile( int x, int y )
+int editorclass::outsidematch( int x, int y )
 {
-    switch(match(x,y))
-    {
-    case 14:
-        return 0;
-        break;
-    case 10:
-        return 80;
-        break;
-    case 11:
-        return 82;
-        break;
-    case 12:
-        return 160;
-        break;
-    case 13:
-        return 162;
-        break;
-    case 1:
-        return 81;
-        break;
-    case 2:
-        return 120;
-        break;
-    case 3:
-        return 161;
-        break;
-    case 4:
-        return 122;
-        break;
-    case 5:
-        return 42;
-        break;
-    case 6:
-        return 41;
-        break;
-    case 7:
-        return 2;
-        break;
-    case 8:
-        return 1;
-        break;
-    case 0:
-    default:
-        return 0;
-        break;
-    }
+
+    if(backonlyfree(x-1,y)==0 && backonlyfree(x+1,y)==0) return 2;
+    if(backonlyfree(x,y-1)==0 && backonlyfree(x,y+1)==0) return 1;
+
     return 0;
 }
 
-int editorclass::warpzoneedgetile( int x, int y )
+
+int editorclass::edgetile( int x, int y )
 {
-    switch(backmatch(x,y))
-    {
-    case 14:
+    return warpzoneedgetile(x, y, &editorclass::match);
+}
+int editorclass::backedgetile( int x, int y )
+{
+    return warpzoneedgetile(x, y, &editorclass::backmatch);
+}
+
+int editorclass::warpzoneedgetile( int x, int y, int(editorclass::*match_func)(int, int))
+{
+    const std::unordered_map<int, int> match_table {
+        {14, 0}, 
+        {10, 80},
+        {11, 82},
+        {12, 160},
+        {13, 162},
+        {1, 81},
+        {2, 120},
+        {3, 161},
+        {4, 122},
+        {5, 42},
+        {6, 41},
+        {7, 2},
+        {8, 1}
+	};
+    auto find_res = match_table.find((*this.*match_func)(x, y));
+    if(find_res != match_table.end())
+        return find_res->second;
+    else
         return 0;
-        break;
-    case 10:
-        return 80;
-        break;
-    case 11:
-        return 82;
-        break;
-    case 12:
-        return 160;
-        break;
-    case 13:
-        return 162;
-        break;
-    case 1:
-        return 81;
-        break;
-    case 2:
-        return 120;
-        break;
-    case 3:
-        return 161;
-        break;
-    case 4:
-        return 122;
-        break;
-    case 5:
-        return 42;
-        break;
-    case 6:
-        return 41;
-        break;
-    case 7:
-        return 2;
-        break;
-    case 8:
-        return 1;
-        break;
-    case 0:
-    default:
-        return 0;
-        break;
-    }
-    return 0;
 }
 
 int editorclass::outsideedgetile( int x, int y )
@@ -1421,56 +1328,6 @@ int editorclass::outsideedgetile( int x, int y )
 }
 
 
-int editorclass::backedgetile( int x, int y )
-{
-    switch(backmatch(x,y))
-    {
-    case 14:
-        return 0;
-        break;
-    case 10:
-        return 80;
-        break;
-    case 11:
-        return 82;
-        break;
-    case 12:
-        return 160;
-        break;
-    case 13:
-        return 162;
-        break;
-    case 1:
-        return 81;
-        break;
-    case 2:
-        return 120;
-        break;
-    case 3:
-        return 161;
-        break;
-    case 4:
-        return 122;
-        break;
-    case 5:
-        return 42;
-        break;
-    case 6:
-        return 41;
-        break;
-    case 7:
-        return 2;
-        break;
-    case 8:
-        return 1;
-        break;
-    case 0:
-    default:
-        return 0;
-        break;
-    }
-    return 0;
-}
 
 int editorclass::labspikedir( int x, int y, int t )
 {
