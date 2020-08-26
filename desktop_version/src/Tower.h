@@ -28,8 +28,4 @@ public:
     bool minitowermode;
 };
 
-
-
-
-
 #endif /* TOWER_H */

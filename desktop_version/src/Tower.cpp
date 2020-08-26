@@ -3,6 +3,7 @@
 #include "MakeAndPlay.h"
 #include "UtilityClass.h"
 
+// clang-format off
 towerclass::towerclass()
 {
 	minitowermode = false;
@@ -1151,3 +1152,5 @@ void towerclass::loadmap()
 	SDL_memcpy(contents, tmap, sizeof(contents));
 #endif
 }
+
+// clang-format on

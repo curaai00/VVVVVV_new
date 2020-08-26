@@ -6,42 +6,40 @@
 class Screen
 {
 public:
-	void init(
-		int windowWidth,
-		int windowHeight,
-		bool fullscreen,
-		bool useVsync,
-		int stretch,
-		bool linearFilter,
-		bool badSignal
-	);
+    void init(int windowWidth,
+              int windowHeight,
+              bool fullscreen,
+              bool useVsync,
+              int stretch,
+              bool linearFilter,
+              bool badSignal);
 
-	void ResizeScreen(int x, int y);
-	void ResizeToNearestMultiple();
-	void GetWindowSize(int* x, int* y);
+    void ResizeScreen(int x, int y);
+    void ResizeToNearestMultiple();
+    void GetWindowSize(int* x, int* y);
 
-	void UpdateScreen(SDL_Surface* buffer, SDL_Rect* rect);
-	void FlipScreen();
+    void UpdateScreen(SDL_Surface* buffer, SDL_Rect* rect);
+    void FlipScreen();
 
-	const SDL_PixelFormat* GetFormat();
+    const SDL_PixelFormat* GetFormat();
 
-	void toggleFullScreen();
-	void toggleStretchMode();
-	void toggleLinearFilter();
-	void resetRendererWorkaround();
+    void toggleFullScreen();
+    void toggleStretchMode();
+    void toggleLinearFilter();
+    void resetRendererWorkaround();
 
-	bool isWindowed;
-	bool isFiltered;
-	bool badSignalEffect;
-	int stretchMode;
-	bool vsync;
+    bool isWindowed;
+    bool isFiltered;
+    bool badSignalEffect;
+    int stretchMode;
+    bool vsync;
 
-	SDL_Window *m_window;
-	SDL_Renderer *m_renderer;
-	SDL_Texture *m_screenTexture;
-	SDL_Surface* m_screen;
+    SDL_Window* m_window;
+    SDL_Renderer* m_renderer;
+    SDL_Texture* m_screenTexture;
+    SDL_Surface* m_screen;
 
-	SDL_Rect filterSubrect;
+    SDL_Rect filterSubrect;
 };
 
 #endif /* SCREEN_H */

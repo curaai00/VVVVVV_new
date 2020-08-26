@@ -1,10 +1,11 @@
 #include "Finalclass.h"
 
-#include "Game.h"
 #include "Entity.h"
+#include "Game.h"
 #include "MakeAndPlay.h"
 #include "UtilityClass.h"
 
+// clang-format off
 const short* finalclass::loadlevel(int rx, int ry)
 {
 	int t;
@@ -2616,3 +2617,5 @@ const short* finalclass::loadlevel(int rx, int ry)
 
 	return result;
 }
+
+// clang-format on

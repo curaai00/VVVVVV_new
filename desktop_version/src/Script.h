@@ -4,8 +4,9 @@
 #include <string>
 #include <vector>
 
-#define filllines(lines) commands.insert(commands.end(), lines, lines + sizeof(lines)/sizeof(lines[0]))
-
+#define filllines(lines)                                                       \
+    commands.insert(                                                           \
+        commands.end(), lines, lines + sizeof(lines) / sizeof(lines[0]))
 
 struct Script
 {
@@ -16,18 +17,13 @@ struct Script
 class scriptclass
 {
 public:
-
-
     scriptclass();
 
     void load(const std::string& name);
     void loadother(const char* t);
     void loadcustom(const std::string& t);
 
-    void inline add(const std::string& t)
-    {
-        commands.push_back(t);
-    }
+    void inline add(const std::string& t) { commands.push_back(t); }
 
     void clearcustom();
 
@@ -43,7 +39,7 @@ public:
 
     void hardreset();
 
-    //Script contents
+    // Script contents
     std::vector<std::string> commands;
     std::string words[40];
     std::vector<std::string> txt;
@@ -54,15 +50,15 @@ public:
     int scriptdelay;
     bool running, dontrunnextframe;
 
-    //Textbox stuff
+    // Textbox stuff
     int textx;
     int texty;
-    int r,g,b;
+    int r, g, b;
 
-    //Misc
+    // Misc
     int i, j, k;
 
-    //Custom level stuff
+    // Custom level stuff
     std::vector<Script> customscripts;
 };
 
