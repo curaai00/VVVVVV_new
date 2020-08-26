@@ -1,263 +1,217 @@
 #include "UtilityClass.h"
 
-#include <cctype>
 #include <SDL.h>
+#include <cctype>
 #include <sstream>
+#include <unordered_map>
 
 /* Used by UtilityClass::GCString to generate a button list */
-const char *GCChar(SDL_GameControllerButton button)
+const char* GCChar(SDL_GameControllerButton btn)
 {
-	if (button == SDL_CONTROLLER_BUTTON_A)
-	{
-		return "A";
-	}
-	else if (button == SDL_CONTROLLER_BUTTON_B)
-	{
-		return "B";
-	}
-	else if (button == SDL_CONTROLLER_BUTTON_X)
-	{
-		return "X";
-	}
-	else if (button == SDL_CONTROLLER_BUTTON_Y)
-	{
-		return "Y";
-	}
-	else if (button == SDL_CONTROLLER_BUTTON_BACK)
-	{
-		return "BACK";
-	}
-	else if (button == SDL_CONTROLLER_BUTTON_GUIDE)
-	{
-		return "GUIDE";
-	}
-	else if (button == SDL_CONTROLLER_BUTTON_START)
-	{
-		return "START";
-	}
-	else if (button == SDL_CONTROLLER_BUTTON_LEFTSTICK)
-	{
-		return "L3";
-	}
-	else if (button == SDL_CONTROLLER_BUTTON_RIGHTSTICK)
-	{
-		return "R3";
-	}
-	else if (button == SDL_CONTROLLER_BUTTON_LEFTSHOULDER)
-	{
-		return "LB";
-	}
-	else if (button == SDL_CONTROLLER_BUTTON_RIGHTSHOULDER)
-	{
-		return "RB";
-	}
-	SDL_assert(0 && "Unhandled button!");
-	return NULL;
+    const std::unordered_map<SDL_GameControllerButton, std::string> key_table{
+        // clang-format off
+         {SDL_CONTROLLER_BUTTON_A, "A"},
+         {SDL_CONTROLLER_BUTTON_B, "B"},
+         {SDL_CONTROLLER_BUTTON_X, "X"},
+         {SDL_CONTROLLER_BUTTON_Y, "Y"},
+         {SDL_CONTROLLER_BUTTON_BACK, "BACK"},
+         {SDL_CONTROLLER_BUTTON_GUIDE, "GUIDE"},
+         {SDL_CONTROLLER_BUTTON_START, "START"},
+         {SDL_CONTROLLER_BUTTON_LEFTSTICK, "LS"},
+         {SDL_CONTROLLER_BUTTON_RIGHTSTICK, "RS"},
+         {SDL_CONTROLLER_BUTTON_LEFTSHOULDER, "LB"},
+         {SDL_CONTROLLER_BUTTON_RIGHTSHOULDER, "RB"}
+        // clang-format on
+    };
+
+    auto find_res = key_table.find(btn);
+    if (find_res != key_table.end())
+        return find_res->second.c_str();
+
+    SDL_assert(0 && "Unhandled button!");
+    return NULL;
 }
 
-int ss_toi( std::string _s )
+int ss_toi(std::string _s)
 {
-	std::istringstream i(_s);
-	int x = 0;
-	i >> x;
-	return x;
+    std::istringstream i(_s);
+    int x = 0;
+    i >> x;
+    return x;
 }
 
-std::vector<std::string> split( const std::string &s, char delim, std::vector<std::string> &elems )
+std::vector<std::string> split(const std::string& s,
+                               char delim,
+                               std::vector<std::string>& elems)
 {
-	std::stringstream ss(s);
-	std::string item;
-	while(std::getline(ss, item, delim))
-	{
-		elems.push_back(item);
-	}
-	return elems;
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
 }
 
-std::vector<std::string> split( const std::string &s, char delim )
+std::vector<std::string> split(const std::string& s, char delim)
 {
-	std::vector<std::string> elems;
-	return split(s, delim, elems);
+    std::vector<std::string> elems;
+    return split(s, delim, elems);
 }
 
-UtilityClass::UtilityClass() :
-glow(0),
-	glowdir(0)
+UtilityClass::UtilityClass()
+    : glow(0)
+    , glowdir(0)
 {
-	for (size_t i = 0; i < SDL_arraysize(splitseconds); i++)
-	{
-		splitseconds[i] = (i * 100) / 30;
-	}
+    for (size_t i = 0; i < SDL_arraysize(splitseconds); i++) {
+        splitseconds[i] = (i * 100) / 30;
+    }
 
-	slowsine = 0;
+    slowsine = 0;
 }
 
-std::string UtilityClass::String( int _v )
+std::string UtilityClass::String(int _v)
 {
-	std::ostringstream os;
-	os << _v;
-	return(os.str());
+    std::ostringstream os;
+    os << _v;
+    return (os.str());
 }
 
 int UtilityClass::Int(const char* str, int fallback /*= 0*/)
 {
-	if (!is_number(str))
-	{
-		return fallback;
-	}
+    if (!is_number(str)) {
+        return fallback;
+    }
 
-	return SDL_atoi(str);
+    return SDL_atoi(str);
 }
 
-std::string UtilityClass::GCString(std::vector<SDL_GameControllerButton> buttons)
+std::string UtilityClass::GCString(
+    std::vector<SDL_GameControllerButton> buttons)
 {
-	std::string retval = "";
-	for (size_t i = 0; i < buttons.size(); i += 1)
-	{
-		retval += GCChar(buttons[i]);
-		if ((i + 1) < buttons.size())
-		{
-			retval += ",";
-		}
-	}
-	return retval;
+    std::string retval = "";
+    for (size_t i = 0; i < buttons.size(); i += 1) {
+        retval += GCChar(buttons[i]);
+        if ((i + 1) < buttons.size()) {
+            retval += ",";
+        }
+    }
+    return retval;
 }
 
-std::string UtilityClass::twodigits( int t )
+std::string UtilityClass::twodigits(int t)
 {
-	if (t < 10)
-	{
-		return "0" + String(t);
-	}
-	if (t >= 100)
-	{
-		return "??";
-	}
-	return String(t);
+    if (t < 10) {
+        return "0" + String(t);
+    }
+    if (t >= 100) {
+        return "??";
+    }
+    return String(t);
 }
 
-std::string UtilityClass::timestring( int t )
+std::string UtilityClass::timestring(int t)
 {
-	//given a time t in frames, return a time in seconds
-	std::string tempstring = "";
-	int temp = (t - (t % 30)) / 30;
-	if (temp < 60)   //less than one minute
-	{
-		t = t % 30;
-		tempstring = String(temp) + ":" + twodigits(splitseconds[t]);
-	}
-	else
-	{
-		int temp2 = (temp - (temp % 60)) / 60;
-		temp = temp % 60;
-		t = t % 30;
-		tempstring = String(temp2) + ":" + twodigits(temp) + ":" + twodigits(splitseconds[t]);
-	}
-	return tempstring;
+    // given a time t in frames, return a time in seconds
+    std::string tempstring = "";
+    int temp = (t - (t % 30)) / 30;
+    if (temp < 60) // less than one minute
+    {
+        t = t % 30;
+        tempstring = String(temp) + ":" + twodigits(splitseconds[t]);
+    } else {
+        int temp2 = (temp - (temp % 60)) / 60;
+        temp = temp % 60;
+        t = t % 30;
+        tempstring = String(temp2) + ":" + twodigits(temp) + ":" +
+                     twodigits(splitseconds[t]);
+    }
+    return tempstring;
 }
 
-std::string UtilityClass::number( int _t )
+std::string UtilityClass::number(int _t)
 {
-	static const std::string ones_place[] = {"One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
-	static const std::string tens_place[] = {"Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
-	static const std::string teens[] = {"Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+    static const std::string ones_place[] = { "One",   "Two",   "Three",
+                                              "Four",  "Five",  "Six",
+                                              "Seven", "Eight", "Nine" };
+    static const std::string tens_place[] = { "Ten",     "Twenty", "Thirty",
+                                              "Forty",   "Fifty",  "Sixty",
+                                              "Seventy", "Eighty", "Ninety" };
+    static const std::string teens[] = { "Eleven",    "Twelve",   "Thirteen",
+                                         "Fourteen",  "Fifteen",  "Sixteen",
+                                         "Seventeen", "Eighteen", "Nineteen" };
 
-	if (_t < 0)
-	{
-		return "???";
-	}
-	else if (_t > 100)
-	{
-		return "Lots";
-	}
-	else if (_t == 0)
-	{
-		return "Zero";
-	}
-	else if (_t == 100)
-	{
-		return "One Hundred";
-	}
-	else if (_t >= 1 && _t <= 9)
-	{
-		return ones_place[_t-1];
-	}
-	else if (_t >= 11 && _t <= 19)
-	{
-		return teens[_t-11];
-	}
-	else if (_t % 10 == 0)
-	{
-		return tens_place[(_t/10)-1];
-	}
-	else
-	{
-		return tens_place[(_t/10)-1] + " " + ones_place[(_t%10)-1];
-	}
+    if (_t < 0) {
+        return "???";
+    } else if (_t > 100) {
+        return "Lots";
+    } else if (_t == 0) {
+        return "Zero";
+    } else if (_t == 100) {
+        return "One Hundred";
+    } else if (_t >= 1 && _t <= 9) {
+        return ones_place[_t - 1];
+    } else if (_t >= 11 && _t <= 19) {
+        return teens[_t - 11];
+    } else if (_t % 10 == 0) {
+        return tens_place[(_t / 10) - 1];
+    } else {
+        return tens_place[(_t / 10) - 1] + " " + ones_place[(_t % 10) - 1];
+    }
 }
 
-bool UtilityClass::intersects( SDL_Rect A, SDL_Rect B )
+bool UtilityClass::intersects(SDL_Rect A, SDL_Rect B)
 {
-	return (SDL_HasIntersection(&A, &B) == SDL_TRUE);
+    return (SDL_HasIntersection(&A, &B) == SDL_TRUE);
 }
 
 void UtilityClass::updateglow()
 {
-	slowsine++;
-	if (slowsine >= 64) slowsine = 0;
+    slowsine++;
+    if (slowsine >= 64)
+        slowsine = 0;
 
-	if (glowdir == 0) {
-		glow+=2;
-		if (glow >= 62) glowdir = 1;
-	}else {
-		glow-=2;
-		if (glow < 2) glowdir = 0;
-	}
+    if (glowdir == 0) {
+        glow += 2;
+        if (glow >= 62)
+            glowdir = 1;
+    } else {
+        glow -= 2;
+        if (glow < 2)
+            glowdir = 0;
+    }
 }
 
 bool is_number(const char* str)
 {
-	for (int i = 0; str[i] != '\0'; i++)
-	{
-		if (!SDL_isdigit(static_cast<unsigned char>(str[i])) && (i != 0 || str[0] != '-'))
-		{
-			return false;
-		}
-	}
-	return true;
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (!SDL_isdigit(static_cast<unsigned char>(str[i])) &&
+            (i != 0 || str[0] != '-')) {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool is_positive_num(const std::string& str, bool hex)
 {
-	for (size_t i = 0; i < str.length(); i++)
-	{
-		if (hex)
-		{
-			if (!isxdigit(static_cast<unsigned char>(str[i])))
-			{
-				return false;
-			}
-		}
-		else
-		{
-			if (!SDL_isdigit(static_cast<unsigned char>(str[i])))
-			{
-				return false;
-			}
-		}
-	}
-	return true;
+    for (size_t i = 0; i < str.length(); i++) {
+        if (hex) {
+            if (!isxdigit(static_cast<unsigned char>(str[i]))) {
+                return false;
+            }
+        } else {
+            if (!SDL_isdigit(static_cast<unsigned char>(str[i]))) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 bool endsWith(const std::string& str, const std::string& suffix)
 {
-	if (str.size() < suffix.size())
-	{
-		return false;
-	}
-	return str.compare(
-		str.size() - suffix.size(),
-		suffix.size(),
-		suffix
-	) == 0;
+    if (str.size() < suffix.size()) {
+        return false;
+    }
+    return str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }

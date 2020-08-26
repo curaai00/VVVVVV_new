@@ -36,7 +36,7 @@ const char* BoolToString(bool _b)
 
 bool GetButtonFromString(const char* pText, SDL_GameControllerButton* button)
 {
-    const std::unordered_map<std::string, SDL_GameControllerButton> key_table {
+    const std::unordered_map<std::string, SDL_GameControllerButton> key_table{
         // clang-format off
         {"0", SDL_CONTROLLER_BUTTON_A}, {"a", SDL_CONTROLLER_BUTTON_A}, {"A", SDL_CONTROLLER_BUTTON_A}, 
         {"1", SDL_CONTROLLER_BUTTON_B}, {"b", SDL_CONTROLLER_BUTTON_B}, {"B", SDL_CONTROLLER_BUTTON_B},
@@ -52,7 +52,7 @@ bool GetButtonFromString(const char* pText, SDL_GameControllerButton* button)
         // clang-format on
     };
     auto find_res = key_table.find(pText);
-    if(find_res != key_table.end()) {
+    if (find_res != key_table.end()) {
         *button = find_res->second;
         return true;
     }
