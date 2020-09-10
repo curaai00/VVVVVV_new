@@ -26,6 +26,14 @@ int inline FLIP(int ypos)
 
 void menurender()
 {
+    auto simple_display_description = [&](const Menu::Description& desc) {
+        auto main = desc.main_msg;
+
+        graphics.bigprint(main.x, main.y, main.text, tr, tg, tb, true);
+        for (auto sub : desc.sub_msg)
+            graphics.Print(sub.x, sub.y, sub.text, tr, tg, tb, true);
+    };
+
     int temp = 50;
 
     switch (game.menu_.cur_option_name) {
@@ -108,73 +116,69 @@ void menurender()
 
             int offset = 0;
 
-            switch (game.menu_.cur_option_idx) {
-                case 0:
-                    graphics.bigprint(
-                        -1, 30, "Accessibility", tr, tg, tb, true);
-                    graphics.Print(-1,
-                                   65,
-                                   "Disable screen effects, enable",
-                                   tr,
-                                   tg,
-                                   tb,
-                                   true);
-                    graphics.Print(-1,
-                                   75,
-                                   "slowdown modes or invincibility",
-                                   tr,
-                                   tg,
-                                   tb,
-                                   true);
-                    break;
-                case 1:
-                    graphics.bigprint(
-                        -1, 30, "Advanced Options", tr, tg, tb, true);
-                    graphics.Print(-1,
-                                   65,
-                                   "Hide the mouse cursor, remove",
-                                   tr,
-                                   tg,
-                                   tb,
-                                   true);
-                    graphics.Print(-1,
-                                   75,
-                                   "the loading screen, turn on",
-                                   tr,
-                                   tg,
-                                   tb,
-                                   true);
-                    graphics.Print(
-                        -1, 85, "glitchrunner mode and more", tr, tg, tb, true);
-                    break;
-                case 2:
-#if !defined(MAKEANDPLAY)
-                    if (game.ingame_titlemode && game.unlock[18])
-#endif
-                    {
+            if (game.menu_.hasSimpleDescMsg()) {
+                simple_display_description(game.menu_.getDescriptionMsg());
+            } else {
+                switch (game.menu_.cur_option_idx) {
+                    case 1:
                         graphics.bigprint(
-                            -1, 30, "Flip Mode", tr, tg, tb, true);
+                            -1, 30, "Advanced Options", tr, tg, tb, true);
                         graphics.Print(-1,
                                        65,
-                                       "Flip the entire game vertically.",
+                                       "Hide the mouse cursor, remove",
                                        tr,
                                        tg,
                                        tb,
                                        true);
-                        if (graphics.setflipmode) {
-                            graphics.Print(
-                                -1, 85, "Currently ENABLED!", tr, tg, tb, true);
-                        } else {
+                        graphics.Print(-1,
+                                       75,
+                                       "the loading screen, turn on",
+                                       tr,
+                                       tg,
+                                       tb,
+                                       true);
+                        graphics.Print(-1,
+                                       85,
+                                       "glitchrunner mode and more",
+                                       tr,
+                                       tg,
+                                       tb,
+                                       true);
+                        break;
+                    case 2:
+#if !defined(MAKEANDPLAY)
+                        if (game.ingame_titlemode && game.unlock[18])
+#endif
+                        {
+                            graphics.bigprint(
+                                -1, 30, "Flip Mode", tr, tg, tb, true);
                             graphics.Print(-1,
-                                           85,
-                                           "Currently Disabled.",
-                                           tr / 2,
-                                           tg / 2,
-                                           tb / 2,
+                                           65,
+                                           "Flip the entire game vertically.",
+                                           tr,
+                                           tg,
+                                           tb,
                                            true);
+                            if (graphics.setflipmode) {
+                                graphics.Print(-1,
+                                               85,
+                                               "Currently ENABLED!",
+                                               tr,
+                                               tg,
+                                               tb,
+                                               true);
+                            } else {
+                                graphics.Print(-1,
+                                               85,
+                                               "Currently Disabled.",
+                                               tr / 2,
+                                               tg / 2,
+                                               tb / 2,
+                                               true);
+                            }
                         }
-                    }
-                    break;
+                        break;
+                }
             }
 
             offset += flipmode_offset;

@@ -236,6 +236,45 @@ struct option
     bool active;
 };
 
+class Message
+{
+public:
+    Message() {}
+    Message(std::string text, int x, int y)
+        : text(text)
+        , x(x)
+        , y(y)
+    {}
+    Message(const nlohmann::json& _json)
+    {
+        if (_json.contains("x"))
+            x = _json["x"].get<int>();
+        if (_json.contains("y"))
+            y = _json["y"].get<int>();
+        if (_json.contains("msg"))
+            text = _json["msg"].get<std::string>();
+    }
+
+    std::string text;
+    int x = -1;
+    int y = -1;
+};
+
+class Description
+{
+public:
+    Description(const nlohmann::json& _json)
+    {
+        main_msg = Message{ _json["main"] };
+        for (auto element : _json["sub"]) {
+            sub_msg.push_back(Message{ element });
+        }
+    }
+
+    Message main_msg;
+    std::vector<Message> sub_msg;
+};
+
 };
 
 struct MenuStackFrame
@@ -266,7 +305,10 @@ public:
             cur_option_idx = options.size() - 1;
     }
 
-    bool hasSimpleDescMsg(Menu::name name, int option_idx);
+    bool hasSimpleDescMsg(void) const;
+    bool hasSimpleDescMsg(Menu::name name, int option_idx) const;
+    Menu::Description getDescriptionMsg(void);
+    Menu::Description getDescriptionMsg(Menu::name name, int option_idx);
 
     int cur_option_idx;
     Menu::name cur_option_name;
