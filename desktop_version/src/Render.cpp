@@ -96,10 +96,6 @@ void menurender()
             break;
         }
 #endif
-        case Menu::errornostart:
-            graphics.Print(-1, 65, "ERROR: This level has", tr, tg, tb, true);
-            graphics.Print(-1, 75, "no start point!", tr, tg, tb, true);
-            break;
         case Menu::options: {
 #if defined(MAKEANDPLAY)
             int flipmode_offset = 0;
@@ -120,31 +116,6 @@ void menurender()
                 simple_display_description(game.menu_.getDescriptionMsg());
             } else {
                 switch (game.menu_.cur_option_idx) {
-                    case 1:
-                        graphics.bigprint(
-                            -1, 30, "Advanced Options", tr, tg, tb, true);
-                        graphics.Print(-1,
-                                       65,
-                                       "Hide the mouse cursor, remove",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        graphics.Print(-1,
-                                       75,
-                                       "the loading screen, turn on",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        graphics.Print(-1,
-                                       85,
-                                       "glitchrunner mode and more",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        break;
                     case 2:
 #if !defined(MAKEANDPLAY)
                         if (game.ingame_titlemode && game.unlock[18])
@@ -554,27 +525,6 @@ void menurender()
                     break;
             }
             break;
-        case Menu::newgamewarning:
-            graphics.Print(
-                -1, 100, "Are you sure? This will", tr, tg, tb, true);
-            graphics.Print(
-                -1, 110, "delete your current saves...", tr, tg, tb, true);
-            break;
-        case Menu::cleardatamenu:
-            graphics.Print(
-                -1, 100, "Are you sure you want to", tr, tg, tb, true);
-            graphics.Print(
-                -1, 110, "delete all your saved data?", tr, tg, tb, true);
-            break;
-        case Menu::startnodeathmode:
-            graphics.Print(-1, 45, "Good luck!", tr, tg, tb, true);
-            graphics.Print(
-                -1, 80, "You cannot save in this mode.", tr, tg, tb, true);
-            graphics.Print(
-                -1, 100, "Would you like to disable the", tr, tg, tb, true);
-            graphics.Print(
-                -1, 112, "cutscenes during the game?", tr, tg, tb, true);
-            break;
         case Menu::controller:
             graphics.bigprint(-1, 30, "Game Pad", tr, tg, tb, true);
             graphics.Print(
@@ -979,11 +929,6 @@ void menurender()
                     break;
             }
             break;
-        case Menu::playint1:
-        case Menu::playint2:
-            graphics.Print(-1, 65, "Who do you want to play", tr, tg, tb, true);
-            graphics.Print(-1, 75, "the level with?", tr, tg, tb, true);
-            break;
         case Menu::playmodes:
             switch (game.menu_.cur_option_idx) {
                 case 0:
@@ -1135,10 +1080,6 @@ void menurender()
                     }
                     break;
             }
-            break;
-        case Menu::youwannaquit:
-            graphics.Print(
-                -1, 75, "Are you sure you want to quit?", tr, tg, tb, true);
             break;
         case Menu::continuemenu:
             switch (game.menu_.cur_option_idx) {
@@ -1351,12 +1292,6 @@ void menurender()
             }
             break;
         }
-        case Menu::unlockmenutrials:
-            graphics.bigprint(-1, 30, "Unlock Time Trials", tr, tg, tb, true);
-            graphics.Print(
-                -1, 65, "You can unlock each time", tr, tg, tb, true);
-            graphics.Print(-1, 75, "trial separately.", tr, tg, tb, true);
-            break;
         case Menu::timetrials:
             switch (game.menu_.cur_option_idx) {
                 case 0:
@@ -1738,58 +1673,6 @@ void menurender()
                     }
                     break;
             }
-            break;
-        case Menu::gamecompletecontinue:
-            graphics.bigprint(-1, 25, "Congratulations!", tr, tg, tb, true, 2);
-
-            graphics.Print(
-                -1, 45, "Your save files have been updated.", tr, tg, tb, true);
-
-            graphics.Print(
-                -1, 110, "If you want to keep exploring", tr, tg, tb, true);
-            graphics.Print(
-                -1, 120, "the game, select CONTINUE", tr, tg, tb, true);
-            graphics.Print(-1, 130, "from the play menu.", tr, tg, tb, true);
-            break;
-        case Menu::unlockmenu:
-            graphics.bigprint(-1, 25, "Unlock Play Modes", tr, tg, tb, true, 2);
-
-            graphics.Print(
-                -1, 55, "From here, you may unlock parts", tr, tg, tb, true);
-            graphics.Print(
-                -1, 65, "of the game that are normally", tr, tg, tb, true);
-            graphics.Print(-1, 75, "unlocked as you play.", tr, tg, tb, true);
-            break;
-        case Menu::unlocktimetrial:
-            graphics.bigprint(-1, 45, "Congratulations!", tr, tg, tb, true, 2);
-
-            graphics.Print(-1, 125, "You have unlocked", tr, tg, tb, true);
-            graphics.Print(-1, 135, "a new Time Trial.", tr, tg, tb, true);
-            break;
-        case Menu::unlocktimetrials:
-            graphics.bigprint(-1, 45, "Congratulations!", tr, tg, tb, true, 2);
-
-            graphics.Print(-1, 125, "You have unlocked some", tr, tg, tb, true);
-            graphics.Print(-1, 135, "new Time Trials.", tr, tg, tb, true);
-            break;
-        case Menu::unlocknodeathmode:
-            graphics.bigprint(-1, 45, "Congratulations!", tr, tg, tb, true, 2);
-
-            graphics.Print(-1, 125, "You have unlocked", tr, tg, tb, true);
-            graphics.Print(-1, 135, "No Death Mode.", tr, tg, tb, true);
-            break;
-        case Menu::unlockflipmode:
-            graphics.bigprint(-1, 45, "Congratulations!", tr, tg, tb, true, 2);
-
-            graphics.Print(-1, 125, "You have unlocked", tr, tg, tb, true);
-            graphics.Print(-1, 135, "Flip Mode.", tr, tg, tb, true);
-            break;
-        case Menu::unlockintermission:
-            graphics.bigprint(-1, 45, "Congratulations!", tr, tg, tb, true, 2);
-
-            graphics.Print(-1, 125, "You have unlocked", tr, tg, tb, true);
-            graphics.Print(
-                -1, 135, "the intermission levels.", tr, tg, tb, true);
             break;
         case Menu::playerworlds: {
             std::string tempstring = FILESYSTEM_getUserLevelDirectory();

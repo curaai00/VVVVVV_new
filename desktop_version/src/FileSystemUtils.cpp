@@ -97,7 +97,7 @@ int FILESYSTEM_init(char* argvZero, char* baseDir, char* argvAssetsPath)
     };
     auto get_assetspath = [&argvAssetsPath](char res[MAX_PATH]) {
         if (argvAssetsPath) {
-            SDL_strlcpy(res, argvAssetsPath, sizeof(res));
+            SDL_strlcpy(res, argvAssetsPath, sizeof(char) * MAX_PATH);
         } else {
             SDL_snprintf(res,
                          sizeof(char) * MAX_PATH,

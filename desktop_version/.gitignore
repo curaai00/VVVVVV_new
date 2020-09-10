@@ -16,4 +16,8 @@ data.zip
 # macOS files
 .DS_Store
 third_party
-data
+data/**/*.wav
+data/**/*.png
+data/**/*.vvvvvv
+data/**/*.vvv
+!data/*.json

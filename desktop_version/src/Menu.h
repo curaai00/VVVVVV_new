@@ -224,10 +224,10 @@ constexpr int MAX_MENU_TEXT_BYTES = 161;
 
 struct option
 {
-    option(const char* _text, bool active)
+    option(const char* _text, bool _active)
     {
         SDL_strlcpy(text, _text, sizeof(text));
-        active = active;
+        active = _active;
     }
 
     char text[MAX_MENU_TEXT_BYTES]; // 40 chars (160 bytes) covers the entire
@@ -323,5 +323,5 @@ public:
     int countdown;
     Menu::name destination;
 
-    static nlohmann::json desc_table;
+    nlohmann::json desc_table;
 };
