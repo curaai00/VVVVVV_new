@@ -1890,10 +1890,10 @@ void editorclass::generatecustomminimap()
 #if !defined(NO_EDITOR)
 void editormenurender(int tr, int tg, int tb)
 {
-    switch (game.currentmenuname) {
+    switch (game.menu_.cur_option_name) {
         case Menu::ed_settings:
             graphics.bigprint(-1, 75, "Map Settings", tr, tg, tb, true);
-            if (game.currentmenuoption == 3) {
+            if (game.menu_.cur_option_idx == 3) {
                 if (!game.ghostsenabled)
                     graphics.Print(2,
                                    230,
@@ -4083,9 +4083,9 @@ void editorlogic()
 
 void editormenuactionpress()
 {
-    switch (game.currentmenuname) {
+    switch (game.menu_.cur_option_name) {
         case Menu::ed_desc:
-            switch (game.currentmenuoption) {
+            switch (game.menu_.cur_option_idx) {
                 case 0:
                     ed.titlemod = true;
                     key.enabletextentry();
@@ -4114,7 +4114,7 @@ void editormenuactionpress()
             }
             break;
         case Menu::ed_settings:
-            switch (game.currentmenuoption) {
+            switch (game.menu_.cur_option_idx) {
                 case 0:
                     // Change level description stuff
                     music.playef(11);
@@ -4178,7 +4178,7 @@ void editormenuactionpress()
             }
             break;
         case Menu::ed_music:
-            switch (game.currentmenuoption) {
+            switch (game.menu_.cur_option_idx) {
                 case 0:
                     ed.levmusic++;
                     if (ed.levmusic == 16)
@@ -4199,7 +4199,7 @@ void editormenuactionpress()
             }
             break;
         case Menu::ed_quit:
-            switch (game.currentmenuoption) {
+            switch (game.menu_.cur_option_idx) {
                 case 0:
                     // Saving and quit
                     ed.saveandquit = true;
@@ -4659,16 +4659,11 @@ void editorinput()
 
                 if (game.menustart) {
                     if (game.press_left || up_pressed) {
-                        game.currentmenuoption--;
+                        game.menu_.decrease_opt_idx();
                     } else if (game.press_right || down_pressed) {
-                        game.currentmenuoption++;
+                        game.menu_.increase_opt_idx();
                     }
                 }
-
-                if (game.currentmenuoption < 0)
-                    game.currentmenuoption = game.menuoptions.size() - 1;
-                if (game.currentmenuoption >= (int)game.menuoptions.size())
-                    game.currentmenuoption = 0;
 
                 if (game.press_action) {
                     editormenuactionpress();

@@ -63,15 +63,15 @@ ENDIF()
 
 # Include Directories
 INCLUDE_DIRECTORIES(
-	src
 	../../third_party/tinyxml2
 	../../third_party/physfs
 	../../third_party/lodepng
 	../../third_party/utfcpp/source
+	../../third_party/nlohmann
 )
 
 # Source Lists
-FILE(GLOB_RECURSE VVV_SRC LIST_DIRECTORIES false *.c *.cpp)
+FILE(GLOB_RECURSE VVV_SRC LIST_DIRECTORIES false *.h *.c *.cpp)
 message(${VVV_SRC})
 list(FILTER VVV_SRC EXCLUDE REGEX ".*src/main.cpp$")
 

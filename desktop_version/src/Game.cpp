@@ -166,11 +166,11 @@ void Game::init(void)
     SDL_memset(unlock, false, sizeof(unlock));
     SDL_memset(unlocknotify, false, sizeof(unlock));
 
-    currentmenuoption = 0;
+    menu_.cur_option_idx = 0;
     current_credits_list_index = 0;
-    menuxoff = 0;
-    menuyoff = 0;
-    menucountdown = 0;
+    menu_.xoff = 0;
+    menu_.yoff = 0;
+    menu_.countdown = 0;
     levelpage = 0;
     playcustomlevel = 0;
     createmenu(Menu::mainmenu);
@@ -317,7 +317,7 @@ void Game::init(void)
     glitchrunnermode = false;
 
     ingame_titlemode = false;
-    kludge_ingametemp = Menu::mainmenu;
+    menu_.kludge_ingametemp = Menu::mainmenu;
     shouldreturntopausemenu = false;
 
     disablepause = false;
@@ -5913,7 +5913,7 @@ void Game::returnmenu()
     int previousoption = frame.option;
 
     createmenu(frame.name, true);
-    currentmenuoption = previousoption;
+    menu_.cur_option_idx = previousoption;
 
     // Remove the stackframe now, but createmenu() might have already gotten to
     // it if we were returning to the main menu
@@ -5922,14 +5922,14 @@ void Game::returnmenu()
     }
 }
 
-void Game::returntomenu(enum Menu::MenuName t)
+void Game::returntomenu(enum Menu::name t)
 {
-    if (currentmenuname == t) {
+    if (menu_.cur_option_name == t) {
         // Re-create the menu
-        int keep_menu_option = currentmenuoption;
+        int keep_menu_option = menu_.cur_option_idx;
         createmenu(t, true);
-        if (keep_menu_option < (int)menuoptions.size()) {
-            currentmenuoption = keep_menu_option;
+        if (keep_menu_option < (int)menu_.options.size()) {
+            menu_.cur_option_idx = keep_menu_option;
         }
         return;
     }
@@ -5950,7 +5950,7 @@ void Game::returntomenu(enum Menu::MenuName t)
     }
 }
 
-void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
+void Game::createmenu(enum Menu::name t, bool samemenu /*= false*/)
 {
     if (t == Menu::mainmenu) {
         // Either we've just booted up the game or returned from gamemode
@@ -5959,18 +5959,18 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
         menustack.clear();
     } else if (!samemenu) {
         MenuStackFrame frame;
-        frame.option = currentmenuoption;
-        frame.name = currentmenuname;
+        frame.option = menu_.cur_option_idx;
+        frame.name = menu_.cur_option_name;
         menustack.push_back(frame);
     }
 
-    currentmenuoption = 0;
-    currentmenuname = t;
-    menuyoff = 0;
+    menu_.cur_option_idx = 0;
+    menu_.cur_option_name = t;
+    menu_.yoff = 0;
     int maxspacing =
-        30; // maximum value for menuspacing, can only become lower.
-    menucountdown = 0;
-    menuoptions.clear();
+        30; // maximum value for menu_.spacing, can only become lower.
+    menu_.countdown = 0;
+    menu_.options.clear();
 
     switch (t) {
         case Menu::mainmenu:
@@ -5986,7 +5986,7 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
             option("view credits");
 #endif
             option("quit game");
-            menuyoff = -10;
+            menu_.yoff = -10;
             maxspacing = 15;
             break;
 #if !defined(NO_CUSTOM_LEVELS)
@@ -5997,13 +5997,13 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
 #endif
             option("open level folder", FILESYSTEM_openDirectoryEnabled());
             option("back to menu");
-            menuyoff = -40;
+            menu_.yoff = -40;
             maxspacing = 15;
             break;
         case Menu::levellist:
             if (ed.ListOfMetaData.size() == 0) {
                 option("ok");
-                menuyoff = -20;
+                menu_.yoff = -20;
             } else {
                 for (int i = 0; i < (int)ed.ListOfMetaData.size();
                      i++) // FIXME: int/size_t! -flibit
@@ -6047,7 +6047,7 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
                             static const char tmp[] = "   ";
                             prefix = tmp;
                         }
-                        char text[menutextbytes];
+                        char text[Menu::MAX_MENU_TEXT_BYTES];
                         SDL_snprintf(text,
                                      sizeof(text),
                                      "%s%s",
@@ -6071,30 +6071,30 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
                 }
                 option("return to menu");
 
-                menuxoff = 20;
-                menuyoff = 70 - (menuoptions.size() * 10);
-                menuspacing = 5;
+                menu_.xoff = 20;
+                menu_.yoff = 70 - (menu_.options.size() * 10);
+                menu_.spacing = 5;
                 return; // skip automatic centering, will turn out bad with
                         // levels list
             }
             break;
 #endif
-        case Menu::quickloadlevel:
+        case Menu::name::quickloadlevel:
             option("continue from save");
             option("start from beginning");
             option("back to levels");
-            menuyoff = -30;
+            menu_.yoff = -30;
             break;
-        case Menu::youwannaquit:
+        case Menu::name::youwannaquit:
             option("yes, quit");
             option("no, return");
-            menuyoff = -20;
+            menu_.yoff = -20;
             break;
-        case Menu::errornostart:
+        case Menu::name::errornostart:
             option("ok");
-            menuyoff = -20;
+            menu_.yoff = -20;
             break;
-        case Menu::graphicoptions:
+        case Menu::name::graphicoptions:
             option("toggle fullscreen");
             option("scaling mode");
             option("resize to nearest", graphics.screenbuffer->isWindowed);
@@ -6103,7 +6103,7 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
             option("toggle fps");
             option("toggle vsync");
             option("return");
-            menuyoff = -10;
+            menu_.yoff = -10;
             break;
         case Menu::ed_settings:
             option("change description");
@@ -6114,7 +6114,7 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
             option("save level");
             option("quit to main menu");
 
-            menuyoff = -20;
+            menu_.yoff = -20;
             maxspacing = 15;
             break;
         case Menu::ed_desc:
@@ -6124,20 +6124,20 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
             option("change website");
             option("back to settings");
 
-            menuyoff = 6;
+            menu_.yoff = 6;
             maxspacing = 15;
             break;
         case Menu::ed_music:
             option("next song");
             option("back");
-            menuyoff = 16;
+            menu_.yoff = 16;
             maxspacing = 15;
             break;
         case Menu::ed_quit:
             option("yes, save and quit");
             option("no, quit without saving");
             option("return to editor");
-            menuyoff = 8;
+            menu_.yoff = 8;
             maxspacing = 15;
             break;
         case Menu::options:
@@ -6160,7 +6160,7 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
             }
 
             option("return");
-            menuyoff = 0;
+            menu_.yoff = 0;
             break;
         case Menu::advancedoptions:
             option("toggle mouse");
@@ -6169,7 +6169,7 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
             option("room name background");
             option("glitchrunner mode");
             option("return");
-            menuyoff = 0;
+            menu_.yoff = 0;
             break;
         case Menu::accessibility:
             option("animated backgrounds");
@@ -6184,7 +6184,7 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
                        (!game.insecretlab && !game.intimetrial &&
                         !game.nodeathmode));
             option("return");
-            menuyoff = 0;
+            menu_.yoff = 0;
             break;
         case Menu::controller:
             option("analog stick sensitivity");
@@ -6193,24 +6193,24 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
             option("bind menu");
             option("bind restart");
             option("return");
-            menuyoff = 10;
+            menu_.yoff = 10;
             break;
         case Menu::cleardatamenu:
             option("no! don't delete");
             option("yes, delete everything");
-            menuyoff = 64;
+            menu_.yoff = 64;
             break;
         case Menu::setinvincibility:
             option("no, return to options");
             option("yes, enable");
-            menuyoff = 64;
+            menu_.yoff = 64;
             break;
         case Menu::setslowdown:
             option("normal speed");
             option("80% speed");
             option("60% speed");
             option("40% speed");
-            menuyoff = 16;
+            menu_.yoff = 16;
             break;
         case Menu::unlockmenu:
             option("unlock time trials");
@@ -6220,49 +6220,49 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
             option("unlock ship jukebox", (stat_trinkets < 20));
             option("unlock secret lab", !unlock[8]);
             option("return");
-            menuyoff = -20;
+            menu_.yoff = -20;
             break;
         case Menu::credits:
             option("next page");
             option("last page");
             option("return");
-            menuyoff = 64;
+            menu_.yoff = 64;
             break;
         case Menu::credits2:
             option("next page");
             option("previous page");
             option("return");
-            menuyoff = 64;
+            menu_.yoff = 64;
             break;
         case Menu::credits25:
             option("next page");
             option("previous page");
             option("return");
-            menuyoff = 64;
+            menu_.yoff = 64;
             break;
         case Menu::credits3:
             option("next page");
             option("previous page");
             option("return");
-            menuyoff = 64;
+            menu_.yoff = 64;
             break;
         case Menu::credits4:
             option("next page");
             option("previous page");
             option("return");
-            menuyoff = 64;
+            menu_.yoff = 64;
             break;
         case Menu::credits5:
             option("next page");
             option("previous page");
             option("return");
-            menuyoff = 64;
+            menu_.yoff = 64;
             break;
         case Menu::credits6:
             option("first page");
             option("previous page");
             option("return");
-            menuyoff = 64;
+            menu_.yoff = 64;
             break;
         case Menu::play: {
             // Ok, here's where the unlock stuff comes into it:
@@ -6367,9 +6367,9 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
                     }
                     option("return");
                     if (unlock[8]) {
-                        menuyoff = -30;
+                        menu_.yoff = -30;
                     } else {
-                        menuyoff = -40;
+                        menu_.yoff = -40;
                     }
                 }
             }
@@ -6381,12 +6381,12 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
         case Menu::unlockintermission:
         case Menu::unlockflipmode:
             option("continue");
-            menuyoff = 70;
+            menu_.yoff = 70;
             break;
         case Menu::newgamewarning:
             option("start new game");
             option("return to menu");
-            menuyoff = 64;
+            menu_.yoff = 64;
             break;
         case Menu::playmodes:
             option("time trials", !map.invincibility && slowdown == 30);
@@ -6395,14 +6395,14 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
                    unlock[17] && !map.invincibility && slowdown == 30);
             option("flip mode", unlock[18]);
             option("return to play menu");
-            menuyoff = 8;
+            menu_.yoff = 8;
             maxspacing = 20;
             break;
         case Menu::intermissionmenu:
             option("play intermission 1");
             option("play intermission 2");
             option("return to play menu");
-            menuyoff = -35;
+            menu_.yoff = -35;
             break;
         case Menu::playint1:
             option("Vitellary");
@@ -6410,7 +6410,7 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
             option("Verdigris");
             option("Victoria");
             option("return");
-            menuyoff = 10;
+            menu_.yoff = 10;
             break;
         case Menu::playint2:
             option("Vitellary");
@@ -6418,28 +6418,28 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
             option("Verdigris");
             option("Victoria");
             option("return");
-            menuyoff = 10;
+            menu_.yoff = 10;
             break;
         case Menu::continuemenu:
             map.settowercolour(3);
             option("continue from teleporter");
             option("continue from quicksave");
             option("return to play menu");
-            menuyoff = 20;
+            menu_.yoff = 20;
             break;
         case Menu::startnodeathmode:
             option("disable cutscenes");
             option("enable cutscenes");
             option("return to play menu");
-            menuyoff = 40;
+            menu_.yoff = 40;
             break;
         case Menu::gameover:
-            menucountdown = 120;
-            menudest = Menu::gameover2;
+            menu_.countdown = 120;
+            menu_.destination = Menu::gameover2;
             break;
         case Menu::gameover2:
             option("return to play menu");
-            menuyoff = 80;
+            menu_.yoff = 80;
             break;
         case Menu::unlockmenutrials:
             option("space station 1", !unlock[9]);
@@ -6450,7 +6450,7 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
             option("the final level", !unlock[14]);
 
             option("return to unlock menu");
-            menuyoff = 0;
+            menu_.yoff = 0;
             break;
         case Menu::timetrials:
             option(unlock[9] ? "space station 1" : "???", unlock[9]);
@@ -6461,33 +6461,33 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
             option(unlock[14] ? "the final level" : "???", unlock[14]);
 
             option("return to play menu");
-            menuyoff = 0;
+            menu_.yoff = 0;
             maxspacing = 15;
             break;
         case Menu::nodeathmodecomplete:
-            menucountdown = 90;
-            menudest = Menu::nodeathmodecomplete2;
+            menu_.countdown = 90;
+            menu_.destination = Menu::nodeathmodecomplete2;
             break;
         case Menu::nodeathmodecomplete2:
             option("return to play menu");
-            menuyoff = 70;
+            menu_.yoff = 70;
             break;
         case Menu::timetrialcomplete:
-            menucountdown = 90;
-            menudest = Menu::timetrialcomplete2;
+            menu_.countdown = 90;
+            menu_.destination = Menu::timetrialcomplete2;
             break;
         case Menu::timetrialcomplete2:
-            menucountdown = 60;
-            menudest = Menu::timetrialcomplete3;
+            menu_.countdown = 60;
+            menu_.destination = Menu::timetrialcomplete3;
             break;
         case Menu::timetrialcomplete3:
             option("return to play menu");
             option("try again");
-            menuyoff = 70;
+            menu_.yoff = 70;
             break;
         case Menu::gamecompletecontinue:
             option("return to play menu");
-            menuyoff = 70;
+            menu_.yoff = 70;
             break;
     }
 
@@ -6499,18 +6499,18 @@ void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
     // pixels to the left)
     bool done_once = false;
     int menuwidth = 0;
-    for (; !done_once || (menuwidth > 272 && menuspacing > 0);
+    for (; !done_once || (menuwidth > 272 && menu_.spacing > 0);
          maxspacing -= 5) {
         done_once = true;
-        menuspacing = maxspacing;
+        menu_.spacing = maxspacing;
         menuwidth = 0;
-        for (size_t i = 0; i < menuoptions.size(); i++) {
-            int width = i * menuspacing + graphics.len(menuoptions[i].text);
+        for (size_t i = 0; i < menu_.options.size(); i++) {
+            int width = i * menu_.spacing + graphics.len(menu_.options[i].text);
             if (width > menuwidth)
                 menuwidth = width;
         }
     }
-    menuxoff = (320 - menuwidth) / 2;
+    menu_.xoff = (320 - menuwidth) / 2;
 }
 
 void Game::deletequick()
@@ -6677,7 +6677,7 @@ void Game::quittomenu()
         returntomenu(Menu::play);
         if (!insecretlab) {
             // Select "continue"
-            currentmenuoption = 0;
+            menu_.cur_option_idx = 0;
         }
     } else {
         createmenu(Menu::mainmenu);
@@ -6745,7 +6745,7 @@ void Game::returntoeditor()
 void Game::returntopausemenu()
 {
     ingame_titlemode = false;
-    returntomenu(kludge_ingametemp);
+    returntomenu(menu_.kludge_ingametemp);
     gamestate = MAPMODE;
     map.kludge_to_bg();
     map.tdrawback = true;

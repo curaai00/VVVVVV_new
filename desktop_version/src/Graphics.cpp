@@ -1381,8 +1381,8 @@ void Graphics::processfade()
 
 void Graphics::drawmenu(int cr, int cg, int cb, bool levelmenu /*= false*/)
 {
-    for (size_t i = 0; i < game.menuoptions.size(); i++) {
-        MenuOption& opt = game.menuoptions[i];
+    for (size_t i = 0; i < game.menu_.options.size(); i++) {
+        Menu::option& opt = game.menu_.options[i];
 
         int fr, fg, fb;
         if (opt.active) {
@@ -1397,11 +1397,11 @@ void Graphics::drawmenu(int cr, int cg, int cb, bool levelmenu /*= false*/)
             fb = 128;
         }
 
-        int x = i * game.menuspacing + game.menuxoff;
-        int y = 140 + i * 12 + game.menuyoff;
+        int x = i * game.menu_.spacing + game.menu_.xoff;
+        int y = 140 + i * 12 + game.menu_.yoff;
 
         if (levelmenu) {
-            if (game.menuoptions.size() - i <= 3) {
+            if (game.menu_.options.size() - i <= 3) {
                 // We're on "next page", "previous page", or "return to menu".
                 // Draw them separated by a bit
                 y += 8;
@@ -1411,11 +1411,11 @@ void Graphics::drawmenu(int cr, int cg, int cb, bool levelmenu /*= false*/)
             }
         }
 
-        char tempstring[Game::menutextbytes];
+        char tempstring[Menu::MAX_MENU_TEXT_BYTES];
         SDL_strlcpy(tempstring, opt.text, sizeof(tempstring));
 
-        char buffer[Game::menutextbytes];
-        if ((int)i == game.currentmenuoption) {
+        char buffer[Menu::MAX_MENU_TEXT_BYTES];
+        if ((int)i == game.menu_.cur_option_idx) {
             if (opt.active) {
                 // Uppercase the text
                 // FIXME: This isn't UTF-8 aware!
@@ -3162,8 +3162,8 @@ void Graphics::screenshake()
 {
     if (flipmode) {
         //	tpoint.x = int((Math.random() * 7) - 4); tpoint.y =
-        //int((Math.random() * 7) - 4); 	flipmatrix.translate(tpoint.x,
-        //tpoint.y); 	screenbuffer.draw(backbuffer, flipmatrix);
+        // int((Math.random() * 7) - 4); 	flipmatrix.translate(tpoint.x,
+        // tpoint.y); 	screenbuffer.draw(backbuffer, flipmatrix);
         //	flipmatrix.translate(-tpoint.x, -tpoint.y);
 
         SDL_Rect shakeRect;

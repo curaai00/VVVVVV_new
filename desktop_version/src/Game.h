@@ -5,77 +5,9 @@
 #include <string>
 #include <vector>
 
+#include "Menu.h"
+
 bool GetButtonFromString(const char* pText, SDL_GameControllerButton* button);
-
-struct MenuOption
-{
-    char text[161]; // 40 chars (160 bytes) covers the entire screen, + 1 more
-                    // for null terminator
-    // WARNING: should match Game::menutextbytes below
-    bool active;
-};
-
-// Menu IDs
-namespace Menu {
-enum MenuName
-{
-    mainmenu,
-    playerworlds,
-    levellist,
-    quickloadlevel,
-    youwannaquit,
-    errornostart,
-    graphicoptions,
-    ed_settings,
-    ed_desc,
-    ed_music,
-    ed_quit,
-    options,
-    advancedoptions,
-    accessibility,
-    controller,
-    cleardatamenu,
-    setinvincibility,
-    setslowdown,
-    unlockmenu,
-    credits,
-    credits2,
-    credits25,
-    credits3,
-    credits4,
-    credits5,
-    credits6,
-    play,
-    unlocktimetrial,
-    unlocktimetrials,
-    unlocknodeathmode,
-    unlockintermission,
-    unlockflipmode,
-    newgamewarning,
-    playmodes,
-    intermissionmenu,
-    playint1,
-    playint2,
-    continuemenu,
-    startnodeathmode,
-    gameover,
-    gameover2,
-    unlockmenutrials,
-    timetrials,
-    nodeathmodecomplete,
-    nodeathmodecomplete2,
-    timetrialcomplete,
-    timetrialcomplete2,
-    timetrialcomplete3,
-    gamecompletecontinue,
-};
-};
-
-struct MenuStackFrame
-{
-    int option;
-    enum Menu::MenuName name;
-};
 
 struct CustomLevelStat
 {
@@ -111,8 +43,8 @@ public:
     std::string timetstring(int t);
 
     void returnmenu();
-    void returntomenu(enum Menu::MenuName t);
-    void createmenu(enum Menu::MenuName t, bool samemenu = false);
+    void returntomenu(enum Menu::name t);
+    void createmenu(enum Menu::name t, bool samemenu = false);
 
     void lifesequence();
 
@@ -215,29 +147,17 @@ public:
     int teleport_to_teleporter;
 
     // Main Menu Variables
-    std::vector<MenuOption> menuoptions;
-    int currentmenuoption;
-    enum Menu::MenuName currentmenuname;
-    enum Menu::MenuName kludge_ingametemp;
-    int current_credits_list_index;
-    int menuxoff, menuyoff;
-    int menuspacing;
-    static const int menutextbytes =
-        161; // this is just sizeof(MenuOption::text), but doing that is
-             // non-standard
+    SimpleMenu menu_;
+
+    // non-standard
     std::vector<MenuStackFrame> menustack;
 
     void inline option(const char* text, bool active = true)
     {
-        MenuOption menuoption;
-        SDL_strlcpy(menuoption.text, text, sizeof(menuoption.text));
-        menuoption.active = active;
-        menuoptions.push_back(menuoption);
+        menu_.add_option(text, active);
     }
 
-    int menucountdown;
-    enum Menu::MenuName menudest;
-
+    int current_credits_list_index;
     int creditposx, creditposy, creditposdelay;
     int oldcreditposx;
 

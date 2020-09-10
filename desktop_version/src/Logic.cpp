@@ -59,17 +59,17 @@ void titlelogic()
         graphics.crewframe = (graphics.crewframe + 1) % 2;
     }
 
-    if (game.menucountdown > 0) {
-        game.menucountdown--;
-        if (game.menucountdown == 0) {
-            if (game.menudest == Menu::mainmenu) {
+    if (game.menu_.countdown > 0) {
+        game.menu_.countdown--;
+        if (game.menu_.countdown == 0) {
+            if (game.menu_.destination == Menu::mainmenu) {
                 music.play(6);
-            } else if (game.menudest == Menu::gameover2) {
+            } else if (game.menu_.destination == Menu::gameover2) {
                 music.playef(11);
-            } else if (game.menudest == Menu::timetrialcomplete3) {
+            } else if (game.menu_.destination == Menu::timetrialcomplete3) {
                 music.playef(3);
             }
-            game.createmenu(game.menudest, true);
+            game.createmenu(game.menu_.destination, true);
         }
     }
 }
@@ -423,8 +423,8 @@ void gamelogic()
             } else if (obj.entities[i].type == 2 &&
                        obj.entities[i].state == 2) {
                 // ok, unfortunate case where the disappearing platform hasn't
-                // fully disappeared. Accept a little graphical uglyness to avoid
-                // breaking the room!
+                // fully disappeared. Accept a little graphical uglyness to
+                // avoid breaking the room!
                 bool entitygone = false;
                 while (obj.entities[i].state == 2) {
                     entitygone = obj.updateentities(i);

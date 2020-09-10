@@ -9,10 +9,7 @@ ELSE()
     find_package(SDL2 CONFIG)
 ENDIF()
 
-SET(TEST_SOURCES
-    main.cpp
-    tst_game.cpp
-    )
+FILE(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.c *.cpp)
 
 IF(WIN32)
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -21,6 +18,15 @@ IF(WIN32)
     #     # MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug> DLL")
     # message("RUNTIME LIB Setting")
 ENDIF()
+
+INCLUDE_DIRECTORIES(
+	../src
+	../../third_party/tinyxml2
+	../../third_party/physfs
+	../../third_party/lodepng
+    ../../third_party/utfcpp/source
+    ../../third_party/nlohmann
+)
 
 
 ADD_EXECUTABLE(${BINARY} ${TEST_SOURCES})

@@ -494,7 +494,7 @@ void ScrollSurface(SDL_Surface* _src, int _pX, int _pY)
     SDL_Rect rect1;
     SDL_Rect rect2;
     // scrolling up;
-    if (is_scrollable()) {
+    if (is_scrollable(_pX, _pY)) {
         if (_pY < 0) {
             setRect(rect2, 0, 0, _src->w, _src->h - _pY);
             part1 = GetSubSurface(_src, rect2.x, rect2.y, rect2.w, rect2.h);

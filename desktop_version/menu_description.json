@@ -1,0 +1,20 @@
+{
+    "options": [
+        {
+            "main": {
+                "y": 30,
+                "msg": "Accessibility"
+            },
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Disable screen effects, enable"
+                },
+                {
+                    "y": 75,
+                    "msg": "slowdown modes or invincibility"
+                }
+            ]
+        }
+    ]
+}

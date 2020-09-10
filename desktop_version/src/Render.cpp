@@ -28,7 +28,7 @@ void menurender()
 {
     int temp = 50;
 
-    switch (game.currentmenuname) {
+    switch (game.menu_.cur_option_name) {
         case Menu::mainmenu:
             graphics.drawsprite((160 - 96) + 0 * 32, temp, 23, tr, tg, tb);
             graphics.drawsprite((160 - 96) + 1 * 32, temp, 23, tr, tg, tb);
@@ -53,11 +53,12 @@ void menurender()
                 graphics.Print(
                     -1, 100, "ERROR: No levels found.", tr, tg, tb, true);
             }
-            int tmp = game.currentmenuoption + (game.levelpage * 8);
+            int tmp = game.menu_.cur_option_idx + (game.levelpage * 8);
             if (tmp >= 0 && tmp < (int)ed.ListOfMetaData
                                       .size()) { // FIXME: size_t/int! -flibit
                 // Don't show next/previous page or return to menu options here!
-                if (game.menuoptions.size() - game.currentmenuoption <= 3) {
+                if (game.menu_.options.size() - game.menu_.cur_option_idx <=
+                    3) {
 
                 } else {
                     graphics.bigprint(
@@ -107,7 +108,7 @@ void menurender()
 
             int offset = 0;
 
-            switch (game.currentmenuoption) {
+            switch (game.menu_.cur_option_idx) {
                 case 0:
                     graphics.bigprint(
                         -1, 30, "Accessibility", tr, tg, tb, true);
@@ -179,7 +180,7 @@ void menurender()
             offset += flipmode_offset;
 
 #if !defined(MAKEANDPLAY)
-            if (game.currentmenuoption == 3 + offset) {
+            if (game.menu_.cur_option_idx == 3 + offset) {
                 graphics.bigprint(
                     -1, 30, "Unlock Play Modes", tr, tg, tb, true);
                 graphics.Print(-1,
@@ -196,7 +197,7 @@ void menurender()
 
             offset += unlockmode_offset;
 
-            if (game.currentmenuoption == 4 + offset) {
+            if (game.menu_.cur_option_idx == 4 + offset) {
                 graphics.bigprint(-1, 30, "Game Pad Options", tr, tg, tb, true);
                 graphics.Print(-1,
                                65,
@@ -207,13 +208,14 @@ void menurender()
                                true);
                 graphics.Print(
                     -1, 75, "and adjust sensitivity", tr, tg, tb, true);
-            } else if (game.currentmenuoption == 5 + offset) {
+            } else if (game.menu_.cur_option_idx == 5 + offset) {
                 graphics.bigprint(-1, 30, "Clear Data", tr, tg, tb, true);
                 graphics.Print(
                     -1, 65, "Delete your save data", tr, tg, tb, true);
                 graphics.Print(
                     -1, 75, "and unlocked play modes", tr, tg, tb, true);
-            } else if (game.currentmenuoption == 6 + offset && music.mmmmmm) {
+            } else if (game.menu_.cur_option_idx == 6 + offset &&
+                       music.mmmmmm) {
                 graphics.bigprint(-1, 30, "Soundtrack", tr, tg, tb, true);
                 graphics.Print(-1,
                                65,
@@ -234,7 +236,7 @@ void menurender()
             break;
         }
         case Menu::graphicoptions:
-            switch (game.currentmenuoption) {
+            switch (game.menu_.cur_option_idx) {
                 case 0:
                     graphics.bigprint(
                         -1, 30, "Toggle Fullscreen", tr, tg, tb, true);
@@ -573,7 +575,7 @@ void menurender()
             graphics.bigprint(-1, 30, "Game Pad", tr, tg, tb, true);
             graphics.Print(
                 -1, 55, "Change controller options.", tr, tg, tb, true);
-            switch (game.currentmenuoption) {
+            switch (game.menu_.cur_option_idx) {
                 case 0:
                     switch (game.controllerSensitivity) {
                         case 0:
@@ -703,7 +705,7 @@ void menurender()
 
             break;
         case Menu::advancedoptions:
-            switch (game.currentmenuoption) {
+            switch (game.menu_.cur_option_idx) {
                 case 0:
                     graphics.bigprint(
                         -1, 30, "Toggle Mouse Cursor", tr, tg, tb, true);
@@ -849,7 +851,7 @@ void menurender()
             }
             break;
         case Menu::accessibility:
-            switch (game.currentmenuoption) {
+            switch (game.menu_.cur_option_idx) {
                 case 0:
                     graphics.bigprint(-1, 40, "Backgrounds", tr, tg, tb, true);
                     if (!game.colourblindmode) {
@@ -979,7 +981,7 @@ void menurender()
             graphics.Print(-1, 75, "the level with?", tr, tg, tb, true);
             break;
         case Menu::playmodes:
-            switch (game.currentmenuoption) {
+            switch (game.menu_.cur_option_idx) {
                 case 0:
                     graphics.bigprint(-1, 30, "Time Trials", tr, tg, tb, true);
                     graphics.Print(-1,
@@ -1135,7 +1137,7 @@ void menurender()
                 -1, 75, "Are you sure you want to quit?", tr, tg, tb, true);
             break;
         case Menu::continuemenu:
-            switch (game.currentmenuoption) {
+            switch (game.menu_.cur_option_idx) {
                 case 0: {
                     // Show teleporter save info
                     graphics.drawpixeltextbox(
@@ -1318,12 +1320,12 @@ void menurender()
                 graphics.Print(220, 85 + 55, "+1 Rank!", 255, 255, 255);
             }
 
-            if (game.currentmenuname == Menu::timetrialcomplete2 ||
-                game.currentmenuname == Menu::timetrialcomplete3) {
+            if (game.menu_.cur_option_name == Menu::timetrialcomplete2 ||
+                game.menu_.cur_option_name == Menu::timetrialcomplete3) {
                 graphics.bigprint(100, 175, "Rank:", tr, tg, tb, false, 2);
             }
 
-            if (game.currentmenuname == Menu::timetrialcomplete3) {
+            if (game.menu_.cur_option_name == Menu::timetrialcomplete3) {
                 switch (game.timetrialrank) {
                     case 0:
                         graphics.bigprint(
@@ -1352,7 +1354,7 @@ void menurender()
             graphics.Print(-1, 75, "trial separately.", tr, tg, tb, true);
             break;
         case Menu::timetrials:
-            switch (game.currentmenuoption) {
+            switch (game.menu_.cur_option_idx) {
                 case 0:
                     if (game.unlock[9]) {
                         graphics.bigprint(
@@ -1936,7 +1938,8 @@ void titlerender()
             tb = 0;
         if (tb > 255)
             tb = 255;
-        graphics.drawmenu(tr, tg, tb, game.currentmenuname == Menu::levellist);
+        graphics.drawmenu(
+            tr, tg, tb, game.menu_.cur_option_name == Menu::levellist);
     }
 
     graphics.drawfade();
