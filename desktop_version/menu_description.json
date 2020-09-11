@@ -1,10 +1,12 @@
 {
     "options": [
         {
-            "main": {
-                "y": 30,
-                "msg": "Accessibility"
-            },
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Accessibility"
+                }
+            ],
             "sub": [
                 {
                     "y": 65,
@@ -13,6 +15,530 @@
                 {
                     "y": 75,
                     "msg": "slowdown modes or invincibility"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Advanced Options"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Hide the mouse cursor, remove"
+                },
+                {
+                    "y": 75,
+                    "msg": "the loading screen, turn on"
+                },
+                {
+                    "y": 85,
+                    "msg": "glitchrunner mode and more"
+                }
+            ]
+        }
+    ],
+    "newgamewarning": [
+        {
+            "main": [
+                {}
+            ],
+            "sub": [
+                {
+                    "y": 100,
+                    "msg": "Are you sure? This will"
+                },
+                {
+                    "y": 110,
+                    "msg": "delete your current saves..."
+                }
+            ]
+        }
+    ],
+    "cleardatamenu": [
+        {
+            "main": [
+                {}
+            ],
+            "sub": [
+                {
+                    "y": 100,
+                    "msg": "Are you sure you want to"
+                },
+                {
+                    "y": 110,
+                    "msg": "delete all your saved data?"
+                }
+            ]
+        }
+    ],
+    "startnodeathmode": [
+        {
+            "main": [
+                {}
+            ],
+            "sub": [
+                {
+                    "y": 45,
+                    "msg": "Good luck!"
+                },
+                {
+                    "y": 80,
+                    "msg": "You cannot save in this mode."
+                },
+                {
+                    "y": 100,
+                    "msg": "Would you like to disable the"
+                },
+                {
+                    "y": 112,
+                    "msg": "cutscenes during the game?"
+                }
+            ]
+        }
+    ],
+    "playint1": [
+        {
+            "main": [
+                {}
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Who do you want to play"
+                },
+                {
+                    "y": 75,
+                    "msg": "the level with?"
+                }
+            ]
+        }
+    ],
+    "playint2": [
+        {
+            "main": [
+                {}
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Who do you want to play"
+                },
+                {
+                    "y": 75,
+                    "msg": "the level with?"
+                }
+            ]
+        }
+    ],
+    "youwannaquit": [
+        {
+            "main": [
+                {}
+            ],
+            "sub": [
+                {
+                    "y": 75,
+                    "msg": "Are you sure you want to quit?"
+                }
+            ]
+        }
+    ],
+    "errornostart": [
+        {
+            "main": [
+                {}
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "ERROR: This level has"
+                },
+                {
+                    "y": 75,
+                    "msg": "no start point!"
+                }
+            ]
+        }
+    ],
+    "gamecompletecontinue": [
+        {
+            "main": [
+                {
+                    "y": 25,
+                    "msg": "Congratulations!"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 45,
+                    "msg": "Your save files have been updated."
+                },
+                {
+                    "y": 110,
+                    "msg": "If you want to keep exploring"
+                },
+                {
+                    "y": 120,
+                    "msg": "the game, select CONTINUE"
+                },
+                {
+                    "y": 130,
+                    "msg": "from the play menu."
+                }
+            ]
+        }
+    ],
+    "unlockmenu": [
+        {
+            "main": [
+                {
+                    "y": 25,
+                    "msg": "Unlock Play Modes"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 55,
+                    "msg": "From here, you may unlock parts"
+                },
+                {
+                    "y": 65,
+                    "msg": "of the game that are normally"
+                },
+                {
+                    "y": 75,
+                    "msg": "unlocked as you play."
+                }
+            ]
+        }
+    ],
+    "unlocktimetrial": [
+        {
+            "main": [
+                {
+                    "y": 45,
+                    "msg": "Congratulations!"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 125,
+                    "msg": "You have unlocked"
+                },
+                {
+                    "y": 135,
+                    "msg": "a new Time Trial."
+                }
+            ]
+        }
+    ],
+    "unlocktimetrials": [
+        {
+            "main": [
+                {
+                    "y": 45,
+                    "msg": "Congratulations!"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 125,
+                    "msg": "You have unlocked some"
+                },
+                {
+                    "y": 135,
+                    "msg": "new Time Trials."
+                }
+            ]
+        }
+    ],
+    "unlocknodeathmode": [
+        {
+            "main": [
+                {
+                    "y": 45,
+                    "msg": "Congratulations!"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 125,
+                    "msg": "You have unlocked"
+                },
+                {
+                    "y": 135,
+                    "msg": "No Death Mode."
+                }
+            ]
+        }
+    ],
+    "unlockflipmode": [
+        {
+            "main": [
+                {
+                    "y": 45,
+                    "msg": "Congratulations!"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 125,
+                    "msg": "You have unlocked"
+                },
+                {
+                    "y": 135,
+                    "msg": "Flip Mode."
+                }
+            ]
+        }
+    ],
+    "unlockintermission": [
+        {
+            "main": [
+                {
+                    "y": 45,
+                    "msg": "Congratulations!"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 125,
+                    "msg": "You have unlocked"
+                },
+                {
+                    "y": 135,
+                    "msg": "the intermission levels."
+                }
+            ]
+        }
+    ],
+    "credit6": [
+        {
+            "main": [
+                {
+                    "x": 80,
+                    "y": 60,
+                    "msg": "You!"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 20,
+                    "msg": "and thanks also to:"
+                },
+                {
+                    "x": 80,
+                    "y": 100,
+                    "msg": "Your support makes it possible"
+                },
+                {
+                    "x": 80,
+                    "y": 110,
+                    "msg": "for me to continue making the"
+                },
+                {
+                    "x": 80,
+                    "y": 120,
+                    "msg": "games I want to make, now"
+                },
+                {
+                    "x": 80,
+                    "y": 130,
+                    "msg": "and into the future."
+                },
+                {
+                    "x": 80,
+                    "y": 150,
+                    "msg": "Thank you!"
+                }
+            ]
+        }
+    ],
+    "setinvincibility": [
+        {
+            "main": [
+                {}
+            ],
+            "sub": [
+                {
+                    "y": 100,
+                    "msg": "Are you sure you want to "
+                },
+                {
+                    "y": 110,
+                    "msg": "enable invincibility?"
+                }
+            ]
+        }
+    ],
+    "graphicoptions": [
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Toggle Fullscreen"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Change to fullscreen/windowed mode."
+                },
+                {
+                    "y": 85,
+                    "msg": "Current mode: FULLSCREEN",
+                    "msg_sub": "Current mode: WINDOWED",
+                    "type": "toggle"
+                }
+            ]
+        }
+    ],
+    "credits25": [
+        {
+            "main": [
+                {
+                    "x": 40,
+                    "y": 55,
+                    "msg": "Sam Kaplan"
+                },
+                {
+                    "x": 40,
+                    "y": 75,
+                    "msg": "Pauli Kohberger"
+                },
+                {
+                    "x": 40,
+                    "y": 145,
+                    "msg": "Pauli Kohberger"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Beta Testing by"
+                },
+                {
+                    "y": 130,
+                    "msg": "Ending Picture by"
+                }
+            ]
+        }
+    ],
+    "advancedoptions": [
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Toggle Mouse Cursor"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Show/hide the system mouse cursor."
+                },
+                {
+                    "y": 95,
+                    "msg": "Current mode: SHOW",
+                    "msg_sub": "Current mode: HIDE",
+                    "color_sub": "transparent_half",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Unfocus Pause"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Toggle if the game will pause"
+                },
+                {
+                    "y": 75,
+                    "msg": "when the window is unfocused."
+                },
+                {
+                    "y": 95,
+                    "msg": "Unfocus pause is OFF",
+                    "color": "transparent_half",
+                    "msg_sub": "Unfocus pause is ON",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Fake Load Screen"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Fake loading screen is OFF",
+                    "color": "transparent_half",
+                    "msg_sub": "Fake loading screen is ON",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Room Name BG"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Lets you see through what is behind"
+                },
+                {
+                    "y": 75,
+                    "msg": "the name at the bottom of the screen."
+                },
+                {
+                    "y": 95,
+                    "msg": "Room name background is TRANSLUCENT",
+                    "msg_sub": "Room name background is OPAQUE",
+                    "color": "transparent_half",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Glitchrunner Mode"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Re-enable glitches that existed"
+                },
+                {
+                    "y": 75,
+                    "msg": "in previous versions of the game"
+                },
+                {
+                    "y": 95,
+                    "msg": "Glitchrunner mode is ON",
+                    "msg_sub": "Glitchrunner mode is OFF",
+                    "color_sub": "transparent_half",
+                    "type": "toggle"
                 }
             ]
         }

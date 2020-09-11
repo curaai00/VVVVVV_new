@@ -5,10 +5,11 @@ SimpleMenu::SimpleMenu()
     // TODO replace init to another
     // char* assetsPath = NULL;
     char* assetsPath =
-        "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/data";
+        "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
+    // "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/data";
     char* argvZero =
-        "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/VVVVVV_run";
-    // "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
+        "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
+    // "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/VVVVVV_run";
     FILESYSTEM_init(argvZero, argvZero, assetsPath);
     desc_table = parse_json("menu_description.json");
 }
@@ -20,7 +21,10 @@ bool SimpleMenu::hasSimpleDescMsg() const
 
 bool SimpleMenu::hasSimpleDescMsg(Menu::name name, int option_idx) const
 {
-    auto size = desc_table[Menu::name2str(name)].size();
+    auto str_name = Menu::name2str(name);
+    if (!desc_table.contains(str_name))
+        return false;
+    auto size = desc_table[str_name].size();
     return size > 0 && size > option_idx;
 }
 

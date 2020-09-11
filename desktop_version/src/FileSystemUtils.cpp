@@ -13,10 +13,14 @@
 #include "UtilityClass.h"
 
 /* These are needed for PLATFORM_* crap */
+/* These are needed for PLATFORM_* crap */
+// clang-format off
 #if defined(_WIN32)
+#include <windows.h>
 #include <shellapi.h>
 #include <shlobj.h>
-#include <windows.h>
+// clang-format on
+
 #elif defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) ||      \
     defined(__OpenBSD__) || defined(__HAIKU__) || defined(__DragonFly__)
 #include <dirent.h>

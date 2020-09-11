@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BlockV.h"
 #include "FileSystemUtils.h"
 #include <SDL.h>
 #include <json.hpp>
@@ -241,7 +242,7 @@ class Message
 public:
     Message() {}
     Message(std::string text, int x, int y)
-        : text(text)
+        : _text(text)
         , x(x)
         , y(y)
     {}
@@ -252,12 +253,56 @@ public:
         if (_json.contains("y"))
             y = _json["y"].get<int>();
         if (_json.contains("msg"))
-            text = _json["msg"].get<std::string>();
+            _text = _json["msg"].get<std::string>();
+        if (_json.contains("color"))
+            _color = RGBA{ _json["color"].get<std::string>() };
+        if (_json.contains("type"))
+            _type = _json["type"].get<std::string>();
     }
 
-    std::string text;
+    virtual std::string text(void) const { return _text; }
+    virtual RGBA color(void) const { return _color; }
+    inline std::string type(void) const { return _type; }
+
     int x = -1;
     int y = -1;
+
+protected:
+    RGBA _color;
+    std::string _type = "simple";
+    std::string _text;
+};
+
+class ToggleMessage : public Message
+{
+public:
+    ToggleMessage(const nlohmann::json& _json)
+        : Message(_json)
+    {
+        _text_sub = _json["msg_sub"].get<std::string>();
+        if (_json.contains("color_sub"))
+            _color = RGBA{ _json["color_sub"].get<std::string>() };
+    }
+
+    std::string text(void) const override
+    {
+        return toggle_on ? _text : _text_sub;
+    }
+    RGBA color(void) const override { return toggle_on ? _color : _color_sub; }
+    void set_toggle(bool _toggle_on) { toggle_on = _toggle_on; }
+
+protected:
+    bool toggle_on = true;
+    std::string _text_sub;
+    RGBA _color_sub;
+};
+
+inline Message* msgFactory(const nlohmann::json& _json)
+{
+    if (!_json.contains("type"))
+        return new Message{ _json };
+    else if (_json["type"].get<std::string>() == "toggle")
+        return new ToggleMessage{ _json };
 };
 
 class Description
@@ -265,14 +310,23 @@ class Description
 public:
     Description(const nlohmann::json& _json)
     {
-        main_msg = Message{ _json["main"] };
+        for (auto element : _json["main"]) {
+            main_msg.push_back(msgFactory(element));
+        }
         for (auto element : _json["sub"]) {
-            sub_msg.push_back(Message{ element });
+            sub_msg.push_back(msgFactory(element));
         }
     }
+    virtual ~Description(void)
+    {
+        for (auto main : main_msg)
+            delete main;
+        for (auto sub : sub_msg)
+            delete sub;
+    }
 
-    Message main_msg;
-    std::vector<Message> sub_msg;
+    std::vector<Message*> main_msg;
+    std::vector<Message*> sub_msg;
 };
 
 };
