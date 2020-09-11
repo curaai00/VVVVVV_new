@@ -375,6 +375,37 @@
             ]
         }
     ],
+    "controller": [
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Game Pad"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 55,
+                    "msg": "Change controller options."
+                },
+                {
+                    "y": 85,
+                    "msg": " Low     Medium     High"
+                },
+                {
+                    "y": 95,
+                    "msg_list": [
+                        "[]..................",
+                        ".....[].............",
+                        ".........[].........",
+                        ".............[].....",
+                        "..................[]"
+                    ],
+                    "type": "list"
+                }
+            ]
+        }
+    ],
     "graphicoptions": [
         {
             "main": [
@@ -392,6 +423,147 @@
                     "y": 85,
                     "msg": "Current mode: FULLSCREEN",
                     "msg_sub": "Current mode: WINDOWED",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Scaling Mode"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Choose letterbox/stretch/integer mode."
+                },
+                {
+                    "y": 85,
+                    "msg_list": [
+                        "Current mode: INTEGER",
+                        "Current mode: STRETCH",
+                        "Current mode: LETTERBOX"
+                    ],
+                    "type": "list"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Resize to Nearest"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Resize to the nearest window size"
+                },
+                {
+                    "y": 75,
+                    "msg": "that is of an integer multiple."
+                },
+                {
+                    "y": 95,
+                    "msg": "You must be in windowed mode",
+                    "msg_sub": "",
+                    "type": "toggle"
+                },
+                {
+                    "y": 105,
+                    "msg": "to use this option.",
+                    "msg_sub": "",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Toggle Filter"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Change to nearest/linear filter."
+                },
+                {
+                    "y": 85,
+                    "msg": "Current mode: LINEAR",
+                    "msg_sub": "Current mode: NEAREST",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Analogue Mode"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "There is nothing wrong with your"
+                },
+                {
+                    "y": 75,
+                    "msg": "television set. Do not attempt to"
+                },
+                {
+                    "y": 85,
+                    "msg": "adjust the picture."
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Toggle 30+ FPS"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Change whether the game"
+                },
+                {
+                    "y": 75,
+                    "msg": "runs at 30 or over 30 FPS."
+                },
+                {
+                    "y": 95,
+                    "msg": "Current mode: 30 FPS",
+                    "msg_sub": "Current mode: Over 30 FPS",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Toggle VSync"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Edit the config file on Haiku!",
+                    "msg_sub": "Change whether the game",
+                    "type": "toggle"
+                },
+                {
+                    "y": 95,
+                    "msg": "Current mode: VSYNC OFF",
+                    "msg_sub": "Current mode: VSYNC ON",
                     "type": "toggle"
                 }
             ]
@@ -539,6 +711,242 @@
                     "msg_sub": "Glitchrunner mode is OFF",
                     "color_sub": "transparent_half",
                     "type": "toggle"
+                }
+            ]
+        }
+    ],
+    "accessibility": [
+        {
+            "main": [
+                {
+                    "y": 40,
+                    "msg": "Backgrounds"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 75,
+                    "msg": "Change controller options.",
+                    "msg_sub": "Backgrounds are OFF.",
+                    "color_sub": "transparent_half",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 40,
+                    "msg": "Screen Effects"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 75,
+                    "msg": "Disables screen shakes and flashes."
+                },
+                {
+                    "y": 85,
+                    "msg": "Screen Effects are ON.",
+                    "msg_sub": "Screen Effects are OFF.",
+                    "color_sub": "transparent_half",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 40,
+                    "msg": "Text Outline"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 75,
+                    "msg": "Disables outline on game text"
+                },
+                {
+                    "y": 85,
+                    "msg": "Text outlines are ON.",
+                    "msg_sub": "Text outlines are OFF.",
+                    "color_sub": "transparent_half",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 40,
+                    "msg": "Invincibility"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 75,
+                    "msg": "Provided to help disabled gamers"
+                },
+                {
+                    "y": 85,
+                    "msg": "explore the game. Can cause glitches."
+                },
+                {
+                    "y": 105,
+                    "msg": "Invincibility is ON.",
+                    "msg_sub": "Text outlines are OFF.",
+                    "color_sub": "transparent_half",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 40,
+                    "msg": "Game Speed"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 75,
+                    "msg": "May be useful for disabled gamers"
+                },
+                {
+                    "y": 85,
+                    "msg": "using one switch devices."
+                },
+                {
+                    "y": 105,
+                    "msg_list": [
+                        "Game speed is normal.",
+                        "Game speed is at 80%",
+                        "Game speed is at 60%",
+                        "Game speed is at 40%",
+                        ""
+                    ],
+                    "type": "list"
+                }
+            ]
+        }
+    ],
+    "playmodes": [
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Time Trials"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Replay any level in the game in"
+                },
+                {
+                    "y": 75,
+                    "msg": "a competitive time trial mode."
+                },
+                {
+                    "y": 105,
+                    "msg": "Time Trials are not available",
+                    "msg_sub": "",
+                    "type": "toggle"
+                },
+                {
+                    "y": 115,
+                    "msg": "with slowdown or invincibility.",
+                    "msg_sub": "",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Intermissions"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Replay the intermission levels."
+                },
+                {
+                    "y": 95,
+                    "msg": "TO UNLOCK: Complete the",
+                    "msg_sub": "",
+                    "type": "toggle"
+                },
+                {
+                    "y": 105,
+                    "msg": "intermission levels in-game.",
+                    "msg_sub": "",
+                    "type": "toggle"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "No Death Mode"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Play the entire game"
+                },
+                {
+                    "y": 75,
+                    "msg": "without dying once."
+                },
+                {
+                    "y": 105,
+                    "msg_list": [
+                        "No Death Mode is not available",
+                        "TO UNLOCK: Achieve an S-rank or",
+                        ""
+                    ],
+                    "type": "list"
+                },
+                {
+                    "y": 115,
+                    "msg_list": [
+                        "with slowdown or invincibility.",
+                        "above in at least 4 time trials.",
+                        ""
+                    ],
+                    "type": "list"
+                }
+            ]
+        },
+        {
+            "main": [
+                {
+                    "y": 30,
+                    "msg": "Flip Mode"
+                }
+            ],
+            "sub": [
+                {
+                    "y": 65,
+                    "msg": "Flip the entire game vertically."
+                },
+                {
+                    "y": 75,
+                    "msg": "Compatible with other game modes."
+                },
+                {
+                    "y": 105,
+                    "msg_list": [
+                        "Currently ENABLED!",
+                        "Currently Disabled.",
+                        "TO UNLOCK: Complete the game."
+                    ],
+                    "type": "list"
                 }
             ]
         }

@@ -58,12 +58,140 @@ void menurender()
     if (game.menu_.hasSimpleDescMsg()) {
         auto desc_msg = game.menu_.getDescriptionMsg();
 
+        int temp_idx = 0;
         switch (game.menu_.cur_option_name) {
             case Menu::graphicoptions:
                 switch (game.menu_.cur_option_idx) {
                     case 0:
                         dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[1])
                             ->set_toggle(game.fullscreen);
+                        break;
+                    case 1:
+                        temp_idx = game.stretchMode == 2
+                                       ? 0
+                                       : (game.stretchMode == 1 ? 1 : 2);
+                        dynamic_cast<Menu::ListMessage*>(desc_msg.sub_msg[1])
+                            ->set_index(temp_idx);
+                        break;
+                    case 2:
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[2])
+                            ->set_toggle(!graphics.screenbuffer->isWindowed);
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[3])
+                            ->set_toggle(!graphics.screenbuffer->isWindowed);
+                        break;
+                    case 3:
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[1])
+                            ->set_toggle(game.useLinearFilter);
+                        break;
+                    case 5:
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[2])
+                            ->set_toggle(!game.over30mode);
+                        break;
+                    case 6:
+#ifdef __HAIKU__
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[0])
+                            ->set_toggle(true);
+#else
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[0])
+                            ->set_toggle(false);
+#endif
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[1])
+                            ->set_toggle(!graphics.screenbuffer->vsync);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case Menu::controller:
+                switch (game.menu_.cur_option_idx) {
+                    case 0:
+                        dynamic_cast<Menu::ListMessage*>(desc_msg.sub_msg[2])
+                            ->set_index(game.controllerSensitivity);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case Menu::accessibility:
+                switch (game.menu_.cur_option_idx) {
+                    case 0:
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[0])
+                            ->set_toggle(!game.colourblindmode);
+                        break;
+                    case 1:
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[1])
+                            ->set_toggle(!game.noflashingmode);
+                        break;
+                    case 2:
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[1])
+                            ->set_toggle(!graphics.notextoutline);
+                        break;
+                    case 3:
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[2])
+                            ->set_toggle(map.invincibility);
+                        break;
+                    case 4:
+                        switch (game.gameframerate) {
+                            case 34:
+                                temp_idx = 0;
+                                break;
+                            case 41:
+                                temp_idx = 1;
+                                break;
+                            case 55:
+                                temp_idx = 2;
+                                break;
+                            case 83:
+                                temp_idx = 3;
+                                break;
+                            default:
+                                temp_idx = 4;
+                                break;
+                        }
+                        dynamic_cast<Menu::ListMessage*>(desc_msg.sub_msg[2])
+                            ->set_index(temp_idx);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case Menu::playmodes:
+                switch (game.menu_.cur_option_idx) {
+                    case 0:
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[2])
+                            ->set_toggle(game.gameframerate > 34 ||
+                                         map.invincibility);
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[3])
+                            ->set_toggle(game.gameframerate > 34 ||
+                                         map.invincibility);
+                        break;
+                    case 1:
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[1])
+                            ->set_toggle(!game.unlock[15] && !game.unlock[16]);
+                        dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[2])
+                            ->set_toggle(!game.unlock[15] && !game.unlock[16]);
+                        break;
+                    case 2:
+                        if (game.gameframerate > 34 || map.invincibility)
+                            temp_idx = 0;
+                        else if (!game.unlock[17])
+                            temp_idx = 1;
+                        else
+                            temp_idx = 2;
+                        dynamic_cast<Menu::ListMessage*>(desc_msg.sub_msg[1])
+                            ->set_index(temp_idx);
+                        dynamic_cast<Menu::ListMessage*>(desc_msg.sub_msg[2])
+                            ->set_index(temp_idx);
+                        break;
+                    case 3:
+                        if (game.unlock[18] && graphics.setflipmode)
+                            temp_idx = 0;
+                        else if (game.unlock[18])
+                            temp_idx = 1;
+                        else
+                            temp_idx = 2;
+                        dynamic_cast<Menu::ListMessage*>(desc_msg.sub_msg[2])
+                            ->set_index(temp_idx);
                         break;
                 }
                 break;
@@ -308,201 +436,6 @@ void menurender()
                 }
                 break;
             }
-            case Menu::graphicoptions:
-                switch (game.menu_.cur_option_idx) {
-                    case 1:
-                        graphics.bigprint(
-                            -1, 30, "Scaling Mode", tr, tg, tb, true);
-                        graphics.Print(-1,
-                                       65,
-                                       "Choose letterbox/stretch/integer mode.",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-
-                        if (game.stretchMode == 2) {
-                            graphics.Print(-1,
-                                           85,
-                                           "Current mode: INTEGER",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        } else if (game.stretchMode == 1) {
-                            graphics.Print(-1,
-                                           85,
-                                           "Current mode: STRETCH",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        } else {
-                            graphics.Print(-1,
-                                           85,
-                                           "Current mode: LETTERBOX",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        }
-                        break;
-                    case 2:
-                        graphics.bigprint(
-                            -1, 30, "Resize to Nearest", tr, tg, tb, true);
-                        graphics.Print(-1,
-                                       65,
-                                       "Resize to the nearest window size",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        graphics.Print(-1,
-                                       75,
-                                       "that is of an integer multiple.",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        if (!graphics.screenbuffer->isWindowed) {
-                            graphics.Print(-1,
-                                           95,
-                                           "You must be in windowed mode",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                            graphics.Print(-1,
-                                           105,
-                                           "to use this option.",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        }
-                        break;
-                    case 3:
-                        graphics.bigprint(
-                            -1, 30, "Toggle Filter", tr, tg, tb, true);
-                        graphics.Print(-1,
-                                       65,
-                                       "Change to nearest/linear filter.",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-
-                        if (game.useLinearFilter) {
-                            graphics.Print(-1,
-                                           85,
-                                           "Current mode: LINEAR",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        } else {
-                            graphics.Print(-1,
-                                           85,
-                                           "Current mode: NEAREST",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        }
-                        break;
-
-                    case 4:
-                        graphics.bigprint(
-                            -1, 30, "Analogue Mode", tr, tg, tb, true);
-                        graphics.Print(-1,
-                                       65,
-                                       "There is nothing wrong with your",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        graphics.Print(-1,
-                                       75,
-                                       "television set. Do not attempt to",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        graphics.Print(
-                            -1, 85, "adjust the picture.", tr, tg, tb, true);
-                        break;
-                    case 5:
-                        graphics.bigprint(
-                            -1, 30, "Toggle 30+ FPS", tr, tg, tb, true);
-                        graphics.Print(-1,
-                                       65,
-                                       "Change whether the game",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        graphics.Print(-1,
-                                       75,
-                                       "runs at 30 or over 30 FPS.",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-
-                        if (!game.over30mode) {
-                            graphics.Print(-1,
-                                           95,
-                                           "Current mode: 30 FPS",
-                                           tr / 2,
-                                           tg / 2,
-                                           tb / 2,
-                                           true);
-                        } else {
-                            graphics.Print(-1,
-                                           95,
-                                           "Current mode: Over 30 FPS",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        }
-                        break;
-                    case 6:
-                        graphics.bigprint(
-                            -1, 30, "Toggle VSync", tr, tg, tb, true);
-#ifdef __HAIKU__ // FIXME: Remove after SDL VSync bug is fixed! -flibit
-                        graphics.Print(-1,
-                                       65,
-                                       "Edit the config file on Haiku!",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-#else
-                        graphics.Print(
-                            -1, 65, "Turn VSync on or off.", tr, tg, tb, true);
-#endif
-
-                        if (!graphics.screenbuffer->vsync) {
-                            graphics.Print(-1,
-                                           95,
-                                           "Current mode: VSYNC OFF",
-                                           tr / 2,
-                                           tg / 2,
-                                           tb / 2,
-                                           true);
-                        } else {
-                            graphics.Print(-1,
-                                           95,
-                                           "Current mode: VSYNC ON",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        }
-                        break;
-                }
-                break;
             case Menu::credits:
                 graphics.Print(-1, 50, "VVVVVV is a game by", tr, tg, tb, true);
                 graphics.bigprint(
@@ -624,90 +557,6 @@ void menurender()
                 graphics.Print(
                     -1, 55, "Change controller options.", tr, tg, tb, true);
                 switch (game.menu_.cur_option_idx) {
-                    case 0:
-                        switch (game.controllerSensitivity) {
-                            case 0:
-                                graphics.Print(-1,
-                                               85,
-                                               " Low     Medium     High",
-                                               tr,
-                                               tg,
-                                               tb,
-                                               true);
-                                graphics.Print(-1,
-                                               95,
-                                               "[]..................",
-                                               tr,
-                                               tg,
-                                               tb,
-                                               true);
-                                break;
-                            case 1:
-                                graphics.Print(-1,
-                                               85,
-                                               " Low     Medium     High",
-                                               tr,
-                                               tg,
-                                               tb,
-                                               true);
-                                graphics.Print(-1,
-                                               95,
-                                               ".....[].............",
-                                               tr,
-                                               tg,
-                                               tb,
-                                               true);
-                                break;
-                            case 2:
-                                graphics.Print(-1,
-                                               85,
-                                               " Low     Medium     High",
-                                               tr,
-                                               tg,
-                                               tb,
-                                               true);
-                                graphics.Print(-1,
-                                               95,
-                                               ".........[].........",
-                                               tr,
-                                               tg,
-                                               tb,
-                                               true);
-                                break;
-                            case 3:
-                                graphics.Print(-1,
-                                               85,
-                                               " Low     Medium     High",
-                                               tr,
-                                               tg,
-                                               tb,
-                                               true);
-                                graphics.Print(-1,
-                                               95,
-                                               ".............[].....",
-                                               tr,
-                                               tg,
-                                               tb,
-                                               true);
-                                break;
-                            case 4:
-                                graphics.Print(-1,
-                                               85,
-                                               " Low     Medium     High",
-                                               tr,
-                                               tg,
-                                               tb,
-                                               true);
-                                graphics.Print(-1,
-                                               95,
-                                               "..................[]",
-                                               tr,
-                                               tg,
-                                               tb,
-                                               true);
-                                break;
-                        }
-                        break;
                     case 1:
                     case 2:
                     case 3:
@@ -751,328 +600,6 @@ void menurender()
                         break;
                 }
 
-                break;
-            case Menu::accessibility:
-                switch (game.menu_.cur_option_idx) {
-                    case 0:
-                        graphics.bigprint(
-                            -1, 40, "Backgrounds", tr, tg, tb, true);
-                        if (!game.colourblindmode) {
-                            graphics.Print(-1,
-                                           75,
-                                           "Backgrounds are ON.",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        } else {
-                            graphics.Print(-1,
-                                           75,
-                                           "Backgrounds are OFF.",
-                                           tr / 2,
-                                           tg / 2,
-                                           tb / 2,
-                                           true);
-                        }
-                        break;
-                    case 1:
-                        graphics.bigprint(
-                            -1, 40, "Screen Effects", tr, tg, tb, true);
-                        graphics.Print(-1,
-                                       75,
-                                       "Disables screen shakes and flashes.",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        if (!game.noflashingmode) {
-                            graphics.Print(-1,
-                                           85,
-                                           "Screen Effects are ON.",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        } else {
-                            graphics.Print(-1,
-                                           85,
-                                           "Screen Effects are OFF.",
-                                           tr / 2,
-                                           tg / 2,
-                                           tb / 2,
-                                           true);
-                        }
-                        break;
-                    case 2:
-                        graphics.bigprint(
-                            -1, 40, "Text Outline", tr, tg, tb, true);
-                        graphics.Print(-1,
-                                       75,
-                                       "Disables outline on game text",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        // FIXME: Maybe do an outlined print instead? -flibit
-                        if (!graphics.notextoutline) {
-                            graphics.Print(-1,
-                                           85,
-                                           "Text outlines are ON.",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        } else {
-                            graphics.Print(-1,
-                                           85,
-                                           "Text outlines are OFF.",
-                                           tr / 2,
-                                           tg / 2,
-                                           tb / 2,
-                                           true);
-                        }
-                        break;
-                    case 3:
-                        graphics.bigprint(
-                            -1, 40, "Invincibility", tr, tg, tb, true);
-                        graphics.Print(-1,
-                                       75,
-                                       "Provided to help disabled gamers",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        graphics.Print(-1,
-                                       85,
-                                       "explore the game. Can cause glitches.",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        if (map.invincibility) {
-                            graphics.Print(-1,
-                                           105,
-                                           "Invincibility is ON.",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        } else {
-                            graphics.Print(-1,
-                                           105,
-                                           "Invincibility is off.",
-                                           tr / 2,
-                                           tg / 2,
-                                           tb / 2,
-                                           true);
-                        }
-                        break;
-                    case 4:
-                        graphics.bigprint(
-                            -1, 40, "Game Speed", tr, tg, tb, true);
-                        graphics.Print(-1,
-                                       75,
-                                       "May be useful for disabled gamers",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        graphics.Print(-1,
-                                       85,
-                                       "using one switch devices.",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        if (game.gameframerate == 34) {
-                            graphics.Print(-1,
-                                           105,
-                                           "Game speed is normal.",
-                                           tr / 2,
-                                           tg / 2,
-                                           tb / 2,
-                                           true);
-                        } else if (game.gameframerate == 41) {
-                            graphics.Print(-1,
-                                           105,
-                                           "Game speed is at 80%",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        } else if (game.gameframerate == 55) {
-                            graphics.Print(-1,
-                                           105,
-                                           "Game speed is at 60%",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        } else if (game.gameframerate == 83) {
-                            graphics.Print(-1,
-                                           105,
-                                           "Game speed is at 40%",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        }
-                        break;
-                }
-                break;
-            case Menu::playmodes:
-                switch (game.menu_.cur_option_idx) {
-                    case 0:
-                        graphics.bigprint(
-                            -1, 30, "Time Trials", tr, tg, tb, true);
-                        graphics.Print(-1,
-                                       65,
-                                       "Replay any level in the game in",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        graphics.Print(-1,
-                                       75,
-                                       "a competitive time trial mode.",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-
-                        if (game.gameframerate > 34 || map.invincibility) {
-                            graphics.Print(-1,
-                                           105,
-                                           "Time Trials are not available",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                            graphics.Print(-1,
-                                           115,
-                                           "with slowdown or invincibility.",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        }
-                        break;
-                    case 1:
-                        graphics.bigprint(
-                            -1, 30, "Intermissions", tr, tg, tb, true);
-                        graphics.Print(-1,
-                                       65,
-                                       "Replay the intermission levels.",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-
-                        if (!game.unlock[15] && !game.unlock[16]) {
-                            graphics.Print(-1,
-                                           95,
-                                           "TO UNLOCK: Complete the",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                            graphics.Print(-1,
-                                           105,
-                                           "intermission levels in-game.",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        }
-                        break;
-                    case 2:
-                        graphics.bigprint(
-                            -1, 30, "No Death Mode", tr, tg, tb, true);
-                        graphics.Print(
-                            -1, 65, "Play the entire game", tr, tg, tb, true);
-                        graphics.Print(
-                            -1, 75, "without dying once.", tr, tg, tb, true);
-
-                        if (game.gameframerate > 34 || map.invincibility) {
-                            graphics.Print(-1,
-                                           105,
-                                           "No Death Mode is not available",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                            graphics.Print(-1,
-                                           115,
-                                           "with slowdown or invincibility.",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        } else if (!game.unlock[17]) {
-                            graphics.Print(-1,
-                                           105,
-                                           "TO UNLOCK: Achieve an S-rank or",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                            graphics.Print(-1,
-                                           115,
-                                           "above in at least 4 time trials.",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        }
-                        break;
-                    case 3:
-                        // WARNING: Partially duplicated in Menu::options
-                        graphics.bigprint(
-                            -1, 30, "Flip Mode", tr, tg, tb, true);
-                        graphics.Print(-1,
-                                       65,
-                                       "Flip the entire game vertically.",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-                        graphics.Print(-1,
-                                       75,
-                                       "Compatible with other game modes.",
-                                       tr,
-                                       tg,
-                                       tb,
-                                       true);
-
-                        if (game.unlock[18]) {
-                            if (graphics.setflipmode) {
-                                graphics.Print(-1,
-                                               105,
-                                               "Currently ENABLED!",
-                                               tr,
-                                               tg,
-                                               tb,
-                                               true);
-                            } else {
-                                graphics.Print(-1,
-                                               105,
-                                               "Currently Disabled.",
-                                               tr / 2,
-                                               tg / 2,
-                                               tb / 2,
-                                               true);
-                            }
-                        } else {
-                            graphics.Print(-1,
-                                           105,
-                                           "TO UNLOCK: Complete the game.",
-                                           tr,
-                                           tg,
-                                           tb,
-                                           true);
-                        }
-                        break;
-                }
                 break;
             case Menu::continuemenu:
                 switch (game.menu_.cur_option_idx) {

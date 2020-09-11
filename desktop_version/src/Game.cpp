@@ -166,11 +166,8 @@ void Game::init(void)
     SDL_memset(unlock, false, sizeof(unlock));
     SDL_memset(unlocknotify, false, sizeof(unlock));
 
-    menu_.cur_option_idx = 0;
+    menu_.init();
     current_credits_list_index = 0;
-    menu_.xoff = 0;
-    menu_.yoff = 0;
-    menu_.countdown = 0;
     levelpage = 0;
     playcustomlevel = 0;
     createmenu(Menu::mainmenu);
@@ -317,7 +314,6 @@ void Game::init(void)
     glitchrunnermode = false;
 
     ingame_titlemode = false;
-    menu_.kludge_ingametemp = Menu::mainmenu;
     shouldreturntopausemenu = false;
 
     disablepause = false;

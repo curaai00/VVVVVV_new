@@ -297,12 +297,34 @@ protected:
     RGBA _color_sub;
 };
 
+class ListMessage : public Message
+{
+public:
+    ListMessage(const nlohmann::json& _json)
+        : Message(_json)
+    {
+        for (auto str : _json["msg_list"])
+            _text_list.push_back(str.get<std::string>());
+    }
+
+    std::string text(void) const override { return _text_list[idx]; }
+    void set_index(int _idx) { idx = _idx; }
+
+protected:
+    std::vector<std::string> _text_list;
+    int idx;
+};
+
 inline Message* msgFactory(const nlohmann::json& _json)
 {
     if (!_json.contains("type"))
         return new Message{ _json };
     else if (_json["type"].get<std::string>() == "toggle")
         return new ToggleMessage{ _json };
+    else if (_json["type"].get<std::string>() == "list")
+        return new ListMessage{ _json };
+
+    return new Message{ _json };
 };
 
 class Description
@@ -342,6 +364,14 @@ class SimpleMenu
 public:
     SimpleMenu();
 
+    void init(void)
+    {
+        xoff = 0;
+        yoff = 0;
+        cur_option_idx = 0;
+        countdown = 0;
+        kludge_ingametemp = Menu::mainmenu;
+    }
     inline void add_option(const char* text, bool active = true)
     {
         options.push_back(Menu::option{ text, active });
