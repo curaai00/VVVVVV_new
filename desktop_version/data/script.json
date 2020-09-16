@@ -1,25 +1,7 @@
-#include "Script.h"
-
-#include <SDL.h>
-
-void scriptclass::load(const std::string& name)
 {
-    // loads script name t into the array
-    position = 0;
-    commands.clear();
-    running = true;
-
-    const char* t = name.c_str();
-
-    char customstring[8] = { '\0' };
-    SDL_strlcpy(customstring, t, sizeof(customstring));
-
-    if (strcmp(customstring, "custom_") == 0) {
-        loadcustom(name);
-    } else if (SDL_strcmp(t, "intro") == 0) {
-        static const char* lines[] = {
+"intro": [
             "ifskip(quickstart)",
-            //"createcrewman(232,113,cyan,0,faceright)",
+            
             "createcrewman(96,177,green,0,faceright)",
             "createcrewman(122,177,purple,0,faceleft)",
             "fadein()",
@@ -36,15 +18,15 @@ void scriptclass::load(const std::string& name)
             "text(cyan,0,0,1)",
             "Uh oh...",
             "position(player,above)",
-            //"backgroundtext",
+            
             "speak_active",
 
             "squeak(purple)",
             "changeai(purple,followposition,175)",
             "text(purple,145,150,1)",
             "Is everything ok?",
-            //"position(purple,above)",
-            //"backgroundtext",
+            
+            
             "speak_active",
 
             "squeak(player)",
@@ -53,10 +35,10 @@ void scriptclass::load(const std::string& name)
             "No! We've hit some",
             "kind of interference...",
             "position(player,above)",
-            //"backgroundtext",
+            
             "speak_active",
 
-            //"delay(30)",
+            
             "endtext",
 
             "flash(5)",
@@ -75,9 +57,9 @@ void scriptclass::load(const std::string& name)
             "Something's wrong! We're",
             "going to crash!",
             "position(player,above)",
-            //"backgroundtext",
+            
             "speak_active",
-            //"delay(100)",
+            
 
             "endtext",
 
@@ -95,7 +77,7 @@ void scriptclass::load(const std::string& name)
 
             "endtextfast",
 
-            // Ok, next room!
+            
 
             "flash(5)",
             "shake(50)",
@@ -115,7 +97,7 @@ void scriptclass::load(const std::string& name)
 
             "endtextfast",
 
-            // and the next!
+            
             "flash(5)",
             "shake(50)",
             "playef(9)",
@@ -142,7 +124,7 @@ void scriptclass::load(const std::string& name)
 
             "endtextfast",
 
-            // final room:
+            
             "flash(5)",
             "shake(80)",
             "playef(9)",
@@ -176,7 +158,7 @@ void scriptclass::load(const std::string& name)
             "changecolour(red,teleporter)",
             "delay(10)",
 
-            // and teleport!
+            
             "endtext",
             "alarmoff",
             "flash(5)",
@@ -191,11 +173,11 @@ void scriptclass::load(const std::string& name)
             "shake(20)",
             "playef(10)",
 
-            // Finally, appear at the start of the game:
+            
             "gotoroom(13,5)",
             "gotoposition(80,96,0)",
             "walk(right,20)",
-            //"delay(45)",
+            
 
             "squeak(player)",
             "text(cyan,0,0,1)",
@@ -236,12 +218,8 @@ void scriptclass::load(const std::string& name)
 
             "hideship()",
 
-            "gamestate(4)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "quickstart") == 0) {
-        // Finally, appear at the start of the game:
-        static const char* lines[] = {
+            "gamestate(4)"],
+"quickstart": [
             "gotoroom(13,5)",  "gotoposition(80,96,0)", "walk(right,17)",
             "fadein()",
 
@@ -249,11 +227,8 @@ void scriptclass::load(const std::string& name)
 
             "play(1)",         "endcutscene()",         "untilbars()",
 
-            "hideship()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "firststeps") == 0) {
-        static const char* lines[] = {
+            "hideship()"],
+"firststeps": [
             "cutscene()",
             "untilbars()",
 
@@ -274,11 +249,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "trenchwarfare") == 0) {
-        static const char* lines[] = {
+            "untilbars()"
+],
+"trenchwarfare": [
             "cutscene()",
             "untilbars()",
 
@@ -301,12 +274,10 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "newtrenchwarfare") == 0) {
-        static const char* lines[] = {
-            "squeak(player)",
+            "untilbars()"
+],
+"newtrenchwarfare":[
+                "squeak(player)",
             "text(cyan,0,0,2)",
             "Oh! It's another one of",
             "those shiny things!",
@@ -324,12 +295,10 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "trinketcollector") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"
+],
+"trinketcollector":[
+             "cutscene()",
             "untilbars()",
 
             "iftrinkets(1,newtrinketcollector)",
@@ -355,12 +324,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "newtrinketcollector") == 0) {
-        static const char* lines[] = {
-            "squeak(player)",
+            "untilbars()"],
+"newtrinketcollector":[
+             "squeak(player)",
             "text(cyan,0,0,3)",
             "This seems like a good",
             "place to store those",
@@ -381,12 +347,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "new2trinketcollector") == 0) {
-        static const char* lines[] = {
-            "squeak(cry)",
+            "untilbars()"],
+"new2trinketcollector":[
+             "squeak(cry)",
             "changemood(player,1)",
             "text(cyan,0,0,1)",
             "I hope she's ok...",
@@ -397,14 +360,9 @@ void scriptclass::load(const std::string& name)
             "changemood(player,0)",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-        return;
-    }
-    if (SDL_strcmp(t, "communicationstation") == 0) {
-        static const char* lines[] = {
-            "ifskip(communicationstationskip)",
+            "untilbars()"],
+"communicationstation":[
+             "ifskip(communicationstationskip)",
             "cutscene()",
             "untilbars()",
             "changemood(player,0)",
@@ -476,7 +434,7 @@ void scriptclass::load(const std::string& name)
             "endtextfast",
             "delay(10)",
 
-            // add map mode here and wrap up...
+            
             "gamemode(teleporter)",
             "delay(20)",
 
@@ -550,16 +508,13 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "play(1)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "communicationstationskip") == 0) {
-        static const char* lines[] = {
-            "changemood(player,0)",
+            "play(1)"],
+"communicationstationskip":[
+             "changemood(player,0)",
 
             "delay(10)",
             "endtext",
-            // add map mode here and wrap up...
+            
             "gamemode(teleporter)",
             "delay(5)",
 
@@ -580,12 +535,9 @@ void scriptclass::load(const std::string& name)
             "showteleporters()",
             "delay(20)",
 
-            "gamemode(game)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "teleporterback") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "gamemode(game)"],
+"teleporterback":[
+             "cutscene()",
             "untilbars()",
 
             "squeak(player)",
@@ -606,41 +558,29 @@ void scriptclass::load(const std::string& name)
             "teleportscript(levelonecomplete)",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "levelonecomplete") == 0) {
-        static const char* lines[] = {
-            "nocontrol()", "createcrewman(230,153,purple,0,faceleft)",
+            "untilbars()"],
+"levelonecomplete":[
+             "nocontrol()", "createcrewman(230,153,purple,0,faceleft)",
 
             "cutscene()",  "untilbars()",
 
             "delay(30)",   "rescued(purple)",
 
-            "delay(10)",   "gamestate(4090)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "levelonecomplete_ending") == 0) {
-        static const char* lines[] = {
-            "squeak(purple)",  "text(purple,0,0,1)",
+            "delay(10)",   "gamestate(4090)"],
+"levelonecomplete_ending":[
+             "squeak(purple)",  "text(purple,0,0,1)",
             "Captain!",        "position(purple,above)",
             "speak_active",    "endtext",
             "nocontrol()",
 
             "endcutscene()",   "untilbars()",
 
-            "gamestate(3050)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "levelonecompleteskip") == 0) {
-        static const char* lines[] = {
-            "nocontrol()",
-            "gamestate(3050)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "bigopenworld") == 0) {
-        static const char* lines[] = {
-            "play(5)",
+            "gamestate(3050)"],
+"levelonecompleteskip":[
+             "nocontrol()",
+            "gamestate(3050)"],
+"bigopenworld":[
+             "play(5)",
             "cutscene()",
             "untilbars()",
 
@@ -648,7 +588,7 @@ void scriptclass::load(const std::string& name)
             "gotoposition(100,177,0)",
             "createcrewman(150,177,purple,0,faceleft)",
 
-            // set all the crew as rescued to avoid companion issues!
+            
             "rescued(red)",
             "rescued(green)",
             "rescued(blue)",
@@ -705,7 +645,7 @@ void scriptclass::load(const std::string& name)
 
             "endtext",
 
-            // Cut to Red
+            
             "fadeout()",
             "untilfade()",
 
@@ -718,7 +658,7 @@ void scriptclass::load(const std::string& name)
             "fadein()",
             "untilfade()",
 
-            //"walk(right,10)",
+            
 
             "squeak(purple)",
             "text(purple,60,40,2)",
@@ -730,7 +670,7 @@ void scriptclass::load(const std::string& name)
 
             "delay(15)",
 
-            // Cut to Green
+            
             "fadeout()",
             "untilfade()",
 
@@ -753,7 +693,7 @@ void scriptclass::load(const std::string& name)
 
             "delay(15)",
 
-            // Cut to Blue
+            
             "fadeout()",
             "untilfade()",
 
@@ -786,20 +726,20 @@ void scriptclass::load(const std::string& name)
 
             "delay(15)",
 
-            // Cut to Yellow
+            
             "fadeout()",
             "untilfade()",
 
             "changeplayercolour(yellow)",
             "gotoroom(15,9)",
-            //(6*8)-21
+            
             "gotoposition(300,27,0)",
 
             "hideplayer()",
             "createcrewman(280,25,yellow,1,panic)",
 
-            //"hascontrol()",
-            //"walk(left,4)",
+            
+            
 
             "fadein()",
             "untilfade()",
@@ -821,7 +761,7 @@ void scriptclass::load(const std::string& name)
 
             "delay(15)",
 
-            // Back to ship
+            
             "fadeout()",
             "untilfade()",
             "showplayer()",
@@ -871,8 +811,8 @@ void scriptclass::load(const std::string& name)
             "hidecoordinates(15,9)",
             "showteleporters()",
 
-            // Cut to map
-            // add map mode here and wrap up...
+            
+            
             "gamemode(teleporter)",
             "delay(20)",
 
@@ -913,7 +853,7 @@ void scriptclass::load(const std::string& name)
 
             "gamemode(game)",
             "delay(20)",
-            // And finally, back to the ship!
+            
 
             "squeak(player)",
             "text(player,0,0,2)",
@@ -937,12 +877,9 @@ void scriptclass::load(const std::string& name)
             "untilbars()",
             "hascontrol()",
 
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "bigopenworldskip") == 0) {
-        static const char* lines[] = {
-            "gotoroom(4,10)",
+            "createactivityzone(purple)"],
+"bigopenworldskip":[
+             "gotoroom(4,10)",
             "gotoposition(100,177,0)",
             "createcrewman(150,177,purple,0,faceleft)",
 
@@ -955,8 +892,8 @@ void scriptclass::load(const std::string& name)
             "hidecoordinates(15,9)",
             "showteleporters()",
 
-            // Cut to map
-            // add map mode here and wrap up...
+            
+            
             "gamemode(teleporter)",
             "delay(20)",
 
@@ -974,7 +911,7 @@ void scriptclass::load(const std::string& name)
 
             "gamemode(game)",
             "delay(20)",
-            // And finally, back to the ship!
+            
 
             "squeak(purple)",
             "text(purple,0,0,2)",
@@ -991,12 +928,9 @@ void scriptclass::load(const std::string& name)
             "untilbars()",
             "hascontrol()",
 
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "rescueblue") == 0) {
-        static const char* lines[] = {
-            "ifskip(skipblue)",
+            "createactivityzone(purple)"],
+"rescueblue":[
+             "ifskip(skipblue)",
             "cutscene()",
 
             "tofloor()",
@@ -1070,22 +1004,16 @@ void scriptclass::load(const std::string& name)
             "endcutscene()",
             "untilbars()",
             "companion(8)",
-            "setcheckpoint()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "skipblue") == 0) {
-        static const char* lines[] = {
-            "changeai(blue,followplayer)",
+            "setcheckpoint()"],
+"skipblue":[
+             "changeai(blue,followplayer)",
             "squeak(blue)",
             "changemood(blue,0)",
             "companion(8)",
             "rescued(blue)",
-            "setcheckpoint()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "rescueyellow") == 0) {
-        static const char* lines[] = {
-            "ifskip(skipyellow)",
+            "setcheckpoint()"],
+"rescueyellow":[
+             "ifskip(skipyellow)",
             "cutscene()",
 
             "changeai(yellow,followplayer)",
@@ -1180,21 +1108,15 @@ void scriptclass::load(const std::string& name)
 
             "companion(7)",
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "skipyellow") == 0) {
-        static const char* lines[] = {
-            "changeai(yellow,followplayer)",
+            "untilbars()"],
+"skipyellow":[
+             "changeai(yellow,followplayer)",
             "changetile(yellow,6)",
             "squeak(yellow)",
             "rescued(yellow)",
-            "companion(7)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "rescuegreen") == 0) {
-        static const char* lines[] = {
-            "ifskip(skipgreen)",
+            "companion(7)"],
+"rescuegreen":[
+             "ifskip(skipgreen)",
             "cutscene()",
 
             "tofloor()",
@@ -1256,18 +1178,12 @@ void scriptclass::load(const std::string& name)
             "companion(6)",
             "endcutscene()",
             "untilbars()",
-            "changeai(green,followplayer)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "skipgreen") == 0) {
-        static const char* lines[] = {
-            "changeai(green,followplayer)", "squeak(green)", "rescued(green)",
-            "changemood(green,0)",          "companion(6)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "rescuered") == 0) {
-        static const char* lines[] = {
-            "ifskip(skipred)",
+            "changeai(green,followplayer)"],
+"skipgreen":[
+             "changeai(green,followplayer)", "squeak(green)", "rescued(green)",
+            "changemood(green,0)",          "companion(6)"],
+"rescuered":[
+             "ifskip(skipred)",
             "cutscene()",
 
             "tofloor()",
@@ -1329,18 +1245,12 @@ void scriptclass::load(const std::string& name)
             "companion(9)",
             "endcutscene()",
             "untilbars()",
-            "changeai(red,followplayer)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "skipred") == 0) {
-        static const char* lines[] = {
-            "changeai(red,followplayer)", "squeak(red)",  "rescued(red)",
-            "changemood(red,0)",          "companion(9)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "startexpolevel_station1") == 0) {
-        static const char* lines[] = {
-            // For the Eurogamer EXPO! Scrap later.
+            "changeai(red,followplayer)"],
+"skipred":[
+             "changeai(red,followplayer)", "squeak(red)",  "rescued(red)",
+            "changemood(red,0)",          "companion(9)"],
+"startexpolevel_station1":[
+             
             "fadeout()",       "musicfadeout()",
             "untilfade()",
 
@@ -1352,12 +1262,9 @@ void scriptclass::load(const std::string& name)
             "setcheckpoint()", "changedir(player,1)",
             "fadein()",
 
-            "play(5)",         "loadscript(intro)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "startexpolevel_lab") == 0) {
-        static const char* lines[] = {
-            // For the Eurogamer EXPO! Scrap later.
+            "play(5)",         "loadscript(intro)"],
+"startexpolevel_lab":[
+             
             "fadeout()",       "musicfadeout()",
             "untilfade()",     "delay(30)",
 
@@ -1367,12 +1274,9 @@ void scriptclass::load(const std::string& name)
             "setcheckpoint()", "changedir(player,1)",
             "fadein()",
 
-            "stopmusic()",     "play(3)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "startexpolevel_warp") == 0) {
-        static const char* lines[] = {
-            // For the Eurogamer EXPO! Scrap later.
+            "stopmusic()",     "play(3)"],
+"startexpolevel_warp":[
+             
             "fadeout()",       "musicfadeout()",
             "untilfade()",     "delay(30)",
 
@@ -1382,12 +1286,9 @@ void scriptclass::load(const std::string& name)
             "setcheckpoint()", "changedir(player,1)",
             "fadein()",
 
-            "stopmusic()",     "play(3)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "startexpolevel_tower") == 0) {
-        static const char* lines[] = {
-            // For the Eurogamer EXPO! Scrap later.
+            "stopmusic()",     "play(3)"],
+"startexpolevel_tower":[
+             
             "fadeout()",       "musicfadeout()",
             "untilfade()",     "delay(30)",
 
@@ -1397,12 +1298,9 @@ void scriptclass::load(const std::string& name)
             "setcheckpoint()", "changedir(player,1)",
             "fadein()",
 
-            "stopmusic()",     "play(2)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "skipint1") == 0) {
-        static const char* lines[] = {
-            "finalmode(41,56)",
+            "stopmusic()",     "play(2)"],
+"skipint1":[
+             "finalmode(41,56)",
             "gotoposition(52,89,0)",
             "changedir(player,1)",
             "setcheckpoint()",
@@ -1415,12 +1313,9 @@ void scriptclass::load(const std::string& name)
             "play(8)",
 
             "hascontrol()",
-            "befadein()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "intermission_1") == 0) {
-        static const char* lines[] = {
-            "ifskip(skipint1)",
+            "befadein()"],
+"intermission_1":[
+             "ifskip(skipint1)",
             "finalmode(41,56)",
             "gotoposition(52,89,0)",
             "changedir(player,1)",
@@ -1454,12 +1349,9 @@ void scriptclass::load(const std::string& name)
             "iflast(2,int1yellow_1)",
             "iflast(3,int1red_1)",
             "iflast(4,int1green_1)",
-            "iflast(5,int1blue_1)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1blue_1") == 0) {
-        static const char* lines[] = {
-            "delay(45)",
+            "iflast(5,int1blue_1)"],
+"int1blue_1":[
+             "delay(45)",
 
             "squeak(cry)",
             "text(blue,0,0,1)",
@@ -1506,12 +1398,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "gamestate(14)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1blue_2") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "gamestate(14)"],
+"int1blue_2":[
+             "cutscene()",
             "untilbars()",
 
             "squeak(player)",
@@ -1536,12 +1425,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "gamestate(11)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1blue_3") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "gamestate(11)"],
+"int1blue_3":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
@@ -1596,12 +1482,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1blue_4") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1blue_4":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
@@ -1635,12 +1518,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1blue_5") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1blue_5":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
@@ -1669,12 +1549,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1blue_6") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1blue_6":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
@@ -1716,12 +1593,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1blue_7") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1blue_7":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
@@ -1760,12 +1634,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1green_1") == 0) {
-        static const char* lines[] = {
-            "delay(45)",
+            "untilbars()"],
+"int1green_1":[
+             "delay(45)",
 
             "squeak(green)",
             "text(green,0,0,1)",
@@ -1823,12 +1694,9 @@ void scriptclass::load(const std::string& name)
             "telesave()",
             "endcutscene()",
             "untilbars()",
-            "gamestate(14)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1green_2") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "gamestate(14)"],
+"int1green_2":[
+             "cutscene()",
             "untilbars()",
 
             "squeak(player)",
@@ -1847,13 +1715,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "gamestate(11)",
-        };
-        filllines(lines);
-
-    } else if (SDL_strcmp(t, "int1green_3") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "gamestate(11)"],
+"int1green_3":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -1910,12 +1774,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1green_4") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1green_4":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -1949,12 +1810,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1green_5") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1green_5":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -2018,12 +1876,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1green_6") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1green_6":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -2061,12 +1916,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1green_7") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1green_7":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -2093,12 +1945,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1red_1") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1red_1":[
+             "cutscene()",
             "untilbars()",
 
             "squeak(red)",
@@ -2142,12 +1991,9 @@ void scriptclass::load(const std::string& name)
             "telesave()",
             "endcutscene()",
             "untilbars()",
-            "gamestate(14)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1red_2") == 0) {
-        static const char* lines[] = {
-            "cutscene()",        "untilbars()",
+            "gamestate(14)"],
+"int1red_2":[
+             "cutscene()",        "untilbars()",
             "face(player,red)",  "face(red,player)",
 
             "squeak(player)",    "text(player,0,0,1)",
@@ -2159,12 +2005,9 @@ void scriptclass::load(const std::string& name)
             "speak_active",      "endtext",
 
             "endcutscene()",     "untilbars()",
-            "gamestate(11)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1red_3") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "gamestate(11)"],
+"int1red_3":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -2207,12 +2050,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1red_4") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1red_4":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -2241,12 +2081,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1red_5") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1red_5":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -2271,12 +2108,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1red_6") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1red_6":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -2305,12 +2139,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1red_7") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1red_7":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -2331,12 +2162,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1yellow_1") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1yellow_1":[
+             "cutscene()",
             "untilbars()",
 
             "squeak(yellow)",
@@ -2388,12 +2216,9 @@ void scriptclass::load(const std::string& name)
             "telesave()",
             "endcutscene()",
             "untilbars()",
-            "gamestate(14)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1yellow_2") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "gamestate(14)"],
+"int1yellow_2":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -2413,12 +2238,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "gamestate(11)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1yellow_3") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "gamestate(11)"],
+"int1yellow_3":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -2464,12 +2286,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1yellow_4") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1yellow_4":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -2487,7 +2306,7 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(yellow)",
-            "changeai(yellow,faceleft)", // changedir(yellow,0) doesn't work
+            "changeai(yellow,faceleft)", 
             "text(yellow,0,0,2)",
             "That big... C thing!",
             "I wonder what it does?",
@@ -2512,7 +2331,7 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(yellow)",
-            "changeai(yellow,0)", // Make him face right again
+            "changeai(yellow,0)", 
             "text(yellow,0,0,2)",
             "Maybe we should take it back",
             "to the ship to study it?",
@@ -2530,12 +2349,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1yellow_5") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1yellow_5":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -2592,12 +2408,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1yellow_6") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1yellow_6":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -2620,12 +2433,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int1yellow_7") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "untilbars()"],
+"int1yellow_7":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -2644,12 +2454,9 @@ void scriptclass::load(const std::string& name)
             "endtext",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "skipint2") == 0) {
-        static const char* lines[] = {
-            "finalmode(53,49)",
+            "untilbars()"],
+"skipint2":[
+             "finalmode(53,49)",
             "gotoposition(228,129,0)",
             "changedir(player,1)",
             "setcheckpoint()",
@@ -2661,12 +2468,9 @@ void scriptclass::load(const std::string& name)
             "play(8)",
 
             "hascontrol()",
-            "befadein()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "intermission_2") == 0) {
-        static const char* lines[] = {
-            "ifskip(skipint2)",
+            "befadein()"],
+"intermission_2":[
+             "ifskip(skipint2)",
             "finalmode(53,49)",
             "gotoposition(228,129,0)",
             "changedir(player,1)",
@@ -2713,12 +2517,9 @@ void scriptclass::load(const std::string& name)
             "iflast(2,int2intro_yellow)",
             "iflast(3,int2intro_red)",
             "iflast(4,int2intro_green)",
-            "iflast(5,int2intro_blue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int2intro_yellow") == 0) {
-        static const char* lines[] = {
-            "squeak(cry)",
+            "iflast(5,int2intro_blue)"],
+"int2intro_yellow":[
+             "squeak(cry)",
             "text(player,0,0,1)",
             "Vitellary? Where are you?",
             "position(player,above)",
@@ -2754,12 +2555,9 @@ void scriptclass::load(const std::string& name)
             "telesave()",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int2intro_red") == 0) {
-        static const char* lines[] = {
-            "squeak(cry)",
+            "untilbars()"],
+"int2intro_red":[
+             "squeak(cry)",
             "text(player,0,0,1)",
             "Vermilion? Where are you?",
             "position(player,above)",
@@ -2795,12 +2593,9 @@ void scriptclass::load(const std::string& name)
             "telesave()",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int2intro_green") == 0) {
-        static const char* lines[] = {
-            "squeak(cry)",
+            "untilbars()"],
+"int2intro_green":[
+             "squeak(cry)",
             "text(player,0,0,1)",
             "Verdigris? Where are you?",
             "position(player,above)",
@@ -2836,12 +2631,9 @@ void scriptclass::load(const std::string& name)
             "telesave()",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int2intro_blue") == 0) {
-        static const char* lines[] = {
-            "squeak(cry)",
+            "untilbars()"],
+"int2intro_blue":[
+             "squeak(cry)",
             "text(player,0,0,1)",
             "Victoria? Where are you?",
             "position(player,above)",
@@ -2877,12 +2669,9 @@ void scriptclass::load(const std::string& name)
             "telesave()",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int2_yellow") == 0) {
-        static const char* lines[] = {
-            "ifskip(skipint2yellow)",
+            "untilbars()"],
+"int2_yellow":[
+             "ifskip(skipint2yellow)",
             "cutscene()",
 
             "tofloor()",
@@ -2908,18 +2697,12 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "companion(10)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "skipint2yellow") == 0) {
-        static const char* lines[] = {
-            "squeak(yellow)",
-            "companion(10)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int2_red") == 0) {
-        static const char* lines[] = {
-            "ifskip(skipint2red)",
+            "companion(10)"],
+"skipint2yellow":[
+             "squeak(yellow)",
+            "companion(10)"],
+"int2_red":[
+             "ifskip(skipint2red)",
             "cutscene()",
 
             "tofloor()",
@@ -2945,18 +2728,12 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "companion(10)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "skipint2red") == 0) {
-        static const char* lines[] = {
-            "squeak(red)",
-            "companion(10)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int2_green") == 0) {
-        static const char* lines[] = {
-            "ifskip(skipint2green)",
+            "companion(10)"],
+"skipint2red":[
+             "squeak(red)",
+            "companion(10)"],
+"int2_green":[
+             "ifskip(skipint2green)",
             "cutscene()",
 
             "tofloor()",
@@ -2982,18 +2759,12 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "companion(10)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "skipint2green") == 0) {
-        static const char* lines[] = {
-            "squeak(green)",
-            "companion(10)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "int2_blue") == 0) {
-        static const char* lines[] = {
-            "ifskip(skipint2blue)",
+            "companion(10)"],
+"skipint2green":[
+             "squeak(green)",
+            "companion(10)"],
+"int2_blue":[
+             "ifskip(skipint2blue)",
             "cutscene()",
 
             "tofloor()",
@@ -3020,19 +2791,12 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "companion(10)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "skipint2blue") == 0) {
-        static const char* lines[] = {
-            "squeak(blue)",
-            "companion(10)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "startexpolevel_station2") == 0) {
-        // For the Eurogamer EXPO! Scrap later.
-        static const char* lines[] = {
-            "fadeout()",       "musicfadeout()",
+            "companion(10)"],
+"skipint2blue":[
+             "squeak(blue)",
+            "companion(10)"],
+"startexpolevel_station2":[
+             "fadeout()",       "musicfadeout()",
             "untilfade()",     "delay(30)",
 
             "resetgame",
@@ -3041,12 +2805,9 @@ void scriptclass::load(const std::string& name)
             "setcheckpoint()", "changedir(player,0)",
             "fadein()",
 
-            "stopmusic()",     "play(1)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "finallevel_teleporter") == 0) {
-        static const char* lines[] = {
-            "delay(10)",
+            "stopmusic()",     "play(1)"],
+"finallevel_teleporter":[
+             "delay(10)",
 
             "squeak(purple)",
             "text(purple,0,0,1)",
@@ -3109,19 +2870,16 @@ void scriptclass::load(const std::string& name)
 
             "missing(player)",
 
-            //"squeak(cry)",
-            //"changemood(player,1)",
+            
+            
 
             "endcutscene()",
             "untilbars()",
 
             "play(15)",
-            "telesave()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "skipfinal") == 0) {
-        static const char* lines[] = {
-            "finalmode(46,54)",
+            "telesave()"],
+"skipfinal":[
+             "finalmode(46,54)",
             "gotoposition(101,113,0)",
             "setcheckpoint()",
             "changedir(player,1)",
@@ -3132,12 +2890,9 @@ void scriptclass::load(const std::string& name)
             "missing(player)",
             "play(15)",
             "fadein()",
-            "untilfade()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "startlevel_final") == 0) {
-        static const char* lines[] = {
-            "ifskip(skipfinal)",
+            "untilfade()"],
+"startlevel_final":[
+             "ifskip(skipfinal)",
             "cutscene()",
             "untilbars()",
             "activeteleporter()",
@@ -3153,12 +2908,9 @@ void scriptclass::load(const std::string& name)
 
             "fadein()",
             "untilfade()",
-            "gamestate(4070)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "regularreturn") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "gamestate(4070)"],
+"regularreturn":[
+             "cutscene()",
             "untilbars()",
             "activeteleporter()",
 
@@ -3174,13 +2926,9 @@ void scriptclass::load(const std::string& name)
             "untilfade()",
             "endcutscene()",
             "setcheckpoint()",
-            "gamestate(4010)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "returntohub") == 0) {
-        // For the Eurogamer EXPO! Scrap later.
-        static const char* lines[] = {
-            "fadeout()",       "musicfadeout()",
+            "gamestate(4010)"],
+"returntohub":[
+             "fadeout()",       "musicfadeout()",
             "untilfade()",     "delay(30)",
 
             "resetgame",
@@ -3189,45 +2937,23 @@ void scriptclass::load(const std::string& name)
             "setcheckpoint()", "changedir(player,0)",
             "fadein()",
 
-            "stopmusic()",     "play(4)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "resetgame") == 0) {
-        // For the Eurogamer EXPO! Scrap later.
-        static const char* lines[] = {
-            "resetgame",
+            "stopmusic()",     "play(4)"],
+"resetgame":[
+             "resetgame",
             "gotoroom(4,6)",
-            "fadein()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred") == 0) {
-        static const char* lines[] = {
-            "redcontrol",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow") == 0) {
-        static const char* lines[] = {
-            "yellowcontrol",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkgreen") == 0) {
-        static const char* lines[] = {
-            "greencontrol",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue") == 0) {
-        static const char* lines[] = {
-            "bluecontrol",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkpurple") == 0) {
-        static const char* lines[] = {
-            "purplecontrol",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_1") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "fadein()"],
+"talkred":[
+             "redcontrol"],
+"talkyellow":[
+             "yellowcontrol"],
+"talkgreen":[
+             "greencontrol"],
+"talkblue":[
+             "bluecontrol"],
+"talkpurple":[
+             "purplecontrol"],
+"talkred_1":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3249,12 +2975,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_2") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkred_2":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3276,12 +2999,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_3") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkred_3":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3305,12 +3025,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_4") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkred_4":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3334,12 +3051,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_5") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkred_5":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3368,12 +3082,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_6") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkred_6":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3396,12 +3107,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_7") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkred_7":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3418,12 +3126,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_8") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkred_8":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3446,12 +3151,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_9") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkred_9":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3474,12 +3176,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_10") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkred_10":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3501,12 +3200,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_11") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkred_11":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3521,12 +3217,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_12") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkred_12":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3556,12 +3249,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_13") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkred_13":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3583,12 +3273,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkred_14") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkred_14":[
+             "cutscene()",
             "untilbars()",
             "face(player,red)",
             "face(red,player)",
@@ -3610,12 +3297,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(red)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_1") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(red)"],
+"talkyellow_1":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -3631,12 +3315,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_2") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(yellow)"],
+"talkyellow_2":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -3660,12 +3341,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_3") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(yellow)"],
+"talkyellow_3":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -3720,12 +3398,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_4") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(yellow)"],
+"talkyellow_4":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -3757,12 +3432,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_5") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(yellow)"],
+"talkyellow_5":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -3778,12 +3450,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_6") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(yellow)"],
+"talkyellow_6":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -3809,13 +3478,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_7") == 0) {
-        // Vertigris is back
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(yellow)"],
+"talkyellow_7":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -3838,13 +3503,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_8") == 0) {
-        // Victoria is back
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(yellow)"],
+"talkyellow_8":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -3866,13 +3527,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_9") == 0) {
-        // Vermilion is back
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(yellow)"],
+"talkyellow_9":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -3903,13 +3560,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_10") == 0) {
-        // Back on the ship!
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(yellow)"],
+"talkyellow_10":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -3931,13 +3584,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_11") == 0) {
-        // Game Complete
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(yellow)"],
+"talkyellow_11":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -3968,12 +3617,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_12") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(yellow)"],
+"talkyellow_12":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -4002,12 +3648,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkgreen_1") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(yellow)"],
+"talkgreen_1":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -4022,12 +3665,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(green)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkgreen_2") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(green)"],
+"talkgreen_2":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -4044,12 +3684,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(green)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkgreen_3") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(green)"],
+"talkgreen_3":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -4066,12 +3703,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(green)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkgreen_4") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(green)"],
+"talkgreen_4":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -4086,12 +3720,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(green)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkgreen_5") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(green)"],
+"talkgreen_5":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -4123,12 +3754,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(green)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkgreen_6") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(green)"],
+"talkgreen_6":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -4144,12 +3772,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(green)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkgreen_7") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(green)"],
+"talkgreen_7":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -4166,12 +3791,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(green)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkgreen_8") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(green)"],
+"talkgreen_8":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -4188,12 +3810,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(green)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkgreen_9") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(green)"],
+"talkgreen_9":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -4216,12 +3835,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(green)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkgreen_10") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(green)"],
+"talkgreen_10":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -4237,12 +3853,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(green)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkgreen_11") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(green)"],
+"talkgreen_11":[
+             "cutscene()",
             "untilbars()",
             "face(player,green)",
             "face(green,player)",
@@ -4265,14 +3878,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(green)",
-        };
-        filllines(lines);
-    }
-
-    if (SDL_strcmp(t, "talkpurple_1") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(green)"],
+"talkpurple_1":[
+             "cutscene()",
             "untilbars()",
             "face(player,purple)",
             "face(purple,player)",
@@ -4296,12 +3904,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkpurple_2") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(purple)"],
+"talkpurple_2":[
+             "cutscene()",
             "untilbars()",
             "face(player,purple)",
             "face(purple,player)",
@@ -4317,12 +3922,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkpurple_3") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(purple)"],
+"talkpurple_3":[
+             "cutscene()",
             "untilbars()",
             "face(player,purple)",
             "face(purple,player)",
@@ -4358,12 +3960,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkpurple_4") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(purple)"],
+"talkpurple_4":[
+             "cutscene()",
             "untilbars()",
             "face(player,purple)",
             "face(purple,player)",
@@ -4392,12 +3991,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkpurple_5") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(purple)"],
+"talkpurple_5":[
+             "cutscene()",
             "untilbars()",
             "face(player,purple)",
             "face(purple,player)",
@@ -4420,12 +4016,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkpurple_6") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(purple)"],
+"talkpurple_6":[
+             "cutscene()",
             "untilbars()",
             "face(player,purple)",
             "face(purple,player)",
@@ -4446,12 +4039,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkpurple_7") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(purple)"],
+"talkpurple_7":[
+             "cutscene()",
             "untilbars()",
             "face(player,purple)",
             "face(purple,player)",
@@ -4481,12 +4071,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkpurple_8") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(purple)"],
+"talkpurple_8":[
+             "cutscene()",
             "untilbars()",
             "face(player,purple)",
             "face(purple,player)",
@@ -4512,12 +4099,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkpurple_9") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(purple)"],
+"talkpurple_9":[
+             "cutscene()",
             "untilbars()",
             "face(player,purple)",
             "face(purple,player)",
@@ -4534,12 +4118,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkpurple_intermission1") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(purple)"],
+"talkpurple_intermission1":[
+             "cutscene()",
             "untilbars()",
             "face(player,purple)",
             "face(purple,player)",
@@ -4586,12 +4167,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkpurple_intermission2") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(purple)"],
+"talkpurple_intermission2":[
+             "cutscene()",
             "untilbars()",
             "face(player,purple)",
             "face(purple,player)",
@@ -4630,12 +4208,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkpurple_intermission3") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(purple)"],
+"talkpurple_intermission3":[
+             "cutscene()",
             "untilbars()",
             "face(player,purple)",
             "face(purple,player)",
@@ -4693,12 +4268,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkpurple_intro") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(purple)"],
+"talkpurple_intro":[
+             "cutscene()",
             "untilbars()",
             "face(player,purple)",
             "face(purple,player)",
@@ -4760,19 +4332,16 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(purple)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_1") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(purple)"],
+"talkblue_1":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,1)",
             "Any signs of Professor Vitellary?",
             "position(blue,below)",
@@ -4785,7 +4354,7 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(cry)",
-            "changetile(blue,150)", // upside down frown :(
+            "changetile(blue,150)", 
             "text(blue,0,0,1)",
             "I hope he's ok...",
             "position(blue,below)",
@@ -4795,19 +4364,16 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(blue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_2") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(blue)"],
+"talkblue_2":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,2)",
             "Thanks so much for",
             "saving me, Captain!",
@@ -4818,26 +4384,23 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(blue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_3") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(blue)"],
+"talkblue_3":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,1)",
             "I'm so glad to be back!",
             "position(blue,below)",
             "speak_active",
 
             "squeak(cry)",
-            "changetile(blue,150)", // upside down frown :(
+            "changetile(blue,150)", 
             "text(blue,0,0,3)",
             "That lab was so dark",
             "and scary! I didn't",
@@ -4849,19 +4412,16 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(blue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_4") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(blue)"],
+"talkblue_4":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,2)",
             "Vitellary's back? I",
             "knew you'd find him!",
@@ -4869,8 +4429,8 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,2)",
             "I mean, I admit I was very",
             "worried that you wouldn't...",
@@ -4878,7 +4438,7 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(cry)",
-            "changetile(blue,150)", // upside down frown :(
+            "changetile(blue,150)", 
             "text(blue,0,0,2)",
             "or that something might",
             "have happened to him...",
@@ -4902,7 +4462,7 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(cry)",
-            "changetile(blue,150)", // upside down frown :(
+            "changetile(blue,150)", 
             "text(blue,0,0,3)",
             "Oh! Sorry! I was just",
             "thinking about what",
@@ -4915,8 +4475,8 @@ void scriptclass::load(const std::string& name)
             "delay(30)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,1)",
             "Thank you, Captain!",
             "position(blue,below)",
@@ -4926,27 +4486,24 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(blue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_5") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(blue)"],
+"talkblue_5":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,1)",
             "You found Vermilion! Great!",
             "position(blue,below)",
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,2)",
             "I wish he wasn't",
             "so reckless!",
@@ -4954,7 +4511,7 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(cry)",
-            "changetile(blue,150)", // upside down frown :(
+            "changetile(blue,150)", 
             "text(blue,0,0,2)",
             "He'll get himself",
             "into trouble...",
@@ -4965,19 +4522,16 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(blue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_6") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(blue)"],
+"talkblue_6":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,2)",
             "Verdigris is ok! Violet",
             "will be so happy!",
@@ -4985,8 +4539,8 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,1)",
             "I'm happy!",
             "position(blue,below)",
@@ -4997,7 +4551,7 @@ void scriptclass::load(const std::string& name)
             "delay(30)",
 
             "squeak(cry)",
-            "changetile(blue,150)", // upside down frown :(
+            "changetile(blue,150)", 
             "text(blue,0,0,1)",
             "Though I was very worried...",
             "position(blue,below)",
@@ -5007,18 +4561,15 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(blue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_7") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(blue)"],
+"talkblue_7":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
 
             "squeak(cry)",
-            "changetile(blue,150)", // upside down frown :(
+            "changetile(blue,150)", 
             "text(blue,0,0,2)",
             "Why did the teleporter send",
             "us to that scary dimension?",
@@ -5026,7 +4577,7 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,150)", // upside down frown :(
+            "changetile(blue,150)", 
             "text(blue,0,0,1)",
             "What happened?",
             "position(blue,below)",
@@ -5039,7 +4590,7 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(cry)",
-            "changetile(blue,150)", // upside down frown :(
+            "changetile(blue,150)", 
             "text(blue,0,0,1)",
             "Why?",
             "position(blue,below)",
@@ -5049,27 +4600,24 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(blue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_8") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(blue)"],
+"talkblue_8":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,1)",
             "Heya Captain!",
             "position(blue,below)",
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,3)",
             "Are you going to try",
             "and find the rest of",
@@ -5081,12 +4629,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(blue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_9") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(blue)"],
+"talkblue_9":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
@@ -5102,19 +4647,16 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(blue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_trinket1") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(blue)"],
+"talkblue_trinket1":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,2)",
             "Hey Captain, I found",
             "this in that lab...",
@@ -5124,18 +4666,18 @@ void scriptclass::load(const std::string& name)
             "endtext",
             "delay(30)",
 
-            // found a trinket!
+            
             "foundtrinket(18)",
             "endtext",
-            //"musicfadein",
+            
             "trinketscriptmusic",
 
             "delay(30)",
             "createentity(136,80,22,18,0)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,1)",
             "Any idea what it does?",
             "position(blue,below)",
@@ -5164,19 +4706,16 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(blue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_trinket2") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "createactivityzone(blue)"],
+"talkblue_trinket2":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,3)",
             "Captain! Come have a",
             "look at what I've",
@@ -5185,8 +4724,8 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,3)",
             "It looks like these shiny",
             "things are giving off a",
@@ -5195,27 +4734,23 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,1)",
             "So I analysed it...",
             "position(blue,below)",
             "speak_active",
 
-            "trinketbluecontrol()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_trinket3") == 0) {
-        // If you missed the first conversation
-        static const char* lines[] = {
-            "cutscene()",
+            "trinketbluecontrol()"],
+"talkblue_trinket3":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,3)",
             "Captain! Come have a",
             "look at what I've",
@@ -5224,8 +4759,8 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,1)",
             "I found this in that lab...",
             "position(blue,below)",
@@ -5234,18 +4769,18 @@ void scriptclass::load(const std::string& name)
             "endtext",
             "delay(30)",
 
-            // found a trinket!
+            
             "foundtrinket(18)",
             "endtext",
-            //"musicfadein",
+            
             "trinketscriptmusic",
 
             "delay(30)",
             "createentity(136,80,22,18,0)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,3)",
             "It seemed to be",
             "giving off a weird",
@@ -5254,23 +4789,20 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,1)",
             "So I analysed it...",
             "position(blue,below)",
             "speak_active",
 
-            "trinketbluecontrol()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_trinket4") == 0) {
-        static const char* lines[] = {
-            "hidetrinkets()",
+            "trinketbluecontrol()"],
+"talkblue_trinket4":[
+             "hidetrinkets()",
             "endtextfast",
             "delay(10)",
 
-            // add map mode here and wrap up...
+            
             "gamemode(teleporter)",
             "delay(20)",
 
@@ -5298,8 +4830,8 @@ void scriptclass::load(const std::string& name)
             "delay(20)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,3)",
             "If you get a chance, it",
             "might be worth finding",
@@ -5308,7 +4840,7 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(cry)",
-            "changetile(blue,150)", // upside down frown :(
+            "changetile(blue,150)", 
             "text(blue,0,0,2)",
             "Don't put yourself in",
             "any danger, though!",
@@ -5319,14 +4851,11 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(blue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_trinket5") == 0) {
-        static const char* lines[] = {
-            "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "createactivityzone(blue)"],
+"talkblue_trinket5":[
+             "squeak(blue)",
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,3)",
             "...but it looks like you've",
             "already found all of them",
@@ -5341,8 +4870,8 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,2)",
             "Yeah, well done! That",
             "can't have been easy!",
@@ -5353,14 +4882,11 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(blue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkblue_trinket6") == 0) {
-        static const char* lines[] = {
-            "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "createactivityzone(blue)"],
+"talkblue_trinket6":[
+             "squeak(blue)",
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,3)",
             "...and they're related.",
             "They're all a part of",
@@ -5375,8 +4901,8 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,4)",
             "Yeah! There seem to be",
             "twenty variations of",
@@ -5386,16 +4912,16 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,1)",
             "Wait...",
             "position(blue,below)",
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,2)",
             "Does that mean you've",
             "found all of them?",
@@ -5404,12 +4930,9 @@ void scriptclass::load(const std::string& name)
 
             "endtext",
 
-            "loadscript(startepilogue)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_trinket1") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "loadscript(startepilogue)"],
+"talkyellow_trinket1":[
+             "cutscene()",
             "untilbars()",
             "face(player,yellow)",
             "face(yellow,player)",
@@ -5424,10 +4947,10 @@ void scriptclass::load(const std::string& name)
 
             "delay(30)",
 
-            // found a trinket!
+            
             "foundtrinket(18)",
             "endtext",
-            //"musicfadein",
+            
             "trinketscriptmusic",
 
             "delay(30)",
@@ -5469,16 +4992,13 @@ void scriptclass::load(const std::string& name)
             "speak_active",
             "endtext",
 
-            "trinketyellowcontrol()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_trinket2") == 0) {
-        static const char* lines[] = {
-            "hidetrinkets()",
+            "trinketyellowcontrol()"],
+"talkyellow_trinket2":[
+             "hidetrinkets()",
             "endtextfast",
             "delay(10)",
 
-            // add map mode here and wrap up...
+            
             "gamemode(teleporter)",
             "delay(20)",
 
@@ -5524,12 +5044,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "talkyellow_trinket3") == 0) {
-        static const char* lines[] = {
-            "squeak(yellow)",
+            "createactivityzone(yellow)"],
+"talkyellow_trinket3":[
+             "squeak(yellow)",
             "changemood(yellow,0)",
             "text(yellow,0,0,2)",
             "Can't seem to detect any",
@@ -5547,12 +5064,9 @@ void scriptclass::load(const std::string& name)
 
             "endcutscene()",
             "untilbars()",
-            "createactivityzone(yellow)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "gamecomplete") == 0) {
-        static const char* lines[] = {
-            "gotoroom(2,11)",
+            "createactivityzone(yellow)"],
+"gamecomplete":[
+             "gotoroom(2,11)",
             "gotoposition(160,120,0)",
             "nocontrol()",
             "createcrewman(185,153,purple,0,faceleft)",
@@ -5577,12 +5091,9 @@ void scriptclass::load(const std::string& name)
 
             "delay(60)",
 
-            "gamestate(4080)",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "gamecomplete_ending") == 0) {
-        const char* lines[] = {
-            "delay(15)",
+            "gamestate(4080)"],
+"gamecomplete_ending":[
+             "delay(15)",
             "changemood(blue,0)",
             "play(10)",
             "delay(45)",
@@ -5686,7 +5197,7 @@ void scriptclass::load(const std::string& name)
 
             "endtext",
 
-            // Move to Vitellary's lab
+            
             "fadeout()",
             "untilfade()",
 
@@ -5735,7 +5246,7 @@ void scriptclass::load(const std::string& name)
 
             "endtext",
 
-            // Move to Vertigris' lab
+            
             "fadeout()",
             "untilfade()",
 
@@ -5767,7 +5278,7 @@ void scriptclass::load(const std::string& name)
 
             "endtext",
 
-            // Move to the bridge!
+            
             "fadeout()",
             "untilfade()",
 
@@ -5828,19 +5339,16 @@ void scriptclass::load(const std::string& name)
 
             "fadeout()",
             "untilfade()",
-            "rollcredits()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "startepilogue") == 0) {
-        static const char* lines[] = {
-            "cutscene()",
+            "rollcredits()"],
+"startepilogue":[
+             "cutscene()",
             "untilbars()",
             "face(player,blue)",
             "face(blue,player)",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,1)",
             "Wow! You found all of them!",
             "position(blue,below)",
@@ -5853,8 +5361,8 @@ void scriptclass::load(const std::string& name)
             "speak_active",
 
             "squeak(blue)",
-            "changetile(blue,6)", // smiling again! blue always needs to specify
-                                  // her mood
+            "changetile(blue,6)", 
+                                  
             "text(blue,0,0,3)",
             "I'll run some tests and",
             "see if I can work out",
@@ -5874,7 +5382,7 @@ void scriptclass::load(const std::string& name)
 
             "squeak(cry)",
             "changemood(player,1)",
-            "changetile(blue,150)", // upside down frown :(
+            "changetile(blue,150)", 
             "text(player,0,0,2)",
             "That... that didn't",
             "sound good...",
@@ -5922,7 +5430,7 @@ void scriptclass::load(const std::string& name)
 
             "endtextfast",
 
-            // and the next!
+            
             "flash(5)",
             "shake(50)",
             "playef(9)",
@@ -5949,7 +5457,7 @@ void scriptclass::load(const std::string& name)
 
             "endtextfast",
 
-            // final room:
+            
             "flash(5)",
             "alarmoff",
             "playef(9)",
@@ -6354,20 +5862,12 @@ void scriptclass::load(const std::string& name)
             "play(11)",
 
             "endcutscene()",
-            "untilbars()",
-        };
-        filllines(lines);
-    } else if (SDL_strcmp(t, "returntolab") == 0) {
-        // To get back to the lab from the gravitron
-        static const char* lines[] = {
-            "gotoroom(19,7)",  "gotoposition(132,137,0)", "fadein()",
+            "untilbars()"],
+"returntolab":[
+             "gotoroom(19,7)",  "gotoposition(132,137,0)", "fadein()",
 
             "setcheckpoint()",
 
-            "play(11)",        "endcutscene()",           "untilbars()",
-        };
-        filllines(lines);
-    } else {
-        loadother(t);
-    }
+            "play(11)",        "endcutscene()",           "untilbars()"]
+
 }

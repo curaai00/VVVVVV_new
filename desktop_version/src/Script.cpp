@@ -28,7 +28,42 @@ scriptclass::scriptclass()
     looppoint = 0;
     r = 0;
     textx = 0;
-    texty = 0;
+    // TODO replace init to another
+    // char* assetsPath = NULL;
+    auto parse_json = [](const char* path) -> nlohmann::json {
+        unsigned char* uMem = NULL;
+        FILESYSTEM_loadFileToMemory(path, &uMem, NULL, true);
+        return nlohmann::json::parse(uMem);
+    };
+
+    char* assetsPath =
+        "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/data";
+    // "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
+    char* argvZero =
+        "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/VVVVVV_run";
+    // "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
+    FILESYSTEM_init(argvZero, argvZero, assetsPath);
+    script_table = parse_json("script.json");
+}
+j void scriptclass::load(const std::string& name)
+{
+    // loads script name t into the array
+    position = 0;
+    commands.clear();
+    running = true;
+
+    const char* t = name.c_str();
+
+    char customstring[8] = { '\0' };
+    SDL_strlcpy(customstring, t, sizeof(customstring));
+
+    if (strcmp(customstring, "custom_") == 0) {
+        loadcustom(name);
+    } else if (script_table.contains(name)) {
+        filllines(script_table[name].get<std::vector<std::string>>());
+    } else {
+        loadother(t);
+    }
 }
 
 void scriptclass::clearcustom()

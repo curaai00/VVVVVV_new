@@ -1,6 +1,7 @@
 #ifndef SCRIPT_H
 #define SCRIPT_H
 
+#include <json.hpp>
 #include <string>
 #include <vector>
 
@@ -60,6 +61,7 @@ public:
 
     // Custom level stuff
     std::vector<Script> customscripts;
+    nlohmann::json script_table;
 };
 
 extern scriptclass script;
