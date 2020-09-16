@@ -5,11 +5,11 @@ SimpleMenu::SimpleMenu()
     // TODO replace init to another
     // char* assetsPath = NULL;
     char* assetsPath =
-        "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/data";
-    // "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
+        "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
+    // "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/data";
     char* argvZero =
-        "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/VVVVVV_run";
-    // "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
+        "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
+    // "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/VVVVVV_run";
     FILESYSTEM_init(argvZero, argvZero, assetsPath);
     desc_table = parse_json("menu_description.json");
 }
