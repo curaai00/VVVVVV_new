@@ -62,6 +62,7 @@ const short* finalclass::loadlevel(int rx, int ry)
             p4 = _json["p4"].get<int>();
         obj.createentity(xp, yp, t, vx, vy, p1, p2, p3, p4);
     };
+
     auto load_content_arr = [&contents](const nlohmann::json& _jsonarr) {
         for (int i = 0; i < 1200; i++)
             contents[i] = _jsonarr[i].get<short>();
