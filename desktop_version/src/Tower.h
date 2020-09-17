@@ -1,6 +1,8 @@
 #ifndef TOWER_H
 #define TOWER_H
 
+#include <json.hpp>
+
 class towerclass
 {
 public:
@@ -26,6 +28,7 @@ public:
     int vmult[40 * 700];
 
     bool minitowermode;
+    nlohmann::json tower_table;
 };
 
 #endif /* TOWER_H */

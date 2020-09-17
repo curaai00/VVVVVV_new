@@ -82,7 +82,7 @@ const short* spacestation2class::loadlevel(int rx, int ry)
         rn(49, 41), rn(48, 41), rn(53, 42), rn(54, 42), rn(52, 42), rn(50, 42),
         rn(51, 42), rn(50, 41), rn(50, 40), rn(51, 40), rn(50, 39), rn(51, 39),
         rn(52, 39), rn(53, 39), rn(53, 40), rn(53, 41), rn(52, 41), rn(51, 41),
-        rn(52, 40),
+        rn(52, 40)
 
     };
     auto key = std::to_string(t);
@@ -154,17 +154,17 @@ const short* spacestation2class::loadlevel(int rx, int ry)
                 if (!game.nocutscenes)
                     obj.createblock(1, 0, 0, 112, 112, 8);
                 break;
-            case rn(49, 43):
+            case rn(49, 43): {
                 int spikevalue = (game.nodeathmode || game.intimetrial) ? 0 : 9;
                 for (int i = 23; i < 23 + 14; i++)
                     contents[i + 8 * 40] = spikevalue;
-
                 obj.platformtile = 747;
                 if (game.nodeathmode)
                     roomname = "I Can't Believe You Got This Far";
                 else if (game.intimetrial)
                     roomname = "Imagine Spikes There, if You Like";
                 break;
+            }
             case rn(48, 42):
                 obj.platformtile = 239;
                 break;

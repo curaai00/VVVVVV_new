@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
-#define filllines(lines)                                                       \
-    commands.insert(                                                           \
-        commands.end(), lines, lines + sizeof(lines) / sizeof(lines[0]))
+// #define filllines(lines)                                                       \
+//     commands.insert(                                                           \
+//         commands.end(), lines, lines + sizeof(lines) / sizeof(lines[0]))
 
 struct Script
 {
@@ -36,6 +36,8 @@ public:
 
     void startgamemode(int t);
 
+    void filllines(const std::vector<std::string>& lines);
+
     void teleport();
 
     void hardreset();
@@ -62,6 +64,7 @@ public:
     // Custom level stuff
     std::vector<Script> customscripts;
     nlohmann::json script_table;
+    nlohmann::json terminal_script_table;
 };
 
 extern scriptclass script;

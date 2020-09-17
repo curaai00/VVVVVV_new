@@ -111,7 +111,6 @@ const short* labclass::loadlevel(int rx, int ry)
         load_content_arr(cur_level["content"]);
 
         switch (t) {
-#if !defined(MAKEANDPLAY)
             case rn(50, 50):
                 if (game.intimetrial)
                     obj.createblock(0, 0, 0, 8, 240);
@@ -171,5 +170,5 @@ const short* labclass::loadlevel(int rx, int ry)
 #endif
         }
     }
-    return result;
+    return contents;
 }

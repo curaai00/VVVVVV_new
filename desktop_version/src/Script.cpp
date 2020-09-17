@@ -45,7 +45,7 @@ scriptclass::scriptclass()
     FILESYSTEM_init(argvZero, argvZero, assetsPath);
     script_table = parse_json("script.json");
 }
-j void scriptclass::load(const std::string& name)
+void scriptclass::load(const std::string& name)
 {
     // loads script name t into the array
     position = 0;
@@ -60,10 +60,24 @@ j void scriptclass::load(const std::string& name)
     if (strcmp(customstring, "custom_") == 0) {
         loadcustom(name);
     } else if (script_table.contains(name)) {
-        filllines(script_table[name].get<std::vector<std::string>>());
+        auto lines = script_table[name].get<std::vector<std::string>>();
+        filllines(lines);
     } else {
         loadother(t);
     }
+}
+
+void scriptclass::loadother(const char* str)
+{
+    if (terminal_script_table.contains(str)) {
+        auto lines = terminal_script_table[str].get<std::vector<std::string>>();
+        filllines(lines);
+    }
+}
+
+void scriptclass::filllines(const std::vector<std::string>& lines)
+{
+    commands.insert(commands.end(), lines.begin(), lines.end());
 }
 
 void scriptclass::clearcustom()
