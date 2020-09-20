@@ -5,18 +5,18 @@ SimpleMenu::SimpleMenu()
     // TODO replace init to another
     // char* assetsPath = NULL;
     char* assetsPath =
-        "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
-    // "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/data";
+        "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/data";
+    // "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
     char* argvZero =
-        "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
-    // "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/VVVVVV_run";
+        "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/VVVVVV_run";
+    // "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
     FILESYSTEM_init(argvZero, argvZero, assetsPath);
     desc_table = parse_json("menu_description.json");
 }
 
 bool SimpleMenu::hasSimpleDescMsg() const
 {
-    return hasSimpleDescMsg(cur_option_name, cur_option_idx);
+    return hasSimpleDescMsg(getCurOptName(), getCurOptIdx());
 }
 
 bool SimpleMenu::hasSimpleDescMsg(Menu::name name, int option_idx) const
@@ -30,9 +30,18 @@ bool SimpleMenu::hasSimpleDescMsg(Menu::name name, int option_idx) const
 
 Menu::Description SimpleMenu::getDescriptionMsg(void)
 {
-    return getDescriptionMsg(cur_option_name, cur_option_idx);
+    return getDescriptionMsg(getCurOptName(), getCurOptIdx());
 }
 Menu::Description SimpleMenu::getDescriptionMsg(Menu::name name, int option_idx)
 {
     return desc_table[Menu::name2str(name)][option_idx];
+}
+
+SelectBoard::SelectBoard()
+{
+    xoff = 0;
+    yoff = 0;
+    spacing = 0;
+    cur_option_idx = 0;
+    cur_option_name = Menu::mainmenu;
 }

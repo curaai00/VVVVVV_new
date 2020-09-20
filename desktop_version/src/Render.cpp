@@ -59,9 +59,9 @@ void menurender()
         auto desc_msg = game.menu_.getDescriptionMsg();
 
         int temp_idx = 0;
-        switch (game.menu_.cur_option_name) {
+        switch (game.menu_.getCurOptName()) {
             case Menu::graphicoptions:
-                switch (game.menu_.cur_option_idx) {
+                switch (game.menu_.getCurOptIdx()) {
                     case 0:
                         dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[1])
                             ->set_toggle(game.fullscreen);
@@ -103,7 +103,7 @@ void menurender()
                 }
                 break;
             case Menu::controller:
-                switch (game.menu_.cur_option_idx) {
+                switch (game.menu_.getCurOptIdx()) {
                     case 0:
                         dynamic_cast<Menu::ListMessage*>(desc_msg.sub_msg[2])
                             ->set_index(game.controllerSensitivity);
@@ -113,7 +113,7 @@ void menurender()
                 }
                 break;
             case Menu::accessibility:
-                switch (game.menu_.cur_option_idx) {
+                switch (game.menu_.getCurOptIdx()) {
                     case 0:
                         dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[0])
                             ->set_toggle(!game.colourblindmode);
@@ -156,7 +156,7 @@ void menurender()
                 }
                 break;
             case Menu::playmodes:
-                switch (game.menu_.cur_option_idx) {
+                switch (game.menu_.getCurOptIdx()) {
                     case 0:
                         dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[2])
                             ->set_toggle(game.gameframerate > 34 ||
@@ -196,7 +196,7 @@ void menurender()
                 }
                 break;
             case Menu::advancedoptions:
-                switch (game.menu_.cur_option_idx) {
+                switch (game.menu_.getCurOptIdx()) {
                     case 0:
                         dynamic_cast<Menu::ToggleMessage*>(desc_msg.sub_msg[1])
                             ->set_toggle(graphics.showmousecursor);
@@ -223,7 +223,7 @@ void menurender()
 
         simple_display_description(desc_msg);
     } else {
-        switch (game.menu_.cur_option_name) {
+        switch (game.menu_.getCurOptName()) {
             case Menu::mainmenu:
                 graphics.drawsprite((160 - 96) + 0 * 32, temp, 23, tr, tg, tb);
                 graphics.drawsprite((160 - 96) + 1 * 32, temp, 23, tr, tg, tb);
@@ -258,13 +258,14 @@ void menurender()
                     graphics.Print(
                         -1, 100, "ERROR: No levels found.", tr, tg, tb, true);
                 }
-                int tmp = game.menu_.cur_option_idx + (game.levelpage * 8);
+                int tmp = game.menu_.getCurOptIdx() + (game.levelpage * 8);
                 if (tmp >= 0 &&
                     tmp < (int)ed.ListOfMetaData
                               .size()) { // FIXME: size_t/int! -flibit
                     // Don't show next/previous page or return to menu options
                     // here!
-                    if (game.menu_.options.size() - game.menu_.cur_option_idx <=
+                    if (game.menu_.getCurOptSize() -
+                            game.menu_.getCurOptIdx() <=
                         3) {
 
                     } else {
@@ -331,7 +332,7 @@ void menurender()
 
                 int offset = 0;
 
-                switch (game.menu_.cur_option_idx) {
+                switch (game.menu_.getCurOptIdx()) {
                     case 2:
 #if !defined(MAKEANDPLAY)
                         if (game.ingame_titlemode && game.unlock[18])
@@ -370,7 +371,7 @@ void menurender()
                 offset += flipmode_offset;
 
 #if !defined(MAKEANDPLAY)
-                if (game.menu_.cur_option_idx == 3 + offset) {
+                if (game.menu_.getCurOptIdx() == 3 + offset) {
                     graphics.bigprint(
                         -1, 30, "Unlock Play Modes", tr, tg, tb, true);
                     graphics.Print(-1,
@@ -387,7 +388,7 @@ void menurender()
 
                 offset += unlockmode_offset;
 
-                if (game.menu_.cur_option_idx == 4 + offset) {
+                if (game.menu_.getCurOptIdx() == 4 + offset) {
                     graphics.bigprint(
                         -1, 30, "Game Pad Options", tr, tg, tb, true);
                     graphics.Print(-1,
@@ -399,13 +400,13 @@ void menurender()
                                    true);
                     graphics.Print(
                         -1, 75, "and adjust sensitivity", tr, tg, tb, true);
-                } else if (game.menu_.cur_option_idx == 5 + offset) {
+                } else if (game.menu_.getCurOptIdx() == 5 + offset) {
                     graphics.bigprint(-1, 30, "Clear Data", tr, tg, tb, true);
                     graphics.Print(
                         -1, 65, "Delete your save data", tr, tg, tb, true);
                     graphics.Print(
                         -1, 75, "and unlocked play modes", tr, tg, tb, true);
-                } else if (game.menu_.cur_option_idx == 6 + offset &&
+                } else if (game.menu_.getCurOptIdx() == 6 + offset &&
                            music.mmmmmm) {
                     graphics.bigprint(-1, 30, "Soundtrack", tr, tg, tb, true);
                     graphics.Print(-1,
@@ -556,7 +557,7 @@ void menurender()
                 graphics.bigprint(-1, 30, "Game Pad", tr, tg, tb, true);
                 graphics.Print(
                     -1, 55, "Change controller options.", tr, tg, tb, true);
-                switch (game.menu_.cur_option_idx) {
+                switch (game.menu_.getCurOptIdx()) {
                     case 1:
                     case 2:
                     case 3:
@@ -602,7 +603,7 @@ void menurender()
 
                 break;
             case Menu::continuemenu:
-                switch (game.menu_.cur_option_idx) {
+                switch (game.menu_.getCurOptIdx()) {
                     case 0: {
                         // Show teleporter save info
                         graphics.drawpixeltextbox(
@@ -802,12 +803,12 @@ void menurender()
                     graphics.Print(220, 85 + 55, "+1 Rank!", 255, 255, 255);
                 }
 
-                if (game.menu_.cur_option_name == Menu::timetrialcomplete2 ||
-                    game.menu_.cur_option_name == Menu::timetrialcomplete3) {
+                if (game.menu_.getCurOptName() == Menu::timetrialcomplete2 ||
+                    game.menu_.getCurOptName() == Menu::timetrialcomplete3) {
                     graphics.bigprint(100, 175, "Rank:", tr, tg, tb, false, 2);
                 }
 
-                if (game.menu_.cur_option_name == Menu::timetrialcomplete3) {
+                if (game.menu_.getCurOptName() == Menu::timetrialcomplete3) {
                     switch (game.timetrialrank) {
                         case 0:
                             graphics.bigprint(
@@ -830,7 +831,7 @@ void menurender()
                 break;
             }
             case Menu::timetrials:
-                switch (game.menu_.cur_option_idx) {
+                switch (game.menu_.getCurOptIdx()) {
                     case 0:
                         if (game.unlock[9]) {
                             graphics.bigprint(
@@ -1455,7 +1456,7 @@ void titlerender()
         if (tb > 255)
             tb = 255;
         graphics.drawmenu(
-            tr, tg, tb, game.menu_.cur_option_name == Menu::levellist);
+            tr, tg, tb, game.menu_.getCurOptName() == Menu::levellist);
     }
 
     graphics.drawfade();

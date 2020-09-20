@@ -1890,10 +1890,10 @@ void editorclass::generatecustomminimap()
 #if !defined(NO_EDITOR)
 void editormenurender(int tr, int tg, int tb)
 {
-    switch (game.menu_.cur_option_name) {
+    switch (game.menu_.getCurOptName()) {
         case Menu::ed_settings:
             graphics.bigprint(-1, 75, "Map Settings", tr, tg, tb, true);
-            if (game.menu_.cur_option_idx == 3) {
+            if (game.menu_.getCurOptIdx() == 3) {
                 if (!game.ghostsenabled)
                     graphics.Print(2,
                                    230,
@@ -4083,9 +4083,9 @@ void editorlogic()
 
 void editormenuactionpress()
 {
-    switch (game.menu_.cur_option_name) {
+    switch (game.menu_.getCurOptName()) {
         case Menu::ed_desc:
-            switch (game.menu_.cur_option_idx) {
+            switch (game.menu_.getCurOptIdx()) {
                 case 0:
                     ed.titlemod = true;
                     key.enabletextentry();
@@ -4114,7 +4114,7 @@ void editormenuactionpress()
             }
             break;
         case Menu::ed_settings:
-            switch (game.menu_.cur_option_idx) {
+            switch (game.menu_.getCurOptIdx()) {
                 case 0:
                     // Change level description stuff
                     music.playef(11);
@@ -4178,7 +4178,7 @@ void editormenuactionpress()
             }
             break;
         case Menu::ed_music:
-            switch (game.menu_.cur_option_idx) {
+            switch (game.menu_.getCurOptIdx()) {
                 case 0:
                     ed.levmusic++;
                     if (ed.levmusic == 16)
@@ -4199,7 +4199,7 @@ void editormenuactionpress()
             }
             break;
         case Menu::ed_quit:
-            switch (game.menu_.cur_option_idx) {
+            switch (game.menu_.getCurOptIdx()) {
                 case 0:
                     // Saving and quit
                     ed.saveandquit = true;

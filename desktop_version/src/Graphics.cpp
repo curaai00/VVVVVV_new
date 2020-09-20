@@ -1381,8 +1381,9 @@ void Graphics::processfade()
 
 void Graphics::drawmenu(int cr, int cg, int cb, bool levelmenu /*= false*/)
 {
-    for (size_t i = 0; i < game.menu_.options.size(); i++) {
-        Menu::option& opt = game.menu_.options[i];
+    auto board = game.menu_.getCurBoard();
+    for (size_t i = 0; i < board.options.size(); i++) {
+        Menu::option& opt = board.options[i];
 
         int fr, fg, fb;
         if (opt.active) {
@@ -1397,11 +1398,11 @@ void Graphics::drawmenu(int cr, int cg, int cb, bool levelmenu /*= false*/)
             fb = 128;
         }
 
-        int x = i * game.menu_.spacing + game.menu_.xoff;
-        int y = 140 + i * 12 + game.menu_.yoff;
+        int x = i * board.spacing + board.xoff;
+        int y = 140 + i * 12 + board.yoff;
 
         if (levelmenu) {
-            if (game.menu_.options.size() - i <= 3) {
+            if (game.menu_.getCurOptSize() - i <= 3) {
                 // We're on "next page", "previous page", or "return to menu".
                 // Draw them separated by a bit
                 y += 8;
@@ -1415,7 +1416,7 @@ void Graphics::drawmenu(int cr, int cg, int cb, bool levelmenu /*= false*/)
         SDL_strlcpy(tempstring, opt.text, sizeof(tempstring));
 
         char buffer[Menu::MAX_MENU_TEXT_BYTES];
-        if ((int)i == game.menu_.cur_option_idx) {
+        if ((int)i == game.menu_.getCurOptIdx()) {
             if (opt.active) {
                 // Uppercase the text
                 // FIXME: This isn't UTF-8 aware!

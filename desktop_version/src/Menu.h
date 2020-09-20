@@ -359,23 +359,10 @@ struct MenuStackFrame
     enum Menu::name name;
 };
 
-class SimpleMenu
+class SelectBoard
 {
 public:
-    SimpleMenu();
-
-    void init(void)
-    {
-        xoff = 0;
-        yoff = 0;
-        cur_option_idx = 0;
-        countdown = 0;
-        kludge_ingametemp = Menu::mainmenu;
-    }
-    inline void add_option(const char* text, bool active = true)
-    {
-        options.push_back(Menu::option{ text, active });
-    }
+    SelectBoard();
 
     inline void increase_opt_idx(void)
     {
@@ -389,23 +376,54 @@ public:
             cur_option_idx = options.size() - 1;
     }
 
-    bool hasSimpleDescMsg(void) const;
-    bool hasSimpleDescMsg(Menu::name name, int option_idx) const;
-    Menu::Description getDescriptionMsg(void);
-    Menu::Description getDescriptionMsg(Menu::name name, int option_idx);
+    inline void add_option(const char* text, bool active = true)
+    {
+        options.push_back(Menu::option{ text, active });
+    }
 
     int cur_option_idx;
     Menu::name cur_option_name;
     std::vector<Menu::option> options;
 
-    Menu::name kludge_ingametemp;
-
     int xoff;
     int yoff;
     int spacing;
+};
+
+class SimpleMenu
+{
+public:
+    SimpleMenu();
+
+    void init(void)
+    {
+        countdown = 0;
+        kludge_ingametemp = Menu::mainmenu;
+    }
+
+    void setCurBoard(const SelectBoard& board) { curBoard = board; }
+    const SelectBoard& getCurBoard() { return curBoard; }
+
+    inline void increase_opt_idx(void) { curBoard.increase_opt_idx(); }
+    inline void decrease_opt_idx(void) { curBoard.decrease_opt_idx(); }
+
+    Menu::name getCurOptName(void) const { return curBoard.cur_option_name; }
+    int getCurOptIdx(void) const { return curBoard.cur_option_idx; }
+    void setCurOptIdx(int idx) { curBoard.cur_option_idx = idx; }
+    int getCurOptSize(void) { return curBoard.options.size(); }
+
+    bool hasSimpleDescMsg(void) const;
+    bool hasSimpleDescMsg(Menu::name name, int option_idx) const;
+    Menu::Description getDescriptionMsg(void);
+    Menu::Description getDescriptionMsg(Menu::name name, int option_idx);
+
+    Menu::name kludge_ingametemp;
 
     int countdown;
     Menu::name destination;
 
     nlohmann::json desc_table;
+
+private:
+    SelectBoard curBoard;
 };

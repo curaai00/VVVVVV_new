@@ -152,11 +152,6 @@ public:
     // non-standard
     std::vector<MenuStackFrame> menustack;
 
-    void inline option(const char* text, bool active = true)
-    {
-        menu_.add_option(text, active);
-    }
-
     int current_credits_list_index;
     int creditposx, creditposy, creditposdelay;
     int oldcreditposx;
