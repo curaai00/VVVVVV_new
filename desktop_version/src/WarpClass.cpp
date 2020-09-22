@@ -13,12 +13,17 @@ warpclass::warpclass()
         return nlohmann::json::parse(uMem);
     };
 
+#ifdef __WIN32__
+    char* assetsPath =
+        "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\data";
+    char* argvZero =
+        "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\data";
+#else
     char* assetsPath =
         "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/data";
-    // "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
     char* argvZero =
         "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/VVVVVV_run";
-    // "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
+#endif
     FILESYSTEM_init(argvZero, argvZero, assetsPath);
     warp_table = parse_json("script.json");
 }

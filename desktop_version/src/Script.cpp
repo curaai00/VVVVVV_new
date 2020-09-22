@@ -35,13 +35,17 @@ scriptclass::scriptclass()
         FILESYSTEM_loadFileToMemory(path, &uMem, NULL, true);
         return nlohmann::json::parse(uMem);
     };
-
+#ifdef __WIN32__
+    char* assetsPath =
+        "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\data";
+    char* argvZero =
+        "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\data";
+#else
     char* assetsPath =
         "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/data";
-    // "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
     char* argvZero =
         "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/VVVVVV_run";
-    // "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
+#endif
     FILESYSTEM_init(argvZero, argvZero, assetsPath);
     script_table = parse_json("script.json");
 }
@@ -1176,9 +1180,7 @@ void scriptclass::run()
                 game.advancetext = false;
                 game.hascontrol = true;
                 game.frames = 0;
-                game.seconds = 0;
-                game.minutes = 0;
-                game.hours = 0;
+                game.stat.reset();
                 game.gravitycontrol = 0;
                 game.teleport = false;
                 game.companion = 0;
@@ -2910,12 +2912,7 @@ void scriptclass::hardreset()
     game.deathcounts = 0;
     game.gameoverdelay = 0;
     game.frames = 0;
-    game.seconds = 0;
-    game.minutes = 0;
-    game.hours = 0;
-    game.gamesaved = false;
-    game.savetime = "00:00";
-    game.savearea = "nowhere";
+    game.stat.reset();
     game.savetrinkets = 0;
     if (!game.glitchrunnermode) {
         // Ironically, resetting more variables makes the janky fadeout system

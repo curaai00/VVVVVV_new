@@ -1686,7 +1686,7 @@ void gameinput()
                         game.mapheld = true;
                         // Quit menu, same conditions as in game menu
                         game.gamestate = MAPMODE;
-                        game.gamesaved = false;
+                        game.stat.setSaved(false);
                         graphics.resumegamemode = false;
                         game.menupage = 20; // The Map Page
                         BlitSurfaceStandard(graphics.menubuffer,
@@ -1711,7 +1711,7 @@ void gameinput()
                         game.gamestate = MAPMODE;
                         map.cursordelay = 0;
                         map.cursorstate = 0;
-                        game.gamesaved = false;
+                        game.stat.setSaved(false);
                         graphics.resumegamemode = false;
                         game.menupage = 0; // The Map Page
                         BlitSurfaceStandard(graphics.menubuffer,
@@ -1733,7 +1733,7 @@ void gameinput()
                     game.mapheld = true;
                     // Quit menu, same conditions as in game menu
                     game.gamestate = MAPMODE;
-                    game.gamesaved = false;
+                    game.stat.setSaved(false);
                     graphics.resumegamemode = false;
                     game.menupage = 30; // Pause screen
 
@@ -2034,20 +2034,20 @@ void mapmenuactionpress()
             }
             break;
         case 3:
-            if (!game.gamesaved && !game.inspecial()) {
+            if (!game.stat.isSaved() && !game.inspecial()) {
                 game.flashlight = 5;
                 game.screenshake = 10;
                 music.playef(18);
-                game.gamesaved = true;
 
-                game.savetime = game.timestring();
-                game.savearea =
+                auto savearea =
                     map.currentarea(map.area(game.roomx, game.roomy));
                 game.savetrinkets = game.trinkets();
 
                 if (game.roomx >= 102 && game.roomx <= 104 &&
                     game.roomy >= 110 && game.roomy <= 111)
-                    game.savearea = "The Ship";
+                    savearea = "The Ship";
+
+                game.stat.save(savearea);
 
 #if !defined(NO_CUSTOM_LEVELS)
                 if (map.custommodeforreal) {

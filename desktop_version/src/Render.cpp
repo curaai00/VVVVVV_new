@@ -3206,7 +3206,7 @@ void maprender()
                 graphics.Print(
                     0, 115, "Cannot Save in Secret Lab", 146, 146, 180, true);
             } else if (map.custommode) {
-                if (game.gamesaved) {
+                if (game.stat.isSaved()) {
                     graphics.Print(0,
                                    36,
                                    "Game saved ok!",
@@ -3228,7 +3228,7 @@ void maprender()
                                        true);
                         graphics.Print(59,
                                        78,
-                                       game.savetime,
+                                       game.stat.getSavetime(),
                                        255 - (help.glow / 2),
                                        255 - (help.glow / 2),
                                        255 - (help.glow / 2));
@@ -3253,7 +3253,7 @@ void maprender()
                                        true);
                         graphics.Print(59,
                                        132,
-                                       game.savetime,
+                                       game.stat.getSavetime(),
                                        255 - (help.glow / 2),
                                        255 - (help.glow / 2),
                                        255 - (help.glow / 2));
@@ -3301,7 +3301,7 @@ void maprender()
                         0, 186, "at every teleporter.)", 146, 146, 180, true);
                 }
 
-                if (game.gamesaved) {
+                if (game.stat.isSaved()) {
                     graphics.Print(0,
                                    36,
                                    "Game saved ok!",
@@ -3330,7 +3330,7 @@ void maprender()
                         }
                         graphics.Print(59,
                                        78,
-                                       game.savetime,
+                                       game.stat.getSavetime(),
                                        255 - (help.glow / 2),
                                        255 - (help.glow / 2),
                                        255 - (help.glow / 2));
@@ -3362,7 +3362,7 @@ void maprender()
                         }
                         graphics.Print(59,
                                        132,
-                                       game.savetime,
+                                       game.stat.getSavetime(),
                                        255 - (help.glow / 2),
                                        255 - (help.glow / 2),
                                        255 - (help.glow / 2));

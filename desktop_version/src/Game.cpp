@@ -175,12 +175,6 @@ void Game::init(void)
     deathcounts = 0;
     gameoverdelay = 0;
     frames = 0;
-    seconds = 0;
-    minutes = 0;
-    hours = 0;
-    gamesaved = false;
-    savetime = "00:00";
-    savearea = "nowhere";
     savetrinkets = 0;
 
     intimetrial = false;
@@ -1161,8 +1155,7 @@ void Game::updatestate()
                 // Time Trial Complete!
                 obj.removetrigger(82);
                 hascontrol = false;
-                timetrialresulttime =
-                    seconds + (minutes * 60) + (hours * 60 * 60);
+                timetrialresulttime = stat.totalSeconds();
                 timetrialresultframes = frames;
                 timetrialrank = 0;
                 if (timetrialresulttime <= timetrialpar)
@@ -2819,7 +2812,7 @@ void Game::updatestate()
                 graphics.addline("");
                 graphics.textboxcenterx();
                 break;
-            case 3502:
+            case 3502: {
                 state++;
                 statedelay = 45 + 15;
 
@@ -2830,9 +2823,11 @@ void Game::updatestate()
                     graphics.createtextbox(
                         "  All Crew Members Rescued!  ", -1, 64, 0, 0, 0);
                 }
-                savetime = timestring();
+                auto savetime = timestring();
                 savetime += "." + help.twodigits(frames * 100 / 30);
+                stat.setSavetime(savetime);
                 break;
+            }
             case 3503: {
                 state++;
                 statedelay = 45;
@@ -2852,7 +2847,7 @@ void Game::updatestate()
                 state++;
                 statedelay = 45 + 15;
 
-                std::string tempstring = savetime;
+                std::string tempstring = stat.getSavetime();
                 if (graphics.flipmode) {
                     graphics.createtextbox(
                         "   Game Time:", 64, 143 - 24, 0, 0, 0);
@@ -4757,8 +4752,8 @@ void Game::loadquick()
         if (pKey == "finalstretch") {
             map.finalstretch = help.Int(pText);
         }
-
-        if (pKey == "finalx") {
+        if (stat.loadFromXml(pKey, pText)) {
+        } else if (pKey == "finalx") {
             map.finalx = help.Int(pText);
         } else if (pKey == "finaly") {
             map.finaly = help.Int(pText);
@@ -4791,12 +4786,6 @@ void Game::loadquick()
         } else if (pKey == "frames") {
             frames = help.Int(pText);
             frames = 0;
-        } else if (pKey == "seconds") {
-            seconds = help.Int(pText);
-        } else if (pKey == "minutes") {
-            minutes = help.Int(pText);
-        } else if (pKey == "hours") {
-            hours = help.Int(pText);
         } else if (pKey == "deathcounts") {
             deathcounts = help.Int(pText);
         } else if (pKey == "totalflips") {
@@ -4905,7 +4894,8 @@ void Game::customloadquick(std::string savfile)
             map.final_colorframe = 1;
         }
 
-        if (pKey == "finalx") {
+        if (stat.loadFromXml(pKey, pText)) {
+        } else if (pKey == "finalx") {
             map.finalx = help.Int(pText);
         } else if (pKey == "finaly") {
             map.finaly = help.Int(pText);
@@ -4938,12 +4928,6 @@ void Game::customloadquick(std::string savfile)
         } else if (pKey == "frames") {
             frames = help.Int(pText);
             frames = 0;
-        } else if (pKey == "seconds") {
-            seconds = help.Int(pText);
-        } else if (pKey == "minutes") {
-            minutes = help.Int(pText);
-        } else if (pKey == "hours") {
-            hours = help.Int(pText);
         } else if (pKey == "deathcounts") {
             deathcounts = help.Int(pText);
         } else if (pKey == "totalflips") {
@@ -5231,16 +5215,8 @@ void Game::savetele()
     msg = doc.NewElement("frames");
     msg->LinkEndChild(doc.NewText(help.String(frames).c_str()));
     msgs->LinkEndChild(msg);
-    msg = doc.NewElement("seconds");
-    msg->LinkEndChild(doc.NewText(help.String(seconds).c_str()));
-    msgs->LinkEndChild(msg);
 
-    msg = doc.NewElement("minutes");
-    msg->LinkEndChild(doc.NewText(help.String(minutes).c_str()));
-    msgs->LinkEndChild(msg);
-    msg = doc.NewElement("hours");
-    msg->LinkEndChild(doc.NewText(help.String(hours).c_str()));
-    msgs->LinkEndChild(msg);
+    stat.saveToXml(doc, msgs);
 
     msg = doc.NewElement("deathcounts");
     msg->LinkEndChild(doc.NewText(help.String(deathcounts).c_str()));
@@ -5418,16 +5394,8 @@ void Game::savequick()
     msg = doc.NewElement("frames");
     msg->LinkEndChild(doc.NewText(help.String(frames).c_str()));
     msgs->LinkEndChild(msg);
-    msg = doc.NewElement("seconds");
-    msg->LinkEndChild(doc.NewText(help.String(seconds).c_str()));
-    msgs->LinkEndChild(msg);
 
-    msg = doc.NewElement("minutes");
-    msg->LinkEndChild(doc.NewText(help.String(minutes).c_str()));
-    msgs->LinkEndChild(msg);
-    msg = doc.NewElement("hours");
-    msg->LinkEndChild(doc.NewText(help.String(hours).c_str()));
-    msgs->LinkEndChild(msg);
+    stat.saveToXml(doc, msgs);
 
     msg = doc.NewElement("deathcounts");
     msg->LinkEndChild(doc.NewText(help.String(deathcounts).c_str()));
@@ -5606,16 +5574,8 @@ void Game::customsavequick(std::string savfile)
     msg = doc.NewElement("frames");
     msg->LinkEndChild(doc.NewText(help.String(frames).c_str()));
     msgs->LinkEndChild(msg);
-    msg = doc.NewElement("seconds");
-    msg->LinkEndChild(doc.NewText(help.String(seconds).c_str()));
-    msgs->LinkEndChild(msg);
 
-    msg = doc.NewElement("minutes");
-    msg->LinkEndChild(doc.NewText(help.String(minutes).c_str()));
-    msgs->LinkEndChild(msg);
-    msg = doc.NewElement("hours");
-    msg->LinkEndChild(doc.NewText(help.String(hours).c_str()));
-    msgs->LinkEndChild(msg);
+    stat.saveToXml(doc, msgs);
 
     msg = doc.NewElement("deathcounts");
     msg->LinkEndChild(doc.NewText(help.String(deathcounts).c_str()));
@@ -5712,7 +5672,8 @@ void Game::loadtele()
             map.final_colorframe = 1;
         }
 
-        if (pKey == "finalx") {
+        if (stat.loadFromXml(pKey, pText)) {
+        } else if (pKey == "finalx") {
             map.finalx = help.Int(pText);
         } else if (pKey == "finaly") {
             map.finaly = help.Int(pText);
@@ -5745,12 +5706,6 @@ void Game::loadtele()
         } else if (pKey == "frames") {
             frames = help.Int(pText);
             frames = 0;
-        } else if (pKey == "seconds") {
-            seconds = help.Int(pText);
-        } else if (pKey == "minutes") {
-            minutes = help.Int(pText);
-        } else if (pKey == "hours") {
-            hours = help.Int(pText);
         } else if (pKey == "deathcounts") {
             deathcounts = help.Int(pText);
         } else if (pKey == "totalflips") {
@@ -5818,18 +5773,9 @@ void Game::gameclock()
         os << hours << ":" << minutes << ":" << seconds << ", " << frames;
     teststring = os.str();
     */
-    frames++;
-    if (frames >= 30) {
+    if (++frames >= 30) {
         frames -= 30;
-        seconds++;
-        if (seconds >= 60) {
-            seconds -= 60;
-            minutes++;
-            if (minutes >= 60) {
-                minutes -= 60;
-                hours++;
-            }
-        }
+        stat.increaseSecond();
     }
 }
 
@@ -5845,12 +5791,7 @@ std::string Game::giventimestring(int hrs, int min, int sec)
 
 std::string Game::timestring()
 {
-    std::string tempstring = "";
-    if (hours > 0) {
-        tempstring += help.String(hours) + ":";
-    }
-    tempstring += help.twodigits(minutes) + ":" + help.twodigits(seconds);
-    return tempstring;
+    return stat.getTimeStr();
 }
 
 std::string Game::partimestring()
@@ -6602,9 +6543,7 @@ int Game::crewrescued()
 void Game::resetgameclock()
 {
     frames = 0;
-    seconds = 0;
-    minutes = 0;
-    hours = 0;
+    stat.resetClock();
 }
 
 int Game::trinkets()

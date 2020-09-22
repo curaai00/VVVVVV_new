@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Menu.h"
+#include "Stat.h"
 
 bool GetButtonFromString(const char* pText, SDL_GameControllerButton* button);
 
@@ -129,8 +130,6 @@ public:
     int deathcounts;
 
     int frames, seconds, minutes, hours;
-    bool gamesaved;
-    std::string savetime;
     std::string savearea;
     int savetrinkets;
     bool startscript;
@@ -330,6 +329,8 @@ public:
     void unlockAchievement(const char* name);
 
     bool disablepause;
+
+    Stat stat;
 };
 
 extern Game game;

@@ -32,12 +32,17 @@ TEST(TestMenu, loadTable)
 TEST(TestJSON, load_finalevel)
 {
     short contents[1200] = { 0 };
-    char* assetsPath = "/Users/jeongpilseong/workspace/proj/VVVVVV/"
-                       "desktop_version/data";
-    // "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
+#ifdef __WIN32__
+    char* assetsPath =
+        "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\data";
+    char* argvZero =
+        "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\data";
+#else
+    char* assetsPath =
+        "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/data";
     char* argvZero =
         "/Users/jeongpilseong/workspace/proj/VVVVVV/desktop_version/VVVVVV_run";
-    // "C:\\Users\\psjeong\\Documents\\VVVVVV\\desktop_version\\Debug\\data";
+#endif
     FILESYSTEM_init(argvZero, argvZero, assetsPath);
 
     auto parse_json = [](const char* path) -> nlohmann::json {
