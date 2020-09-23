@@ -21,14 +21,6 @@ TEST(TestBlock, string2color)
     EXPECT_EQ(bc.b, 60);
 }
 
-TEST(TestMenu, loadTable)
-{
-    SimpleMenu m;
-    bool res = m.hasSimpleDescMsg(Menu::name::options, 0);
-    EXPECT_EQ(res, true);
-    // expect_eq()
-}
-
 TEST(TestJSON, load_finalevel)
 {
     short contents[1200] = { 0 };

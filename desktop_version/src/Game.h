@@ -43,8 +43,6 @@ public:
 
     std::string timetstring(int t);
 
-    void returnmenu();
-    void returntomenu(enum Menu::name t);
     void createmenu(enum Menu::name t, bool samemenu = false);
 
     void lifesequence();
@@ -147,9 +145,6 @@ public:
 
     // Main Menu Variables
     SimpleMenu menu_;
-
-    // non-standard
-    std::vector<MenuStackFrame> menustack;
 
     int current_credits_list_index;
     int creditposx, creditposy, creditposdelay;

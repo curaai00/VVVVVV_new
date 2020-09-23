@@ -1808,7 +1808,7 @@ void Game::updatestate()
                         music.fadeMusicVolumeIn(3000);
                 }
                 graphics.showcutscenebars = false;
-                returntomenu(Menu::levellist);
+                menu_.back(Menu::levellist);
                 break;
 #endif
             case 1014:
@@ -2701,7 +2701,7 @@ void Game::updatestate()
                 if (inintermission) {
                     graphics.fademode = 2;
                     companion = 0;
-                    returnmenu();
+                    menu_.back();
                     state = 3100;
                 } else {
                     unlocknum(7);
@@ -2730,7 +2730,7 @@ void Game::updatestate()
                     state++;
                     graphics.fademode = 2;
                     music.fadeout();
-                    returnmenu();
+                    menu_.back();
                     state = 3100;
                 } else {
                     unlocknum(6);
@@ -5837,70 +5837,8 @@ std::string Game::timetstring(int t)
     return tempstring;
 }
 
-void Game::returnmenu()
-{
-    if (menustack.empty()) {
-        puts("Error: returning to previous menu frame on empty stack!");
-        return;
-    }
-
-    MenuStackFrame& frame = menustack[menustack.size() - 1];
-
-    // Store this in case createmenu() removes the stack frame
-    int previousoption = frame.option;
-
-    createmenu(frame.name, true);
-    menu_.setCurOptIdx(previousoption);
-
-    // Remove the stackframe now, but createmenu() might have already gotten to
-    // it if we were returning to the main menu
-    if (!menustack.empty()) {
-        menustack.pop_back();
-    }
-}
-
-void Game::returntomenu(enum Menu::name t)
-{
-    if (menu_.getCurOptName() == t) {
-        // Re-create the menu
-        int keep_menu_option = menu_.getCurOptIdx();
-        createmenu(t, true);
-        if (keep_menu_option < (int)menu_.getCurOptSize()) {
-            menu_.setCurOptIdx(keep_menu_option);
-        }
-        return;
-    }
-
-    // Unwind the menu stack until we reach our desired menu
-    int i = menustack.size() - 1;
-    while (i >= 0) {
-        // If we pop it off we can't reference it anymore, so check for it now
-        bool is_the_menu_we_want = menustack[i].name == t;
-
-        returnmenu();
-
-        if (is_the_menu_we_want) {
-            break;
-        }
-
-        i--;
-    }
-}
-
 void Game::createmenu(enum Menu::name t, bool samemenu)
 {
-    if (t == Menu::mainmenu) {
-        // Either we've just booted up the game or returned from gamemode
-        // Whichever it is, we shouldn't have a stack,
-        // and most likely don't have a current stackframe
-        menustack.clear();
-    } else if (!samemenu) {
-        MenuStackFrame frame;
-        frame.option = menu_.getCurOptIdx();
-        frame.name = menu_.getCurOptName();
-        menustack.push_back(frame);
-    }
-
     SelectBoard sb;
     sb.cur_option_name = t;
     int maxspacing = 30; // maximum value for spacing, can only become lower.
@@ -6449,7 +6387,7 @@ void Game::createmenu(enum Menu::name t, bool samemenu)
     }
     sb.xoff = (320 - menuwidth) / 2;
 
-    menu_.setCurBoard(sb);
+    menu_.go(sb, samemenu);
 }
 void Game::deletequick()
 {
@@ -6602,15 +6540,15 @@ void Game::quittomenu()
     // or "do you want cutscenes?"
     // or the confirm-load-quicksave menu
     if (intimetrial) {
-        returntomenu(Menu::timetrials);
+        menu_.back(Menu::timetrials);
     } else if (inintermission) {
-        returntomenu(Menu::intermissionmenu);
+        menu_.back(Menu::intermissionmenu);
     } else if (nodeathmode) {
-        returntomenu(Menu::playmodes);
+        menu_.back(Menu::playmodes);
     } else if (map.custommode) {
-        returntomenu(Menu::levellist);
+        menu_.back(Menu::levellist);
     } else if (save_exists() || anything_unlocked()) {
-        returntomenu(Menu::play);
+        menu_.back(Menu::play);
         if (!insecretlab) {
             // Select "continue"
             menu_.setCurOptIdx(0);
@@ -6681,7 +6619,7 @@ void Game::returntoeditor()
 void Game::returntopausemenu()
 {
     ingame_titlemode = false;
-    returntomenu(menu_.kludge_ingametemp);
+    menu_.back(menu_.kludge_ingametemp);
     gamestate = MAPMODE;
     map.kludge_to_bg();
     map.tdrawback = true;

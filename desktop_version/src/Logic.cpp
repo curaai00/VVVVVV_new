@@ -212,7 +212,7 @@ void gamecompletelogic2()
         graphics.fademode = 4;
         FILESYSTEM_unmountassets(); // should be before music.playef(18)
         music.playef(18);
-        game.returntomenu(Menu::play);
+        game.menu_.back(Menu::play);
         game.createmenu(Menu::gamecompletecontinue);
         map.nexttowercolour();
     }

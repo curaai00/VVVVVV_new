@@ -4,6 +4,7 @@
 #include "FileSystemUtils.h"
 #include <SDL.h>
 #include <json.hpp>
+#include <stack>
 
 inline nlohmann::json parse_json(const char* path)
 {
@@ -353,12 +354,6 @@ public:
 
 };
 
-struct MenuStackFrame
-{
-    int option;
-    enum Menu::name name;
-};
-
 class SelectBoard
 {
 public:
@@ -401,12 +396,17 @@ public:
         kludge_ingametemp = Menu::mainmenu;
     }
 
+    void go(SelectBoard sb, bool samemenu = false);
+    void back(void);
+    void back(enum Menu::name t);
+
     void setCurBoard(const SelectBoard& board) { curBoard = board; }
     const SelectBoard& getCurBoard() { return curBoard; }
 
     inline void increase_opt_idx(void) { curBoard.increase_opt_idx(); }
     inline void decrease_opt_idx(void) { curBoard.decrease_opt_idx(); }
 
+    bool isNameContain(Menu::name m) const;
     Menu::name getCurOptName(void) const { return curBoard.cur_option_name; }
     int getCurOptIdx(void) const { return curBoard.cur_option_idx; }
     void setCurOptIdx(int idx) { curBoard.cur_option_idx = idx; }
@@ -425,5 +425,6 @@ public:
     nlohmann::json desc_table;
 
 private:
+    std::stack<SelectBoard> board_stack;
     SelectBoard curBoard;
 };

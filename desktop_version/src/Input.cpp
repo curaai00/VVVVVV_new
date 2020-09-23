@@ -140,7 +140,7 @@ void menuactionpress()
                 (int)game.menu_.getCurOptSize() - 1) {
                 // go back to menu
                 music.playef(11);
-                game.returnmenu();
+                game.menu_.back();
                 map.nexttowercolour();
             } else if (game.menu_.getCurOptIdx() ==
                        (int)game.menu_.getCurOptSize() - 2) {
@@ -208,7 +208,7 @@ void menuactionpress()
                     break;
                 case 2:
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -254,7 +254,7 @@ void menuactionpress()
                 case OFFSET + 3:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -331,7 +331,7 @@ void menuactionpress()
                     if (game.ingame_titlemode) {
                         game.returntopausemenu();
                     } else {
-                        game.returnmenu();
+                        game.menu_.back();
                         map.nexttowercolour();
                     }
                     break;
@@ -350,7 +350,7 @@ void menuactionpress()
                     map.nexttowercolour(); // This goes first, otherwise
                                            // mismatching continuemenu color is
                                            // possible
-                    game.returnmenu();
+                    game.menu_.back();
             }
             break;
         case Menu::setinvincibility:
@@ -358,14 +358,14 @@ void menuactionpress()
                 case 0:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
                 default:
                     map.invincibility = !map.invincibility;
                     game.savestats();
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -378,7 +378,7 @@ void menuactionpress()
                     game.slowdown = 30;
                     game.savestats();
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     game.menu_.setCurOptIdx(4);
                     map.nexttowercolour();
                     break;
@@ -387,7 +387,7 @@ void menuactionpress()
                     game.slowdown = 24;
                     game.savestats();
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     game.menu_.setCurOptIdx(4);
                     map.nexttowercolour();
                     break;
@@ -396,7 +396,7 @@ void menuactionpress()
                     game.slowdown = 18;
                     game.savestats();
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     game.menu_.setCurOptIdx(4);
                     map.nexttowercolour();
                     break;
@@ -405,7 +405,7 @@ void menuactionpress()
                     game.slowdown = 12;
                     game.savestats();
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     game.menu_.setCurOptIdx(4);
                     map.nexttowercolour();
                     break;
@@ -448,7 +448,7 @@ void menuactionpress()
                 case 5:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -513,7 +513,7 @@ void menuactionpress()
                 case 5:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
                 default:
@@ -631,7 +631,7 @@ void menuactionpress()
                 if (game.ingame_titlemode) {
                     game.returntopausemenu();
                 } else {
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                 }
             }
@@ -690,7 +690,7 @@ void menuactionpress()
                 case 6: // back
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -752,7 +752,7 @@ void menuactionpress()
                 default:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -771,7 +771,7 @@ void menuactionpress()
                     break;
                 default:
                     // back
-                    game.returnmenu();
+                    game.menu_.back();
                     break;
             }
             map.nexttowercolour();
@@ -794,7 +794,7 @@ void menuactionpress()
                 case 2:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -817,7 +817,7 @@ void menuactionpress()
                 default:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -866,7 +866,7 @@ void menuactionpress()
                     // back
                     music.playef(11);
                     game.current_credits_list_index = 0;
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -915,7 +915,7 @@ void menuactionpress()
                     // back
                     music.playef(11);
                     game.current_credits_list_index = 0;
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -966,7 +966,7 @@ void menuactionpress()
                     // back
                     music.playef(11);
                     game.current_credits_list_index = 0;
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -992,7 +992,7 @@ void menuactionpress()
                 default:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     music.niceplay(6);
                     break;
@@ -1053,7 +1053,7 @@ void menuactionpress()
             } else if (game.menu_.getCurOptIdx() == sloffset + ngoffset + 4) {
                 // back
                 music.playef(11);
-                game.returnmenu();
+                game.menu_.back();
                 map.nexttowercolour();
             }
             break;
@@ -1071,7 +1071,7 @@ void menuactionpress()
                 default:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -1089,7 +1089,7 @@ void menuactionpress()
 
                 case 5:
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     break;
             }
             break;
@@ -1098,7 +1098,7 @@ void menuactionpress()
                 case 0:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
                 default:
@@ -1149,7 +1149,7 @@ void menuactionpress()
             } else if (game.menu_.getCurOptIdx() == 4) {
                 // back
                 music.playef(11);
-                game.returnmenu();
+                game.menu_.back();
                 map.nexttowercolour();
             } else {
                 // Can't do yet! play sad sound
@@ -1171,7 +1171,7 @@ void menuactionpress()
                 case 2:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -1191,7 +1191,7 @@ void menuactionpress()
                 case 2:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -1213,7 +1213,7 @@ void menuactionpress()
                 case 2:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -1243,7 +1243,7 @@ void menuactionpress()
                 case 4:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -1273,7 +1273,7 @@ void menuactionpress()
                 case 4:
                     // back
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -1282,7 +1282,7 @@ void menuactionpress()
             // back
             music.playef(11);
             music.play(6);
-            game.returntomenu(Menu::playmodes);
+            game.menu_.back(Menu::playmodes);
             map.nexttowercolour();
             break;
         case Menu::unlocktimetrials:
@@ -1336,7 +1336,7 @@ void menuactionpress()
             {
                 // back
                 music.playef(11);
-                game.returnmenu();
+                game.menu_.back();
                 map.nexttowercolour();
             } else {
                 // Can't do yet! play sad sound
@@ -1349,17 +1349,14 @@ void menuactionpress()
                     // back
                     music.playef(11);
                     music.play(6);
-                    game.returntomenu(Menu::timetrials);
+                    game.menu_.back(Menu::timetrials);
                     map.nexttowercolour();
                     break;
                 case 1:
                     // Ok but first quickly remove the last stack frame to
                     // prevent piling up timetrialcomplete stack frames
-                    if (game.menustack.empty()) {
-                        puts("Error: menu stack is empty!");
-                    } else {
-                        game.menustack.pop_back();
-                    }
+                    game.menu_.back();
+
                     // duplicate the above based on given time trial level!
                     if (game.timetriallevel == 0) // space station 1
                     {
@@ -1399,7 +1396,7 @@ void menuactionpress()
         case Menu::nodeathmodecomplete2:
             music.play(6);
             music.playef(11);
-            game.returnmenu();
+            game.menu_.back();
             map.nexttowercolour();
             break;
         default:

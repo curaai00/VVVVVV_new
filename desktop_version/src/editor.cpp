@@ -4077,7 +4077,7 @@ void editorlogic()
         map.nexttowercolour();
         ed.settingsmod = false;
         graphics.backgrounddrawn = false;
-        game.returntomenu(Menu::playerworlds);
+        game.menu_.back(Menu::playerworlds);
     }
 }
 
@@ -4108,7 +4108,7 @@ void editormenuactionpress()
                     break;
                 case 4:
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -4193,7 +4193,7 @@ void editormenuactionpress()
                 case 1:
                     music.playef(11);
                     music.fadeout();
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -4223,7 +4223,7 @@ void editormenuactionpress()
                 case 2:
                     // Go back to editor
                     music.playef(11);
-                    game.returnmenu();
+                    game.menu_.back();
                     map.nexttowercolour();
                     break;
             }
@@ -4317,18 +4317,11 @@ void editorinput()
             graphics.backgrounddrawn = false;
 
             if (ed.settingsmod) {
-                bool edsettings_in_stack = false;
-                for (size_t i = 0; i < game.menustack.size(); i++) {
-                    if (game.menustack[i].name == Menu::ed_settings) {
-                        edsettings_in_stack = true;
-                        break;
-                    }
-                }
-                if (edsettings_in_stack) {
-                    game.returntomenu(Menu::ed_settings);
-                } else {
+                if (game.menu_.isNameContain(Menu::ed_settings))
+                    game.menu_.back(Menu::ed_settings);
+                else
                     game.createmenu(Menu::ed_settings);
-                }
+
                 map.nexttowercolour();
             }
         }
