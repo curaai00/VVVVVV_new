@@ -17,5 +17,6 @@ SET( EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR} )
 SET( LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR} )
 
 add_subdirectory(src)
+add_subdirectory(new)
 add_subdirectory(tests)
 add_subdirectory(googletest)
