@@ -58,24 +58,37 @@ void Resource::load2Mem(const char* name,
     PHYSFS_close(handle);
 }
 
-PNGAsset::PNGAsset(const char* relative_asset_path)
+Asset::Asset(const char* relative_asset_path)
+    : asset_path(relative_asset_path)
+{}
+
+Asset::~Asset() {}
+
+void Asset::load(bool addnull)
 {
     unsigned char* fileIn = NULL;
     size_t length = 0;
-    Resource::load2Mem(relative_asset_path, &fileIn, &length);
 
+    Resource::load2Mem(asset_path, &fileIn, &length, addnull);
+    _load(fileIn, length);
+
+    free(fileIn);
+}
+
+void PNGAsset::_load(unsigned char* fileIn, size_t length)
+{
     unsigned char* data;
     unsigned int w, h;
-    lodepng_decode24(&data, &w, &h, fileIn, length);
 
+    lodepng_decode24(&data, &w, &h, fileIn, length);
     asset = SDL_CreateRGBSurfaceFrom(
         data, w, h, 24, w * 3, 0x000000FF, 0x0000FF00, 0x00FF0000, 0x00000000);
 
-    free(fileIn);
     free(data);
 }
 
-PNGAsset::~PNGAsset()
+JsonAsset::~JsonAsset() {}
+void JsonAsset::_load(unsigned char* fileIn, size_t length)
 {
-    SDL_FreeSurface(asset);
+    asset = nlohmann::json::parse(fileIn);
 }

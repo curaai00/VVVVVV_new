@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
         std::invalid_argument("AssetPath is Invalid");
     }
 
-    auto win = Window(320, 240);
+    auto win = Window();
     auto key = KeyPull();
 
     while (key.isUp(SDLK_ESCAPE)) {

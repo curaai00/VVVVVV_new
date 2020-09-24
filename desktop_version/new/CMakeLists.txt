@@ -10,6 +10,7 @@ ELSE()
 ENDIF()
 
 FILE(GLOB_RECURSE SOURCES LIST_DIRECTORIES false *.c *.cpp)
+list(FILTER VVV_SRC EXCLUDE REGEX ".*new/main.cpp$")
 
 INCLUDE_DIRECTORIES(
 	../../third_party/tinyxml2
@@ -18,7 +19,11 @@ INCLUDE_DIRECTORIES(
     ../../third_party/utfcpp/source
     ../../third_party/nlohmann
 )
+include_directories(${SDL2_INCLUDE_DIRS})
 
 
-ADD_EXECUTABLE(${BINARY} ${SOURCES})
-TARGET_LINK_LIBRARIES(${BINARY} ${SDL2_MIXER_LIBRARIES} VVVVVV_lib )
+ADD_LIBRARY(${BINARY}lib ${SOURCES})
+TARGET_LINK_LIBRARIES(${BINARY}lib ${SDL2_MIXER_LIBRARIES} VVVVVV_lib )
+
+ADD_EXECUTABLE(${BINARY} main.cpp)
+TARGET_LINK_LIBRARIES(${BINARY} ${BINARY}lib)
