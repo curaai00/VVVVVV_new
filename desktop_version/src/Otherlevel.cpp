@@ -4,7 +4,6 @@
 #include "Entity.h"
 #include "MakeAndPlay.h"
 
-// clang-format off
 const short* otherlevelclass::loadlevel(int rx, int ry)
 {
 	int t;
@@ -9169,5 +9168,3 @@ const short* otherlevelclass::loadlevel(int rx, int ry)
 
 	return result;
 }
-
-// clang-format on

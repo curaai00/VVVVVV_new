@@ -13,9 +13,9 @@
 #include "UtilityClass.h"
 
 /* These are needed for PLATFORM_* crap */
-/* These are needed for PLATFORM_* crap */
 // clang-format off
 #if defined(_WIN32)
+
 #include <windows.h>
 #include <shellapi.h>
 #include <shlobj.h>
@@ -40,77 +40,74 @@ void PLATFORM_getOSDirectory(char* output);
 void PLATFORM_migrateSaveData(char* output);
 void PLATFORM_copyFile(const char* oldLocation, const char* newLocation);
 
-int FILESYSTEM_init(char* argvZero, char* baseDir, char* argvAssetsPath)
+int FILESYSTEM_init(char* argvZero, char* baseDir, char* assetsPath)
 {
+    char output[MAX_PATH];
+    int mkdirResult;
+    const char* pathSep = PHYSFS_getDirSeparator();
+
     PHYSFS_init(argvZero);
     PHYSFS_permitSymbolicLinks(1);
 
-    auto load_directories = [](const char* baseDir,
-                               char* output,
-                               char* saveDir,
-                               char* levelDir) -> int {
-        auto determine_osdir = [](const char* baseDir, char* output) {
-            if (baseDir && baseDir[0] != '\0') {
-                /* We later append to this path and assume it ends in a slash */
-                const char* pathSep = PHYSFS_getDirSeparator();
-                bool trailing_pathsep =
-                    SDL_strcmp(baseDir + SDL_strlen(baseDir) -
-                                   SDL_strlen(pathSep),
-                               pathSep) == 0;
+    /* Determine the OS user directory */
+    if (baseDir && baseDir[0] != '\0') {
+        /* We later append to this path and assume it ends in a slash */
+        bool trailing_pathsep =
+            SDL_strcmp(baseDir + SDL_strlen(baseDir) - SDL_strlen(pathSep),
+                       pathSep) == 0;
 
-                SDL_snprintf(output,
-                             sizeof(char) * MAX_PATH,
-                             "%s%s",
-                             baseDir,
-                             !trailing_pathsep ? pathSep : "");
-            } else {
-                PLATFORM_getOSDirectory(output);
-            }
-        };
+        SDL_snprintf(output,
+                     sizeof(output),
+                     "%s%s",
+                     baseDir,
+                     !trailing_pathsep ? pathSep : "");
+    } else {
+        PLATFORM_getOSDirectory(output);
+    }
 
-        determine_osdir(baseDir, output);
+    /* Create base user directory, mount */
+    mkdirResult = PHYSFS_mkdir(output);
 
-        /* Create base user directory, mount */
-        int mkdirResult = PHYSFS_mkdir(output);
+    /* Mount our base user directory */
+    PHYSFS_mount(output, NULL, 0);
+    PHYSFS_setWriteDir(output);
+    printf("Base directory: %s\n", output);
 
-        /* Mount our base user directory */
-        PHYSFS_mount(output, NULL, 0);
-        PHYSFS_setWriteDir(output);
-        printf("Base directory: %s\n", output);
+    /* Create the save/level folders */
+    mkdirResult |= PHYSFS_mkdir("saves");
+    mkdirResult |= PHYSFS_mkdir("levels");
 
-        /* Create the save/level folders */
-        mkdirResult |= PHYSFS_mkdir("saves");
-        mkdirResult |= PHYSFS_mkdir("levels");
+    /* Store full save directory */
+    SDL_snprintf(saveDir,
+                 sizeof(saveDir),
+                 "%s%s%s",
+                 output,
+                 "saves",
+                 PHYSFS_getDirSeparator());
+    printf("Save directory: %s\n", saveDir);
 
-        /* Store full save directory */
-        SDL_snprintf(saveDir,
-                     sizeof(saveDir),
-                     "%s%s%s",
-                     output,
-                     "saves",
-                     PHYSFS_getDirSeparator());
+    /* Store full level directory */
+    SDL_snprintf(levelDir,
+                 sizeof(levelDir),
+                 "%s%s%s",
+                 output,
+                 "levels",
+                 PHYSFS_getDirSeparator());
+    printf("Level directory: %s\n", levelDir);
 
-        /* Store full level directory */
-        SDL_snprintf(levelDir,
-                     sizeof(levelDir),
-                     "%s%s%s",
-                     output,
-                     "levels",
-                     PHYSFS_getDirSeparator());
-        return mkdirResult;
-    };
-    auto get_assetspath = [&argvAssetsPath](char res[MAX_PATH]) {
-        if (argvAssetsPath) {
-            SDL_strlcpy(res, argvAssetsPath, sizeof(char) * MAX_PATH);
-        } else {
-            SDL_snprintf(res,
-                         sizeof(char) * MAX_PATH,
-                         "%s%s",
-                         PHYSFS_getBaseDir(),
-                         "data.zip");
-        }
-    };
-    auto print_notfound_msg = [](void) {
+    /* We didn't exist until now, migrate files! */
+    if (mkdirResult == 0) {
+        PLATFORM_migrateSaveData(output);
+    }
+
+    /* Mount the stock content last */
+    if (assetsPath) {
+        SDL_strlcpy(output, assetsPath, sizeof(output));
+    } else {
+        SDL_snprintf(
+            output, sizeof(output), "%s%s", PHYSFS_getBaseDir(), "data.zip");
+    }
+    if (!PHYSFS_mount(output, NULL, 1)) {
         puts("Error: data.zip missing!");
         puts("You do not have data.zip!");
         puts("Grab it from your purchased copy of the game,");
@@ -123,30 +120,15 @@ int FILESYSTEM_init(char* argvZero, char* baseDir, char* argvAssetsPath)
             "\n\nGrab it from your purchased copy of the game,"
             "\nor get it from the free Make and Play Edition.",
             NULL);
-    };
-
-    char output[MAX_PATH];
-    int mkdirResult = load_directories(baseDir, output, saveDir, levelDir);
-
-    /* We didn't exist until now, migrate files! */
-    if (mkdirResult == 0)
-        PLATFORM_migrateSaveData(output);
-
-    char assets_path[MAX_PATH] = { '\0' };
-    get_assetspath(assets_path);
-
-    if (!PHYSFS_mount(assets_path, NULL, 1)) {
-        print_notfound_msg();
         return 0;
     }
 
-    char ctrldb_path[MAX_PATH] = { '\0' };
-    SDL_snprintf(ctrldb_path,
-                 sizeof(ctrldb_path),
+    SDL_snprintf(output,
+                 sizeof(output),
                  "%s%s",
                  PHYSFS_getBaseDir(),
                  "gamecontrollerdb.txt");
-    if (SDL_GameControllerAddMappingsFromFile(ctrldb_path) < 0) {
+    if (SDL_GameControllerAddMappingsFromFile(output) < 0) {
         printf("gamecontrollerdb.txt not found!\n");
     }
     return 1;

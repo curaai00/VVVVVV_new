@@ -4,21 +4,13 @@
 #include <string>
 #include <vector>
 
-#include "BlockV.h"
-#include "Ent.h"
-#include "Game.h"
 #include "Maths.h"
+#include "Ent.h"
+#include "BlockV.h"
+#include "Game.h"
 
-#define removeentity_iter(index)                                               \
-    {                                                                          \
-        if (obj.removeentity(index))                                           \
-            index--;                                                           \
-    }
-#define removeblock_iter(index)                                                \
-    {                                                                          \
-        obj.removeblock(index);                                                \
-        index--;                                                               \
-    }
+#define removeentity_iter(index) { if (obj.removeentity(index)) index--; }
+#define removeblock_iter(index) { obj.removeblock(index); index--; }
 
 enum
 {
@@ -37,12 +29,24 @@ public:
 
     void resetallflags();
 
-    void fatal_top() { createblock(DAMAGE, -8, -8, 384, 16); }
-    void fatal_bottom() { createblock(DAMAGE, -8, 224, 384, 16); }
-    void fatal_left() { createblock(DAMAGE, -8, -8, 16, 260); }
-    void fatal_right() { createblock(DAMAGE, 312, -8, 16, 260); }
+    void fatal_top()
+    {
+        createblock(DAMAGE, -8, -8, 384, 16);
+    }
+    void fatal_bottom()
+    {
+        createblock(DAMAGE, -8, 224, 384, 16);
+    }
+    void fatal_left()
+    {
+        createblock(DAMAGE, -8, -8, 16, 260);
+    }
+    void fatal_right()
+    {
+        createblock(DAMAGE, 312, -8, 16, 260);
+    }
 
-    int swncolour(int t);
+    int swncolour(int t );
 
     void swnenemiescol(int t);
 
@@ -50,13 +54,7 @@ public:
 
     void generateswnwave(int t);
 
-    void createblock(int t,
-                     int xp,
-                     int yp,
-                     int w,
-                     int h,
-                     int trig = 0,
-                     const std::string& script = "");
+    void createblock(int t, int xp, int yp, int w, int h, int trig = 0, const std::string& script = "");
 
     bool removeentity(int t);
 
@@ -72,26 +70,12 @@ public:
 
     void revertlinecross(int t, int s);
 
-    bool gridmatch(int p1,
-                   int p2,
-                   int p3,
-                   int p4,
-                   int p11,
-                   int p21,
-                   int p31,
-                   int p41);
+    bool gridmatch(int p1, int p2, int p3, int p4, int p11, int p21, int p31, int p41);
 
     int crewcolour(int t);
 
-    void createentity(float xp,
-                      float yp,
-                      int t,
-                      float vx = 0,
-                      float vy = 0,
-                      int p1 = 0,
-                      int p2 = 0,
-                      int p3 = 320,
-                      int p4 = 240);
+    void createentity(float xp, float yp, int t, float vx = 0, float vy = 0,
+                      int p1 = 0, int p2 = 0, int p3 = 320, int p4 = 240 );
 
     bool updateentities(int i);
 
@@ -167,6 +151,7 @@ public:
 
     void updateentitylogic(int t);
 
+
     void entitymapcollision(int t);
 
     void movingplatformfix(int t);
@@ -177,6 +162,7 @@ public:
 
     void entitycollisioncheck();
 
+
     std::vector<entclass> entities;
 
     std::vector<entclass> linecrosskludge;
@@ -184,8 +170,7 @@ public:
     point colpoint1, colpoint2;
 
     int tempx, tempy, tempw, temph, temp, temp2;
-    // public var tempx:int, tempy:int, tempw:int, temph:int, temp:int,
-    // temp2:int;
+    //public var tempx:int, tempy:int, tempw:int, temph:int, temp:int, temp2:int;
     int tpx1, tpy1, tpx2, tpy2;
 
     SDL_Rect temprect, temprect2;
@@ -195,6 +180,7 @@ public:
 
     int px, py, linetemp;
     int activetrigger;
+
 
     std::vector<blockclass> blocks;
     bool flags[100];
@@ -210,14 +196,14 @@ public:
     bool nearelephant, upsetmode;
     int upset;
 
-    // Trophy Text
+    //Trophy Text
     int trophytext, trophytype;
     int oldtrophytext;
 
-    // Secret lab scripts
+    //Secret lab scripts
     int altstates;
 
-    // Custom stuff
+    //Custom stuff
     int customenemy;
     int customplatformtile;
     bool customwarpmode, customwarpmodevon, customwarpmodehon;

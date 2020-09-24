@@ -7,12 +7,24 @@ namespace Credits {
 
 /* Terry's Patrons... */
 static const char* superpatrons[] = {
-    "Anders Ekermo",    "Andreas K|mper",     "Anthony Burch",
-    "Bennett Foddy",    "Brendan O'Sullivan", "Christopher Armstrong",
-    "Daniel Benmergui", "David Pittman",      "Ian Bogost",
-    "Ian Poma",         "Jaz McDougall",      "John Faulkenbury",
-    "Jonathan Whiting", "Kyle Pulver",        "Markus Persson",
-    "Nathan Ostgard",   "Nick Easler",        "Stephen Lavelle",
+    "Anders Ekermo",
+    "Andreas K|mper",
+    "Anthony Burch",
+    "Bennett Foddy",
+    "Brendan O'Sullivan",
+    "Christopher Armstrong",
+    "Daniel Benmergui",
+    "David Pittman",
+    "Ian Bogost",
+    "Ian Poma",
+    "Jaz McDougall",
+    "John Faulkenbury",
+    "Jonathan Whiting",
+    "Kyle Pulver",
+    "Markus Persson",
+    "Nathan Ostgard",
+    "Nick Easler",
+    "Stephen Lavelle",
 };
 
 static const char* patrons[] = {
@@ -70,11 +82,9 @@ static const char* patrons[] = {
     "Timothy Bragan",
 };
 
-/* CONTRIBUTORS.txt, again listed alphabetically (according to `sort`) by last
- * name */
+/* CONTRIBUTORS.txt, again listed alphabetically (according to `sort`) by last name */
 static const char* githubfriends[] = {
-    "Matt \"Fussmatte\" Aaldenberg", // TODO: Change to "Fußmatte" if/when UTF-8
-                                     // support is added
+    "Matt \"Fussmatte\" Aaldenberg", // TODO: Change to "Fußmatte" if/when UTF-8 support is added
     "AlexApps99",
     "Christoph B{hmwalder",
     "Charlie Bruce",
@@ -83,6 +93,7 @@ static const char* githubfriends[] = {
     "Allison Fleischer",
     "Daniel Lee",
     "Fredrik Ljungdahl",
+    "MAO3J1m0Op",
     "Nichole Mattera",
     "Matt Penny",
     "Tynan Richards",
@@ -101,9 +112,9 @@ static const char* githubfriends[] = {
 };
 
 /* Calculate credits length, finally. */
-static const int creditmaxposition =
-    1050 + (10 * (SDL_arraysize(superpatrons) + SDL_arraysize(patrons) +
-                  SDL_arraysize(githubfriends)));
+static const int creditmaxposition = 1050 + (10 * (
+    SDL_arraysize(superpatrons) + SDL_arraysize(patrons) + SDL_arraysize(githubfriends)
+));
 
 }; /* namespace Credits */
 

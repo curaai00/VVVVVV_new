@@ -6,58 +6,56 @@
 #include "BinaryBlob.h"
 #include "SoundSystem.h"
 
-#define musicroom(rx, ry) ((rx) + ((ry)*20))
+#define musicroom(rx, ry) ((rx) + ((ry) * 20))
 
 class musicclass
 {
 public:
-    void init();
+	void init();
 
-    void play(int t,
-              const double position_sec = 0.0,
-              const int fadein_ms = 3000);
-    void resume(const int fadein_ms = 0);
-    void haltdasmusik();
-    void silencedasmusik();
-    void fadeMusicVolumeIn(int ms);
-    void fadeout();
-    void fadein();
-    void processmusicfadein();
-    void processmusic();
-    void niceplay(int t);
+	void play(int t, const double position_sec = 0.0, const int fadein_ms = 3000);
+	void resume(const int fadein_ms = 0);
+	void haltdasmusik();
+	void silencedasmusik();
+	void fadeMusicVolumeIn(int ms);
+	void fadeout();
+	void fadein();
+	void processmusicfadein();
+	void processmusic();
+	void niceplay(int t);
 
-    void changemusicarea(int x, int y);
+	void changemusicarea(int x, int y);
 
-    int currentsong;
-    int resumesong;
+	int currentsong;
+	int resumesong;
 
-    void playef(int t);
+	void playef(int t);
 
-    std::vector<SoundTrack> soundTracks;
-    std::vector<MusicTrack> musicTracks;
-    SoundSystem soundSystem;
-    bool safeToProcessMusic;
+	std::vector<SoundTrack> soundTracks;
+	std::vector<MusicTrack> musicTracks;
+	SoundSystem soundSystem;
+	bool safeToProcessMusic;
 
-    int nicechange;
-    int nicefade;
+	int nicechange;
+	int nicefade;
 
-    bool m_doFadeInVol;
-    int FadeVolAmountPerFrame;
-    int musicVolume;
+	bool m_doFadeInVol;
+	int FadeVolAmountPerFrame;
+	int musicVolume;
 
-    int fadeoutqueuesong; // -1 if no song queued
-    bool dontquickfade;
+	int fadeoutqueuesong; // -1 if no song queued
+	bool dontquickfade;
 
-    // MMMMMM mod settings
-    bool mmmmmm;
-    bool usingmmmmmm;
+	// MMMMMM mod settings
+	bool mmmmmm;
+	bool usingmmmmmm;
 
-    binaryBlob musicReadBlob;
-    int num_pppppp_tracks;
-    int num_mmmmmm_tracks;
+	binaryBlob musicReadBlob;
+	int num_pppppp_tracks;
+	int num_mmmmmm_tracks;
 
-    Uint64 songStart;
-    Uint64 songEnd;
+	Uint64 songStart;
+	Uint64 songEnd;
 };
 
 extern musicclass music;

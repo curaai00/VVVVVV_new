@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <tinyxml2.h>
-#include <unordered_map>
 
 #include "Entity.h"
 #include "Enums.h"
@@ -36,24 +35,48 @@ const char* BoolToString(bool _b)
 
 bool GetButtonFromString(const char* pText, SDL_GameControllerButton* button)
 {
-    const std::unordered_map<std::string, SDL_GameControllerButton> key_table{
-        // clang-format off
-        {"0", SDL_CONTROLLER_BUTTON_A}, {"a", SDL_CONTROLLER_BUTTON_A}, {"A", SDL_CONTROLLER_BUTTON_A}, 
-        {"1", SDL_CONTROLLER_BUTTON_B}, {"b", SDL_CONTROLLER_BUTTON_B}, {"B", SDL_CONTROLLER_BUTTON_B},
-        {"2", SDL_CONTROLLER_BUTTON_X}, {"x", SDL_CONTROLLER_BUTTON_X}, {"X", SDL_CONTROLLER_BUTTON_X}, 
-        {"3", SDL_CONTROLLER_BUTTON_Y}, {"y", SDL_CONTROLLER_BUTTON_Y}, {"Y", SDL_CONTROLLER_BUTTON_Y},
-        {"4", SDL_CONTROLLER_BUTTON_BACK}, {"BACK", SDL_CONTROLLER_BUTTON_BACK},
-        {"5", SDL_CONTROLLER_BUTTON_GUIDE}, {"GUIDE", SDL_CONTROLLER_BUTTON_GUIDE},
-        {"6", SDL_CONTROLLER_BUTTON_START}, {"START", SDL_CONTROLLER_BUTTON_START},
-        {"7", SDL_CONTROLLER_BUTTON_LEFTSTICK}, {"LS", SDL_CONTROLLER_BUTTON_LEFTSTICK},
-        {"8", SDL_CONTROLLER_BUTTON_RIGHTSTICK}, {"RS", SDL_CONTROLLER_BUTTON_RIGHTSTICK},
-        {"9", SDL_CONTROLLER_BUTTON_LEFTSHOULDER}, {"LB", SDL_CONTROLLER_BUTTON_LEFTSHOULDER},
-        {"10", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER}, {"RB", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER}
-        // clang-format on
-    };
-    auto find_res = key_table.find(pText);
-    if (find_res != key_table.end()) {
-        *button = find_res->second;
+    if (*pText == '0' || *pText == 'a' || *pText == 'A') {
+        *button = SDL_CONTROLLER_BUTTON_A;
+        return true;
+    }
+    if (strcmp(pText, "1") == 0 || *pText == 'b' || *pText == 'B') {
+        *button = SDL_CONTROLLER_BUTTON_B;
+        return true;
+    }
+    if (*pText == '2' || *pText == 'x' || *pText == 'X') {
+        *button = SDL_CONTROLLER_BUTTON_X;
+        return true;
+    }
+    if (*pText == '3' || *pText == 'y' || *pText == 'Y') {
+        *button = SDL_CONTROLLER_BUTTON_Y;
+        return true;
+    }
+    if (*pText == '4' || strcasecmp(pText, "BACK") == 0) {
+        *button = SDL_CONTROLLER_BUTTON_BACK;
+        return true;
+    }
+    if (*pText == '5' || strcasecmp(pText, "GUIDE") == 0) {
+        *button = SDL_CONTROLLER_BUTTON_GUIDE;
+        return true;
+    }
+    if (*pText == '6' || strcasecmp(pText, "START") == 0) {
+        *button = SDL_CONTROLLER_BUTTON_START;
+        return true;
+    }
+    if (*pText == '7' || strcasecmp(pText, "LS") == 0) {
+        *button = SDL_CONTROLLER_BUTTON_LEFTSTICK;
+        return true;
+    }
+    if (*pText == '8' || strcasecmp(pText, "RS") == 0) {
+        *button = SDL_CONTROLLER_BUTTON_RIGHTSTICK;
+        return true;
+    }
+    if (*pText == '9' || strcasecmp(pText, "LB") == 0) {
+        *button = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
+        return true;
+    }
+    if (strcmp(pText, "10") == 0 || strcasecmp(pText, "RB") == 0) {
+        *button = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
         return true;
     }
     return false;
@@ -166,8 +189,11 @@ void Game::init(void)
     SDL_memset(unlock, false, sizeof(unlock));
     SDL_memset(unlocknotify, false, sizeof(unlock));
 
-    menu_.init();
+    currentmenuoption = 0;
     current_credits_list_index = 0;
+    menuxoff = 0;
+    menuyoff = 0;
+    menucountdown = 0;
     levelpage = 0;
     playcustomlevel = 0;
     createmenu(Menu::mainmenu);
@@ -175,6 +201,12 @@ void Game::init(void)
     deathcounts = 0;
     gameoverdelay = 0;
     frames = 0;
+    seconds = 0;
+    minutes = 0;
+    hours = 0;
+    gamesaved = false;
+    savetime = "00:00";
+    savearea = "nowhere";
     savetrinkets = 0;
 
     intimetrial = false;
@@ -252,6 +284,7 @@ void Game::init(void)
         tinyxml2::XMLHandle hDoc(&docTele);
         tinyxml2::XMLElement* pElem;
         tinyxml2::XMLHandle hRoot(NULL);
+
         {
             pElem = hDoc.FirstChildElement().ToElement();
             // should always have a valid root but handle gracefully if it does
@@ -308,6 +341,7 @@ void Game::init(void)
     glitchrunnermode = false;
 
     ingame_titlemode = false;
+    kludge_ingametemp = Menu::mainmenu;
     shouldreturntopausemenu = false;
 
     disablepause = false;
@@ -357,9 +391,12 @@ void Game::updatecustomlevelstats(std::string clevel, int cscore)
             break;
         }
     }
-    if (tvar >= 0 && cscore > customlevelstats[tvar].score) {
-        // update existing entry
-        customlevelstats[tvar].score = cscore;
+    if (tvar >= 0) {
+        // We have an existing entry
+        // Don't update it unless it's a higher score
+        if (cscore > customlevelstats[tvar].score) {
+            customlevelstats[tvar].score = cscore;
+        }
     } else {
         // add a new entry
         CustomLevelStat levelstat = { clevel, cscore };
@@ -1155,7 +1192,8 @@ void Game::updatestate()
                 // Time Trial Complete!
                 obj.removetrigger(82);
                 hascontrol = false;
-                timetrialresulttime = stat.totalSeconds();
+                timetrialresulttime =
+                    seconds + (minutes * 60) + (hours * 60 * 60);
                 timetrialresultframes = frames;
                 timetrialrank = 0;
                 if (timetrialresulttime <= timetrialpar)
@@ -1808,7 +1846,7 @@ void Game::updatestate()
                         music.fadeMusicVolumeIn(3000);
                 }
                 graphics.showcutscenebars = false;
-                menu_.back(Menu::levellist);
+                returntomenu(Menu::levellist);
                 break;
 #endif
             case 1014:
@@ -2701,7 +2739,7 @@ void Game::updatestate()
                 if (inintermission) {
                     graphics.fademode = 2;
                     companion = 0;
-                    menu_.back();
+                    returnmenu();
                     state = 3100;
                 } else {
                     unlocknum(7);
@@ -2730,7 +2768,7 @@ void Game::updatestate()
                     state++;
                     graphics.fademode = 2;
                     music.fadeout();
-                    menu_.back();
+                    returnmenu();
                     state = 3100;
                 } else {
                     unlocknum(6);
@@ -2812,7 +2850,7 @@ void Game::updatestate()
                 graphics.addline("");
                 graphics.textboxcenterx();
                 break;
-            case 3502: {
+            case 3502:
                 state++;
                 statedelay = 45 + 15;
 
@@ -2823,11 +2861,9 @@ void Game::updatestate()
                     graphics.createtextbox(
                         "  All Crew Members Rescued!  ", -1, 64, 0, 0, 0);
                 }
-                auto savetime = timestring();
+                savetime = timestring();
                 savetime += "." + help.twodigits(frames * 100 / 30);
-                stat.setSavetime(savetime);
                 break;
-            }
             case 3503: {
                 state++;
                 statedelay = 45;
@@ -2847,7 +2883,7 @@ void Game::updatestate()
                 state++;
                 statedelay = 45 + 15;
 
-                std::string tempstring = stat.getSavetime();
+                std::string tempstring = savetime;
                 if (graphics.flipmode) {
                     graphics.createtextbox(
                         "   Game Time:", 64, 143 - 24, 0, 0, 0);
@@ -4752,8 +4788,8 @@ void Game::loadquick()
         if (pKey == "finalstretch") {
             map.finalstretch = help.Int(pText);
         }
-        if (stat.loadFromXml(pKey, pText)) {
-        } else if (pKey == "finalx") {
+
+        if (pKey == "finalx") {
             map.finalx = help.Int(pText);
         } else if (pKey == "finaly") {
             map.finaly = help.Int(pText);
@@ -4786,6 +4822,12 @@ void Game::loadquick()
         } else if (pKey == "frames") {
             frames = help.Int(pText);
             frames = 0;
+        } else if (pKey == "seconds") {
+            seconds = help.Int(pText);
+        } else if (pKey == "minutes") {
+            minutes = help.Int(pText);
+        } else if (pKey == "hours") {
+            hours = help.Int(pText);
         } else if (pKey == "deathcounts") {
             deathcounts = help.Int(pText);
         } else if (pKey == "totalflips") {
@@ -4894,8 +4936,7 @@ void Game::customloadquick(std::string savfile)
             map.final_colorframe = 1;
         }
 
-        if (stat.loadFromXml(pKey, pText)) {
-        } else if (pKey == "finalx") {
+        if (pKey == "finalx") {
             map.finalx = help.Int(pText);
         } else if (pKey == "finaly") {
             map.finaly = help.Int(pText);
@@ -4928,6 +4969,12 @@ void Game::customloadquick(std::string savfile)
         } else if (pKey == "frames") {
             frames = help.Int(pText);
             frames = 0;
+        } else if (pKey == "seconds") {
+            seconds = help.Int(pText);
+        } else if (pKey == "minutes") {
+            minutes = help.Int(pText);
+        } else if (pKey == "hours") {
+            hours = help.Int(pText);
         } else if (pKey == "deathcounts") {
             deathcounts = help.Int(pText);
         } else if (pKey == "totalflips") {
@@ -5215,8 +5262,16 @@ void Game::savetele()
     msg = doc.NewElement("frames");
     msg->LinkEndChild(doc.NewText(help.String(frames).c_str()));
     msgs->LinkEndChild(msg);
+    msg = doc.NewElement("seconds");
+    msg->LinkEndChild(doc.NewText(help.String(seconds).c_str()));
+    msgs->LinkEndChild(msg);
 
-    stat.saveToXml(doc, msgs);
+    msg = doc.NewElement("minutes");
+    msg->LinkEndChild(doc.NewText(help.String(minutes).c_str()));
+    msgs->LinkEndChild(msg);
+    msg = doc.NewElement("hours");
+    msg->LinkEndChild(doc.NewText(help.String(hours).c_str()));
+    msgs->LinkEndChild(msg);
 
     msg = doc.NewElement("deathcounts");
     msg->LinkEndChild(doc.NewText(help.String(deathcounts).c_str()));
@@ -5394,8 +5449,16 @@ void Game::savequick()
     msg = doc.NewElement("frames");
     msg->LinkEndChild(doc.NewText(help.String(frames).c_str()));
     msgs->LinkEndChild(msg);
+    msg = doc.NewElement("seconds");
+    msg->LinkEndChild(doc.NewText(help.String(seconds).c_str()));
+    msgs->LinkEndChild(msg);
 
-    stat.saveToXml(doc, msgs);
+    msg = doc.NewElement("minutes");
+    msg->LinkEndChild(doc.NewText(help.String(minutes).c_str()));
+    msgs->LinkEndChild(msg);
+    msg = doc.NewElement("hours");
+    msg->LinkEndChild(doc.NewText(help.String(hours).c_str()));
+    msgs->LinkEndChild(msg);
 
     msg = doc.NewElement("deathcounts");
     msg->LinkEndChild(doc.NewText(help.String(deathcounts).c_str()));
@@ -5574,8 +5637,16 @@ void Game::customsavequick(std::string savfile)
     msg = doc.NewElement("frames");
     msg->LinkEndChild(doc.NewText(help.String(frames).c_str()));
     msgs->LinkEndChild(msg);
+    msg = doc.NewElement("seconds");
+    msg->LinkEndChild(doc.NewText(help.String(seconds).c_str()));
+    msgs->LinkEndChild(msg);
 
-    stat.saveToXml(doc, msgs);
+    msg = doc.NewElement("minutes");
+    msg->LinkEndChild(doc.NewText(help.String(minutes).c_str()));
+    msgs->LinkEndChild(msg);
+    msg = doc.NewElement("hours");
+    msg->LinkEndChild(doc.NewText(help.String(hours).c_str()));
+    msgs->LinkEndChild(msg);
 
     msg = doc.NewElement("deathcounts");
     msg->LinkEndChild(doc.NewText(help.String(deathcounts).c_str()));
@@ -5672,8 +5743,7 @@ void Game::loadtele()
             map.final_colorframe = 1;
         }
 
-        if (stat.loadFromXml(pKey, pText)) {
-        } else if (pKey == "finalx") {
+        if (pKey == "finalx") {
             map.finalx = help.Int(pText);
         } else if (pKey == "finaly") {
             map.finaly = help.Int(pText);
@@ -5706,6 +5776,12 @@ void Game::loadtele()
         } else if (pKey == "frames") {
             frames = help.Int(pText);
             frames = 0;
+        } else if (pKey == "seconds") {
+            seconds = help.Int(pText);
+        } else if (pKey == "minutes") {
+            minutes = help.Int(pText);
+        } else if (pKey == "hours") {
+            hours = help.Int(pText);
         } else if (pKey == "deathcounts") {
             deathcounts = help.Int(pText);
         } else if (pKey == "totalflips") {
@@ -5773,9 +5849,18 @@ void Game::gameclock()
         os << hours << ":" << minutes << ":" << seconds << ", " << frames;
     teststring = os.str();
     */
-    if (++frames >= 30) {
+    frames++;
+    if (frames >= 30) {
         frames -= 30;
-        stat.increaseSecond();
+        seconds++;
+        if (seconds >= 60) {
+            seconds -= 60;
+            minutes++;
+            if (minutes >= 60) {
+                minutes -= 60;
+                hours++;
+            }
+        }
     }
 }
 
@@ -5791,7 +5876,12 @@ std::string Game::giventimestring(int hrs, int min, int sec)
 
 std::string Game::timestring()
 {
-    return stat.getTimeStr();
+    std::string tempstring = "";
+    if (hours > 0) {
+        tempstring += help.String(hours) + ":";
+    }
+    tempstring += help.twodigits(minutes) + ":" + help.twodigits(seconds);
+    return tempstring;
 }
 
 std::string Game::partimestring()
@@ -5837,45 +5927,110 @@ std::string Game::timetstring(int t)
     return tempstring;
 }
 
-void Game::createmenu(enum Menu::name t, bool samemenu)
+void Game::returnmenu()
 {
-    SelectBoard sb;
-    sb.cur_option_name = t;
-    int maxspacing = 30; // maximum value for spacing, can only become lower.
+    if (menustack.empty()) {
+        puts("Error: returning to previous menu frame on empty stack!");
+        return;
+    }
+
+    MenuStackFrame& frame = menustack[menustack.size() - 1];
+
+    // Store this in case createmenu() removes the stack frame
+    int previousoption = frame.option;
+
+    createmenu(frame.name, true);
+    currentmenuoption = previousoption;
+
+    // Remove the stackframe now, but createmenu() might have already gotten to
+    // it if we were returning to the main menu
+    if (!menustack.empty()) {
+        menustack.pop_back();
+    }
+}
+
+void Game::returntomenu(enum Menu::MenuName t)
+{
+    if (currentmenuname == t) {
+        // Re-create the menu
+        int keep_menu_option = currentmenuoption;
+        createmenu(t, true);
+        if (keep_menu_option < (int)menuoptions.size()) {
+            currentmenuoption = keep_menu_option;
+        }
+        return;
+    }
+
+    // Unwind the menu stack until we reach our desired menu
+    int i = menustack.size() - 1;
+    while (i >= 0) {
+        // If we pop it off we can't reference it anymore, so check for it now
+        bool is_the_menu_we_want = menustack[i].name == t;
+
+        returnmenu();
+
+        if (is_the_menu_we_want) {
+            break;
+        }
+
+        i--;
+    }
+}
+
+void Game::createmenu(enum Menu::MenuName t, bool samemenu /*= false*/)
+{
+    if (t == Menu::mainmenu) {
+        // Either we've just booted up the game or returned from gamemode
+        // Whichever it is, we shouldn't have a stack,
+        // and most likely don't have a current stackframe
+        menustack.clear();
+    } else if (!samemenu) {
+        MenuStackFrame frame;
+        frame.option = currentmenuoption;
+        frame.name = currentmenuname;
+        menustack.push_back(frame);
+    }
+
+    currentmenuoption = 0;
+    currentmenuname = t;
+    menuyoff = 0;
+    int maxspacing =
+        30; // maximum value for menuspacing, can only become lower.
+    menucountdown = 0;
+    menuoptions.clear();
 
     switch (t) {
         case Menu::mainmenu:
 #if !defined(MAKEANDPLAY)
-            sb.add_option("start game");
+            option("start game");
 #endif
 #if !defined(NO_CUSTOM_LEVELS)
-            sb.add_option("player levels");
+            option("player levels");
 #endif
-            sb.add_option("graphic options");
-            sb.add_option("game options");
+            option("graphic options");
+            option("game options");
 #if !defined(MAKEANDPLAY)
-            sb.add_option("view credits");
+            option("view credits");
 #endif
-            sb.add_option("quit game");
-            sb.yoff = -10;
+            option("quit game");
+            menuyoff = -10;
             maxspacing = 15;
             break;
 #if !defined(NO_CUSTOM_LEVELS)
         case Menu::playerworlds:
-            sb.add_option("play a level");
+            option("play a level");
 #if !defined(NO_EDITOR)
-            sb.add_option("level editor");
+            option("level editor");
 #endif
-            sb.add_option("open level folder",
-                          FILESYSTEM_openDirectoryEnabled());
-            sb.add_option("back to menu");
-            sb.yoff = -40;
+            option("open level folder", FILESYSTEM_openDirectoryEnabled());
+            option("back to menu");
+            menuyoff = -40;
             maxspacing = 15;
             break;
         case Menu::levellist:
             if (ed.ListOfMetaData.size() == 0) {
-                sb.add_option("ok");
-                sb.yoff = -20;
+                option("ok");
+                menuyoff = -20;
             } else {
                 for (int i = 0; i < (int)ed.ListOfMetaData.size();
                      i++) // FIXME: int/size_t! -flibit
@@ -5919,7 +6074,7 @@ void Game::createmenu(enum Menu::name t, bool samemenu)
                             static const char tmp[] = "   ";
                             prefix = tmp;
                         }
-                        char text[Menu::MAX_MENU_TEXT_BYTES];
+                        char text[menutextbytes];
                         SDL_snprintf(text,
                                      sizeof(text),
                                      "%s%s",
@@ -5928,217 +6083,213 @@ void Game::createmenu(enum Menu::name t, bool samemenu)
                         for (size_t ii = 0; ii < SDL_arraysize(text); ii++) {
                             text[ii] = SDL_tolower(text[ii]);
                         }
-                        sb.add_option(text);
+                        option(text);
                     }
                 }
                 if ((size_t)((levelpage * 8) + 8) < ed.ListOfMetaData.size()) {
-                    sb.add_option("next page");
+                    option("next page");
                 } else {
-                    sb.add_option("first page");
+                    option("first page");
                 }
                 if (levelpage == 0) {
-                    sb.add_option("last page");
+                    option("last page");
                 } else {
-                    sb.add_option("previous page");
+                    option("previous page");
                 }
-                sb.add_option("return to menu");
+                option("return to menu");
 
-                sb.xoff = 20;
-                sb.yoff = 70 - (sb.options.size() * 10);
-                sb.spacing = 5;
+                menuxoff = 20;
+                menuyoff = 70 - (menuoptions.size() * 10);
+                menuspacing = 5;
                 return; // skip automatic centering, will turn out bad with
                         // levels list
             }
             break;
 #endif
-        case Menu::name::quickloadlevel:
-            sb.add_option("continue from save");
-            sb.add_option("start from beginning");
-            sb.add_option("back to levels");
-            sb.yoff = -30;
+        case Menu::quickloadlevel:
+            option("continue from save");
+            option("start from beginning");
+            option("back to levels");
+            menuyoff = -30;
             break;
-        case Menu::name::youwannaquit:
-            sb.add_option("yes, quit");
-            sb.add_option("no, return");
-            sb.yoff = -20;
+        case Menu::youwannaquit:
+            option("yes, quit");
+            option("no, return");
+            menuyoff = -20;
             break;
-        case Menu::name::errornostart:
-            sb.add_option("ok");
-            sb.yoff = -20;
+        case Menu::errornostart:
+            option("ok");
+            menuyoff = -20;
             break;
-        case Menu::name::graphicoptions:
-            sb.add_option("toggle fullscreen");
-            sb.add_option("scaling mode");
-            if (graphics.screenbuffer)
-                sb.add_option("resize to nearest",
-                              graphics.screenbuffer->isWindowed);
-            else
-                sb.add_option("resize to nearest", true);
-            sb.add_option("toggle filter");
-            sb.add_option("toggle analogue");
-            sb.add_option("toggle fps");
-            sb.add_option("toggle vsync");
-            sb.add_option("return");
-            sb.yoff = -10;
+        case Menu::graphicoptions:
+            option("toggle fullscreen");
+            option("scaling mode");
+            option("resize to nearest", graphics.screenbuffer->isWindowed);
+            option("toggle filter");
+            option("toggle analogue");
+            option("toggle fps");
+            option("toggle vsync");
+            option("return");
+            menuyoff = -10;
             break;
         case Menu::ed_settings:
-            sb.add_option("change description");
-            sb.add_option("edit scripts");
-            sb.add_option("change music");
-            sb.add_option("editor ghosts");
-            sb.add_option("load level");
-            sb.add_option("save level");
-            sb.add_option("quit to main menu");
+            option("change description");
+            option("edit scripts");
+            option("change music");
+            option("editor ghosts");
+            option("load level");
+            option("save level");
+            option("quit to main menu");
 
-            sb.yoff = -20;
+            menuyoff = -20;
             maxspacing = 15;
             break;
         case Menu::ed_desc:
-            sb.add_option("change name");
-            sb.add_option("change author");
-            sb.add_option("change description");
-            sb.add_option("change website");
-            sb.add_option("back to settings");
+            option("change name");
+            option("change author");
+            option("change description");
+            option("change website");
+            option("back to settings");
 
-            sb.yoff = 6;
+            menuyoff = 6;
             maxspacing = 15;
             break;
         case Menu::ed_music:
-            sb.add_option("next song");
-            sb.add_option("back");
-            sb.yoff = 16;
+            option("next song");
+            option("back");
+            menuyoff = 16;
             maxspacing = 15;
             break;
         case Menu::ed_quit:
-            sb.add_option("yes, save and quit");
-            sb.add_option("no, quit without saving");
-            sb.add_option("return to editor");
-            sb.yoff = 8;
+            option("yes, save and quit");
+            option("no, quit without saving");
+            option("return to editor");
+            menuyoff = 8;
             maxspacing = 15;
             break;
         case Menu::options:
-            sb.add_option("accessibility options");
-            sb.add_option("advanced options");
+            option("accessibility options");
+            option("advanced options");
 #if !defined(MAKEANDPLAY)
             if (ingame_titlemode && unlock[18])
 #endif
             {
-                sb.add_option("flip mode");
+                option("flip mode");
             }
 #if !defined(MAKEANDPLAY)
-            sb.add_option("unlock play modes");
+            option("unlock play modes");
 #endif
-            sb.add_option("game pad options");
-            sb.add_option("clear data");
+            option("game pad options");
+            option("clear data");
             // Add extra menu for mmmmmm mod
             if (music.mmmmmm) {
-                sb.add_option("soundtrack");
+                option("soundtrack");
             }
 
-            sb.add_option("return");
-            sb.yoff = 0;
+            option("return");
+            menuyoff = 0;
             break;
         case Menu::advancedoptions:
-            sb.add_option("toggle mouse");
-            sb.add_option("unfocus pause");
-            sb.add_option("fake load screen");
-            sb.add_option("room name background");
-            sb.add_option("glitchrunner mode");
-            sb.add_option("return");
-            sb.yoff = 0;
+            option("toggle mouse");
+            option("unfocus pause");
+            option("fake load screen");
+            option("room name background");
+            option("glitchrunner mode");
+            option("return");
+            menuyoff = 0;
             break;
         case Menu::accessibility:
-            sb.add_option("animated backgrounds");
-            sb.add_option("screen effects");
-            sb.add_option("text outline");
-            sb.add_option("invincibility",
-                          !ingame_titlemode ||
-                              (!game.insecretlab && !game.intimetrial &&
-                               !game.nodeathmode));
-            sb.add_option("slowdown",
-                          !ingame_titlemode ||
-                              (!game.insecretlab && !game.intimetrial &&
-                               !game.nodeathmode));
-            sb.add_option("return");
-            sb.yoff = 0;
+            option("animated backgrounds");
+            option("screen effects");
+            option("text outline");
+            option("invincibility",
+                   !ingame_titlemode ||
+                       (!game.insecretlab && !game.intimetrial &&
+                        !game.nodeathmode));
+            option("slowdown",
+                   !ingame_titlemode ||
+                       (!game.insecretlab && !game.intimetrial &&
+                        !game.nodeathmode));
+            option("return");
+            menuyoff = 0;
             break;
         case Menu::controller:
-            sb.add_option("analog stick sensitivity");
-            sb.add_option("bind flip");
-            sb.add_option("bind enter");
-            sb.add_option("bind menu");
-            sb.add_option("bind restart");
-            sb.add_option("return");
-            sb.yoff = 10;
+            option("analog stick sensitivity");
+            option("bind flip");
+            option("bind enter");
+            option("bind menu");
+            option("bind restart");
+            option("return");
+            menuyoff = 10;
             break;
         case Menu::cleardatamenu:
-            sb.add_option("no! don't delete");
-            sb.add_option("yes, delete everything");
-            sb.yoff = 64;
+            option("no! don't delete");
+            option("yes, delete everything");
+            menuyoff = 64;
             break;
         case Menu::setinvincibility:
-            sb.add_option("no, return to options");
-            sb.add_option("yes, enable");
-            sb.yoff = 64;
+            option("no, return to options");
+            option("yes, enable");
+            menuyoff = 64;
             break;
         case Menu::setslowdown:
-            sb.add_option("normal speed");
-            sb.add_option("80% speed");
-            sb.add_option("60% speed");
-            sb.add_option("40% speed");
-            sb.yoff = 16;
+            option("normal speed");
+            option("80% speed");
+            option("60% speed");
+            option("40% speed");
+            menuyoff = 16;
             break;
         case Menu::unlockmenu:
-            sb.add_option("unlock time trials");
-            sb.add_option("unlock intermissions", !unlock[16]);
-            sb.add_option("unlock no death mode", !unlock[17]);
-            sb.add_option("unlock flip mode", !unlock[18]);
-            sb.add_option("unlock ship jukebox", (stat_trinkets < 20));
-            sb.add_option("unlock secret lab", !unlock[8]);
-            sb.add_option("return");
-            sb.yoff = -20;
+            option("unlock time trials");
+            option("unlock intermissions", !unlock[16]);
+            option("unlock no death mode", !unlock[17]);
+            option("unlock flip mode", !unlock[18]);
+            option("unlock ship jukebox", (stat_trinkets < 20));
+            option("unlock secret lab", !unlock[8]);
+            option("return");
+            menuyoff = -20;
             break;
         case Menu::credits:
-            sb.add_option("next page");
-            sb.add_option("last page");
-            sb.add_option("return");
-            sb.yoff = 64;
+            option("next page");
+            option("last page");
+            option("return");
+            menuyoff = 64;
             break;
         case Menu::credits2:
-            sb.add_option("next page");
-            sb.add_option("previous page");
-            sb.add_option("return");
-            sb.yoff = 64;
+            option("next page");
+            option("previous page");
+            option("return");
+            menuyoff = 64;
             break;
         case Menu::credits25:
-            sb.add_option("next page");
-            sb.add_option("previous page");
-            sb.add_option("return");
-            sb.yoff = 64;
+            option("next page");
+            option("previous page");
+            option("return");
+            menuyoff = 64;
             break;
         case Menu::credits3:
-            sb.add_option("next page");
-            sb.add_option("previous page");
-            sb.add_option("return");
-            sb.yoff = 64;
+            option("next page");
+            option("previous page");
+            option("return");
+            menuyoff = 64;
             break;
         case Menu::credits4:
-            sb.add_option("next page");
-            sb.add_option("previous page");
-            sb.add_option("return");
-            sb.yoff = 64;
+            option("next page");
+            option("previous page");
+            option("return");
+            menuyoff = 64;
             break;
         case Menu::credits5:
-            sb.add_option("next page");
-            sb.add_option("previous page");
-            sb.add_option("return");
-            sb.yoff = 64;
+            option("next page");
+            option("previous page");
+            option("return");
+            menuyoff = 64;
             break;
         case Menu::credits6:
-            sb.add_option("first page");
-            sb.add_option("previous page");
-            sb.add_option("return");
-            sb.yoff = 64;
+            option("first page");
+            option("previous page");
+            option("return");
+            menuyoff = 64;
             break;
         case Menu::play: {
             // Ok, here's where the unlock stuff comes into it:
@@ -6228,24 +6379,24 @@ void Game::createmenu(enum Menu::name t, bool samemenu)
                     savemystats = true;
                 } else {
                     if (save_exists()) {
-                        sb.add_option("continue");
+                        option("continue");
                     } else {
-                        sb.add_option("new game");
+                        option("new game");
                     }
                     // ok, secret lab! no notification, but test:
                     if (unlock[8]) {
-                        sb.add_option("secret lab",
-                                      !map.invincibility && slowdown == 30);
+                        option("secret lab",
+                               !map.invincibility && slowdown == 30);
                     }
-                    sb.add_option("play modes");
+                    option("play modes");
                     if (save_exists()) {
-                        sb.add_option("new game");
+                        option("new game");
                     }
-                    sb.add_option("return");
+                    option("return");
                     if (unlock[8]) {
-                        sb.yoff = -30;
+                        menuyoff = -30;
                     } else {
-                        sb.yoff = -40;
+                        menuyoff = -40;
                     }
                 }
             }
@@ -6256,114 +6407,114 @@ void Game::createmenu(enum Menu::name t, bool samemenu)
         case Menu::unlocknodeathmode:
         case Menu::unlockintermission:
         case Menu::unlockflipmode:
-            sb.add_option("continue");
-            sb.yoff = 70;
+            option("continue");
+            menuyoff = 70;
             break;
         case Menu::newgamewarning:
-            sb.add_option("start new game");
-            sb.add_option("return to menu");
-            sb.yoff = 64;
+            option("start new game");
+            option("return to menu");
+            menuyoff = 64;
             break;
         case Menu::playmodes:
-            sb.add_option("time trials", !map.invincibility && slowdown == 30);
-            sb.add_option("intermissions", unlock[16]);
-            sb.add_option("no death mode",
-                          unlock[17] && !map.invincibility && slowdown == 30);
-            sb.add_option("flip mode", unlock[18]);
-            sb.add_option("return to play menu");
-            sb.yoff = 8;
+            option("time trials", !map.invincibility && slowdown == 30);
+            option("intermissions", unlock[16]);
+            option("no death mode",
+                   unlock[17] && !map.invincibility && slowdown == 30);
+            option("flip mode", unlock[18]);
+            option("return to play menu");
+            menuyoff = 8;
             maxspacing = 20;
             break;
         case Menu::intermissionmenu:
-            sb.add_option("play intermission 1");
-            sb.add_option("play intermission 2");
-            sb.add_option("return to play menu");
-            sb.yoff = -35;
+            option("play intermission 1");
+            option("play intermission 2");
+            option("return to play menu");
+            menuyoff = -35;
             break;
         case Menu::playint1:
-            sb.add_option("Vitellary");
-            sb.add_option("Vermilion");
-            sb.add_option("Verdigris");
-            sb.add_option("Victoria");
-            sb.add_option("return");
-            sb.yoff = 10;
+            option("Vitellary");
+            option("Vermilion");
+            option("Verdigris");
+            option("Victoria");
+            option("return");
+            menuyoff = 10;
             break;
         case Menu::playint2:
-            sb.add_option("Vitellary");
-            sb.add_option("Vermilion");
-            sb.add_option("Verdigris");
-            sb.add_option("Victoria");
-            sb.add_option("return");
-            sb.yoff = 10;
+            option("Vitellary");
+            option("Vermilion");
+            option("Verdigris");
+            option("Victoria");
+            option("return");
+            menuyoff = 10;
             break;
         case Menu::continuemenu:
             map.settowercolour(3);
-            sb.add_option("continue from teleporter");
-            sb.add_option("continue from quicksave");
-            sb.add_option("return to play menu");
-            sb.yoff = 20;
+            option("continue from teleporter");
+            option("continue from quicksave");
+            option("return to play menu");
+            menuyoff = 20;
             break;
         case Menu::startnodeathmode:
-            sb.add_option("disable cutscenes");
-            sb.add_option("enable cutscenes");
-            sb.add_option("return to play menu");
-            sb.yoff = 40;
+            option("disable cutscenes");
+            option("enable cutscenes");
+            option("return to play menu");
+            menuyoff = 40;
             break;
         case Menu::gameover:
-            menu_.countdown = 120;
-            menu_.destination = Menu::gameover2;
+            menucountdown = 120;
+            menudest = Menu::gameover2;
             break;
         case Menu::gameover2:
-            sb.add_option("return to play menu");
-            sb.yoff = 80;
+            option("return to play menu");
+            menuyoff = 80;
             break;
         case Menu::unlockmenutrials:
-            sb.add_option("space station 1", !unlock[9]);
-            sb.add_option("the laboratory", !unlock[10]);
-            sb.add_option("the tower", !unlock[11]);
-            sb.add_option("space station 2", !unlock[12]);
-            sb.add_option("the warp zone", !unlock[13]);
-            sb.add_option("the final level", !unlock[14]);
+            option("space station 1", !unlock[9]);
+            option("the laboratory", !unlock[10]);
+            option("the tower", !unlock[11]);
+            option("space station 2", !unlock[12]);
+            option("the warp zone", !unlock[13]);
+            option("the final level", !unlock[14]);
 
-            sb.add_option("return to unlock menu");
-            sb.yoff = 0;
+            option("return to unlock menu");
+            menuyoff = 0;
             break;
         case Menu::timetrials:
-            sb.add_option(unlock[9] ? "space station 1" : "???", unlock[9]);
-            sb.add_option(unlock[10] ? "the laboratory" : "???", unlock[10]);
-            sb.add_option(unlock[11] ? "the tower" : "???", unlock[11]);
-            sb.add_option(unlock[12] ? "space station 2" : "???", unlock[12]);
-            sb.add_option(unlock[13] ? "the warp zone" : "???", unlock[13]);
-            sb.add_option(unlock[14] ? "the final level" : "???", unlock[14]);
+            option(unlock[9] ? "space station 1" : "???", unlock[9]);
+            option(unlock[10] ? "the laboratory" : "???", unlock[10]);
+            option(unlock[11] ? "the tower" : "???", unlock[11]);
+            option(unlock[12] ? "space station 2" : "???", unlock[12]);
+            option(unlock[13] ? "the warp zone" : "???", unlock[13]);
+            option(unlock[14] ? "the final level" : "???", unlock[14]);
 
-            sb.add_option("return to play menu");
-            sb.yoff = 0;
+            option("return to play menu");
+            menuyoff = 0;
             maxspacing = 15;
             break;
         case Menu::nodeathmodecomplete:
-            menu_.countdown = 90;
-            menu_.destination = Menu::nodeathmodecomplete2;
+            menucountdown = 90;
+            menudest = Menu::nodeathmodecomplete2;
             break;
         case Menu::nodeathmodecomplete2:
-            sb.add_option("return to play menu");
-            sb.yoff = 70;
+            option("return to play menu");
+            menuyoff = 70;
             break;
         case Menu::timetrialcomplete:
-            menu_.countdown = 90;
-            menu_.destination = Menu::timetrialcomplete2;
+            menucountdown = 90;
+            menudest = Menu::timetrialcomplete2;
             break;
         case Menu::timetrialcomplete2:
-            menu_.countdown = 60;
-            menu_.destination = Menu::timetrialcomplete3;
+            menucountdown = 60;
+            menudest = Menu::timetrialcomplete3;
             break;
         case Menu::timetrialcomplete3:
-            sb.add_option("return to play menu");
-            sb.add_option("try again");
-            sb.yoff = 70;
+            option("return to play menu");
+            option("try again");
+            menuyoff = 70;
             break;
         case Menu::gamecompletecontinue:
-            sb.add_option("return to play menu");
-            sb.yoff = 70;
+            option("return to play menu");
+            menuyoff = 70;
             break;
     }
 
@@ -6375,20 +6526,20 @@ void Game::createmenu(enum Menu::name t, bool samemenu)
     // pixels to the left)
     bool done_once = false;
     int menuwidth = 0;
-    for (; !done_once || (menuwidth > 272 && sb.spacing > 0); maxspacing -= 5) {
+    for (; !done_once || (menuwidth > 272 && menuspacing > 0);
+         maxspacing -= 5) {
         done_once = true;
-        sb.spacing = maxspacing;
+        menuspacing = maxspacing;
         menuwidth = 0;
-        for (size_t i = 0; i < sb.options.size(); i++) {
-            int width = i * sb.spacing + graphics.len(sb.options[i].text);
+        for (size_t i = 0; i < menuoptions.size(); i++) {
+            int width = i * menuspacing + graphics.len(menuoptions[i].text);
             if (width > menuwidth)
                 menuwidth = width;
         }
     }
-    sb.xoff = (320 - menuwidth) / 2;
-
-    menu_.go(sb, samemenu);
+    menuxoff = (320 - menuwidth) / 2;
 }
+
 void Game::deletequick()
 {
     if (!FILESYSTEM_delete("saves/qsave.vvv"))
@@ -6481,7 +6632,9 @@ int Game::crewrescued()
 void Game::resetgameclock()
 {
     frames = 0;
-    stat.resetClock();
+    seconds = 0;
+    minutes = 0;
+    hours = 0;
 }
 
 int Game::trinkets()
@@ -6540,18 +6693,18 @@ void Game::quittomenu()
     // or "do you want cutscenes?"
     // or the confirm-load-quicksave menu
     if (intimetrial) {
-        menu_.back(Menu::timetrials);
+        returntomenu(Menu::timetrials);
     } else if (inintermission) {
-        menu_.back(Menu::intermissionmenu);
+        returntomenu(Menu::intermissionmenu);
     } else if (nodeathmode) {
-        menu_.back(Menu::playmodes);
+        returntomenu(Menu::playmodes);
     } else if (map.custommode) {
-        menu_.back(Menu::levellist);
+        returntomenu(Menu::levellist);
     } else if (save_exists() || anything_unlocked()) {
-        menu_.back(Menu::play);
+        returntomenu(Menu::play);
         if (!insecretlab) {
             // Select "continue"
-            menu_.setCurOptIdx(0);
+            currentmenuoption = 0;
         }
     } else {
         createmenu(Menu::mainmenu);
@@ -6619,7 +6772,7 @@ void Game::returntoeditor()
 void Game::returntopausemenu()
 {
     ingame_titlemode = false;
-    menu_.back(menu_.kludge_ingametemp);
+    returntomenu(kludge_ingametemp);
     gamestate = MAPMODE;
     map.kludge_to_bg();
     map.tdrawback = true;

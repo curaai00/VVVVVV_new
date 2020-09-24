@@ -3,10 +3,11 @@
 #include <physfs.h>
 #include <tinyxml2.h>
 
+// clang-format off
 #if defined(_WIN32)
+#include <windows.h>
 #include <shellapi.h>
 #include <shlobj.h>
-#include <windows.h>
 // clang-format on
 
 #elif defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) ||      \

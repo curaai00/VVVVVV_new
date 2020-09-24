@@ -5,22 +5,88 @@
 #include <string>
 #include <vector>
 
-#include "Menu.h"
-#include "Stat.h"
+struct MenuOption
+{
+    char text[161]; // 40 chars (160 bytes) covers the entire screen, + 1 more for null terminator
+    // WARNING: should match Game::menutextbytes below
+    bool active;
+};
 
-bool GetButtonFromString(const char* pText, SDL_GameControllerButton* button);
+//Menu IDs
+namespace Menu
+{
+    enum MenuName
+    {
+        mainmenu,
+        playerworlds,
+        levellist,
+        quickloadlevel,
+        youwannaquit,
+        errornostart,
+        graphicoptions,
+        ed_settings,
+        ed_desc,
+        ed_music,
+        ed_quit,
+        options,
+        advancedoptions,
+        accessibility,
+        controller,
+        cleardatamenu,
+        setinvincibility,
+        setslowdown,
+        unlockmenu,
+        credits,
+        credits2,
+        credits25,
+        credits3,
+        credits4,
+        credits5,
+        credits6,
+        play,
+        unlocktimetrial,
+        unlocktimetrials,
+        unlocknodeathmode,
+        unlockintermission,
+        unlockflipmode,
+        newgamewarning,
+        playmodes,
+        intermissionmenu,
+        playint1,
+        playint2,
+        continuemenu,
+        startnodeathmode,
+        gameover,
+        gameover2,
+        unlockmenutrials,
+        timetrials,
+        nodeathmodecomplete,
+        nodeathmodecomplete2,
+        timetrialcomplete,
+        timetrialcomplete2,
+        timetrialcomplete3,
+        gamecompletecontinue,
+    };
+};
+
+struct MenuStackFrame
+{
+    int option;
+    enum Menu::MenuName name;
+};
 
 struct CustomLevelStat
 {
     std::string name;
-    int score; // 0 - not played, 1 - finished, 2 - all trinkets, 3 - finished,
-               // all trinkets
+    int score; //0 - not played, 1 - finished, 2 - all trinkets, 3 - finished, all trinkets
 };
+
 
 class Game
 {
 public:
     void init(void);
+
 
     int crewrescued();
 
@@ -35,7 +101,7 @@ public:
 
     std::string giventimestring(int hrs, int min, int sec);
 
-    std::string timestring();
+    std::string  timestring();
 
     std::string partimestring();
 
@@ -43,7 +109,9 @@ public:
 
     std::string timetstring(int t);
 
-    void createmenu(enum Menu::name t, bool samemenu = false);
+    void returnmenu();
+    void returntomenu(enum Menu::MenuName t);
+    void  createmenu(enum Menu::MenuName t, bool samemenu = false);
 
     void lifesequence();
 
@@ -53,9 +121,9 @@ public:
 
     void unlocknum(int t);
 
-    void loadstats(int* width, int* height, bool* vsync);
+    void loadstats(int *width, int *height, bool *vsync);
 
-    void savestats();
+    void  savestats();
 
     void deletestats();
 
@@ -88,6 +156,7 @@ public:
 
     std::string saveFilePath;
 
+
     int door_left;
     int door_right;
     int door_up;
@@ -98,11 +167,11 @@ public:
     int savex, savey, saverx, savery;
     int savegc, savedir;
 
-    // Added for port
+    //Added for port
     int edsavex, edsavey, edsaverx, edsavery;
     int edsavegc, edsavedir;
 
-    // State logic stuff
+    //State logic stuff
     int state, statedelay;
 
     bool glitchrunkludge;
@@ -121,13 +190,15 @@ public:
 
     int tapleft, tapright;
 
-    // Menu interaction stuff
+    //Menu interaction stuff
     bool mapheld;
     int menupage;
     int lastsaved;
     int deathcounts;
 
     int frames, seconds, minutes, hours;
+    bool gamesaved;
+    std::string savetime;
     std::string savearea;
     int savetrinkets;
     bool startscript;
@@ -136,32 +207,51 @@ public:
     int mainmenu;
     bool menustart;
 
-    // Teleporting
+    //Teleporting
     bool teleport_to_new_area;
     int teleport_to_x, teleport_to_y;
     std::string teleportscript;
     bool useteleporter;
     int teleport_to_teleporter;
 
-    // Main Menu Variables
-    SimpleMenu menu_;
-
+    //Main Menu Variables
+    std::vector<MenuOption> menuoptions;
+    int currentmenuoption ;
+    enum Menu::MenuName currentmenuname;
+    enum Menu::MenuName kludge_ingametemp;
     int current_credits_list_index;
+    int menuxoff, menuyoff;
+    int menuspacing;
+    static const int menutextbytes = 161; // this is just sizeof(MenuOption::text), but doing that is non-standard
+    std::vector<MenuStackFrame> menustack;
+
+    void inline option(const char* text, bool active = true)
+    {
+        MenuOption menuoption;
+        SDL_strlcpy(menuoption.text, text, sizeof(menuoption.text));
+        menuoption.active = active;
+        menuoptions.push_back(menuoption);
+    }
+
+    int menucountdown;
+    enum Menu::MenuName menudest;
+
     int creditposx, creditposy, creditposdelay;
     int oldcreditposx;
 
-    // Sine Wave Ninja Minigame
+
+    //Sine Wave Ninja Minigame
     bool swnmode;
     int swngame, swnstate, swnstate2, swnstate3, swnstate4, swndelay, swndeaths;
     int swntimer, swncolstate, swncoldelay;
-    int swnrecord, swnbestrank, swnrank, swnmessage;
+    int  swnrecord, swnbestrank, swnrank, swnmessage;
 
-    // SuperCrewMate Stuff
+    //SuperCrewMate Stuff
     bool supercrewmate, scmhurt, scmmoveme;
     int scmprogress;
 
-    // Accessibility Options
-    bool colourblindmode;
+    //Accessibility Options
+    bool  colourblindmode;
     bool noflashingmode;
     int slowdown;
     Uint32 gameframerate;
@@ -170,7 +260,7 @@ public:
     int gameoverdelay;
     bool nocutscenes;
 
-    // Time Trials
+    //Time Trials
     bool intimetrial, timetrialparlost;
     int timetrialcountdown, timetrialshinytarget, timetriallevel;
     int timetrialpar, timetrialresulttime, timetrialresultframes, timetrialrank;
@@ -199,6 +289,7 @@ public:
     int stat_trinkets;
     bool fullscreen;
     int bestgamedeaths;
+
 
     static const int numtrials = 6;
     int besttimes[numtrials];
@@ -248,12 +339,13 @@ public:
 
     bool press_left, press_right, press_action, press_map;
 
-    // Some stats:
+    //Some stats:
     int totalflips;
     std::string hardestroom;
     int hardestroomdeaths, currentroomdeaths;
 
     bool savemystats;
+
 
     bool fullScreenEffect_badSignal;
     bool useLinearFilter;
@@ -262,7 +354,7 @@ public:
 
     bool quickrestartkludge;
 
-    // Custom stuff
+    //Custom stuff
     std::string customscript[50];
     int customcol;
     int levelpage;
@@ -277,6 +369,7 @@ public:
 
     std::vector<CustomLevelStat> customlevelstats;
     bool customlevelstatsloaded;
+
 
     std::vector<SDL_GameControllerButton> controllerButton_map;
     std::vector<SDL_GameControllerButton> controllerButton_flip;
@@ -321,11 +414,9 @@ public:
 
     bool shouldreturntopausemenu;
     void returntopausemenu();
-    void unlockAchievement(const char* name);
+    void unlockAchievement(const char *name);
 
     bool disablepause;
-
-    Stat stat;
 };
 
 extern Game game;

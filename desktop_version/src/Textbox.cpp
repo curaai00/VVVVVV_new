@@ -45,14 +45,10 @@ void textboxclass::centery()
 void textboxclass::adjust()
 {
     resize();
-    if (xp < 10)
-        xp = 10;
-    if (yp < 10)
-        yp = 10;
-    if (xp + w > 310)
-        xp = 310 - w;
-    if (yp + h > 230)
-        yp = 230 - h;
+    if (xp < 10) xp = 10;
+    if (yp < 10) yp = 10;
+    if (xp + w > 310) xp = 310 - w;
+    if (yp + h > 230) yp = 230 - h;
     resize();
 }
 
@@ -77,51 +73,55 @@ void textboxclass::setcol(int rr, int gg, int bb)
 void textboxclass::update()
 {
     prev_tl = tl;
-    if (tm == 0) {
+    if (tm == 0)
+    {
         tl += .1f;
-        if (tl >= 1) {
+        if (tl >= 1)
+        {
             tl = 1;
             tm = 1;
         }
-    } else if (tm == 2) {
+    }
+    else if (tm == 2)
+    {
         tl -= .1f;
-        if (tl <= 0.5) {
+        if (tl <= 0.5)
+        {
             tl = 0.5;
-            // this textbox will be removed by updatetextboxes() later
+            //this textbox will be removed by updatetextboxes() later
         }
     }
-    if (timer > 0) {
+    if (timer > 0)
+    {
         timer--;
-        if (timer == 0)
-            tm = 2;
+        if (timer == 0) tm = 2;
     }
 }
 
 void textboxclass::remove()
 {
     tm = 2;
-    tl = 1.0f; // Remove mode
+    tl = 1.0f; //Remove mode
 }
 
 void textboxclass::removefast()
 {
     tm = 2;
-    tl = 0.4f; // Remove mode
+    tl = 0.4f; //Remove mode
 }
 
 void textboxclass::resize()
 {
-    // Set the width and height to the correct sizes
+    //Set the width and height to the correct sizes
     max = 0;
-    for (size_t iter = 0; iter < line.size(); iter++) {
-        unsigned int len =
-            utf8::unchecked::distance(line[iter].begin(), line[iter].end());
-        if (len > (unsigned int)max)
-            max = len;
+    for (size_t iter = 0; iter < line.size(); iter++)
+    {
+        unsigned int len = utf8::unchecked::distance(line[iter].begin(), line[iter].end());
+        if (len > (unsigned int)max) max = len;
     }
 
     lw = max;
-    w = (max + 2) * 8;
+    w = (max +2) * 8;
     h = (line.size() + 2) * 8;
     textrect.x = xp;
     textrect.y = yp;
@@ -133,6 +133,5 @@ void textboxclass::addline(std::string t)
 {
     line.push_back(t);
     resize();
-    if ((int)line.size() >= 12)
-        line.clear();
+    if ((int) line.size() >= 12) line.clear();
 }
