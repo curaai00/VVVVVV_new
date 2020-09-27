@@ -1,5 +1,6 @@
 #include "Resource.h"
 
+#include <exception>
 #include <physfs.h>
 #include <tinyxml2.h>
 
@@ -73,6 +74,12 @@ void Asset::load(bool addnull)
     _load(fileIn, length);
 
     free(fileIn);
+
+    if (!length) {
+        std::string err_msg =
+            std::string{ "Can't find asset-resource from path: " } + asset_path;
+        throw std::invalid_argument(err_msg);
+    }
 }
 
 void PNGAsset::_load(unsigned char* fileIn, size_t length)

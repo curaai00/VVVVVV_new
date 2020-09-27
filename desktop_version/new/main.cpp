@@ -31,6 +31,8 @@ int main(int argc, char* argv[])
         key.pull();
         win.render();
         SDL_Delay(50);
+
+        win.back.scroll();
     }
 
     return 0;

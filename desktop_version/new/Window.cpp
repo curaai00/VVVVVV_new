@@ -20,6 +20,7 @@ Window::Window()
 
 void Window::render(void)
 {
+    back.draw();
     SDL_BlitSurface(back.surface, NULL, m_screen, NULL);
 
     SDL_UpdateTexture(m_screenTexture, NULL, m_screen->pixels, m_screen->pitch);

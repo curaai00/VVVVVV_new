@@ -2,7 +2,7 @@
 
 #include "Resource.h"
 
-#include <SDL.h>
+#include "SDL.h"
 #include <array>
 #include <vector>
 
@@ -12,35 +12,26 @@ public:
     Background();
 
     void draw(void);
+    void scroll(void);
 
     JsonAsset towerdata{ "tower.json" };
-    PNGAsset colortile{ "graphics/tile3.png" };
+    PNGAsset colortile{ "graphics/tiles3.png" };
 
-    // std::array<unsigned short, 4800> tower;
     std::vector<unsigned short> tower;
     SDL_Surface* surface;
     std::vector<SDL_Surface*> tiles;
+
+private:
+    unsigned int scroll_start_y = 0;
 };
 
-inline SDL_Surface* GetSubSurface(SDL_Surface* metaSurface,
-                                  int x,
-                                  int y,
-                                  int width,
-                                  int height)
+inline SDL_Surface* GetSubSurface(SDL_Surface* metaSurface, SDL_Rect area)
 {
-    // Create an SDL_Rect with the area of the _surface
-    SDL_Rect area;
-    area.x = x;
-    area.y = y;
-    area.w = width;
-    area.h = height;
-
-    // Convert to the correct display format after nabbing the new _surface or
     // we will slow things down.
     SDL_Surface* preSurface =
         SDL_CreateRGBSurface(SDL_SWSURFACE,
-                             width,
-                             height,
+                             area.w,
+                             area.h,
                              metaSurface->format->BitsPerPixel,
                              metaSurface->format->Rmask,
                              metaSurface->format->Gmask,
