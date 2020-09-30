@@ -3,6 +3,7 @@
 // #include <SDL2/SDL.h>
 #include "SDL.h"
 #include <map>
+#include <vector>
 
 class KeyPull
 {
@@ -22,6 +23,14 @@ public:
         if (keymap.find(k) != keymap.end())
             return !keymap.at(k);
         return true;
+    }
+    std::vector<SDL_Keycode> pressedKeys(void) const
+    {
+        std::vector<SDL_Keycode> keys;
+        for (auto k_iter = keymap.begin(); k_iter != keymap.end(); k_iter++)
+            if (k_iter->second)
+                keys.push_back(k_iter->first);
+        return keys;
     }
 
 private:

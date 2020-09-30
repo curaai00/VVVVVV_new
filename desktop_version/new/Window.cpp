@@ -16,6 +16,8 @@ Window::Window()
     SDL_SetWindowTitle(m_window, "VVVVVV");
     auto icon = PNGAsset("VVVVVV.png");
     SDL_SetWindowIcon(m_window, icon.asset);
+
+    addEventable(&back);
 }
 
 void Window::render(void)
@@ -30,8 +32,9 @@ void Window::render(void)
     SDL_FillRect(m_screen, NULL, 0x00000000);
 }
 
-void Window::event(const KeyPull& k)
+void Window::key_event(const KeyPull& key_pull)
 {
-    if (k.isDown(SDLK_SPACE))
-        back.setColor();
+    auto pressed_keys = key_pull.pressedKeys();
+    for (auto k : pressed_keys)
+        event(k);
 }

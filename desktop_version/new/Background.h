@@ -2,17 +2,21 @@
 
 #include "Resource.h"
 
+#include "Eventable.h"
 #include "SDL.h"
+
 #include <array>
 #include <vector>
 
-class Background
+class Background : public Eventable
 {
 public:
     Background();
 
     void draw(void);
     void scroll(void);
+
+    bool event(const SDL_Keycode k) override;
 
     JsonAsset towerdata{ "tower.json" };
     PNGAsset colortile{ "graphics/tiles3.png" };

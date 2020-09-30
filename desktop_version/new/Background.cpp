@@ -35,6 +35,18 @@ void Background::scroll(void)
     ++_scroll_start_y %= 120;
 }
 
+bool Background::event(const SDL_Keycode k)
+{
+    switch (k) {
+        case SDLK_SPACE:
+            setColor();
+            break;
+        default:
+            return false;
+    }
+    return true;
+}
+
 unsigned int Background::getColor(void) const
 {
     return _color;
