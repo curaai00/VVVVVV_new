@@ -29,3 +29,9 @@ void Window::render(void)
     SDL_RenderClear(m_renderer);
     SDL_FillRect(m_screen, NULL, 0x00000000);
 }
+
+void Window::event(const KeyPull& k)
+{
+    if (k.isDown(SDLK_SPACE))
+        back.setColor();
+}

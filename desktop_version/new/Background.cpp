@@ -8,26 +8,47 @@ Background::Background()
     auto res = towerdata.asset.count("background");
     tower = towerdata.asset["background"].get<std::vector<unsigned short>>();
 
-    for (int j = 0; j < colortile.asset->h / 8; j++)
-        for (int i = 0; i < colortile.asset->w / 8; i++)
-            tiles.push_back(
-                GetSubSurface(colortile.asset, SDL_Rect{ i * 8, j * 8, 8, 8 }));
+    for (int j = 0; j < colortile.asset->h; j += 8) {
+        for (int i = 0; i < colortile.asset->w; i += 8) {
+            auto tile = GetSubSurface(colortile.asset, SDL_Rect{ i, j, 8, 8 });
+            // SDL_LockSurface(tile);
+            tiles.push_back(tile);
+        }
+    }
 }
 
 void Background::draw(void)
 {
     for (int y = 0; y < 30; y++) {
         for (int x = 0; x < 40; x++) {
-            auto yoff = (scroll_start_y + y) % 120;
+            auto yoff = (_scroll_start_y + y) % 120;
             auto var = tower[yoff * 40 + x];
 
             SDL_Rect rect{ x * 8, y * 8, 8, 8 };
-            SDL_BlitSurface(tiles[var], NULL, surface, &rect);
+            SDL_BlitSurface(tiles[var + _color * 30], NULL, surface, &rect);
         }
     }
 }
 
 void Background::scroll(void)
 {
-    ++scroll_start_y %= 120;
+    ++_scroll_start_y %= 120;
+}
+
+unsigned int Background::getColor(void) const
+{
+    return _color;
+}
+
+void Background::setColor(void)
+{
+    ++_color %= 30;
+}
+
+void Background::setColor(unsigned int c)
+{
+    if (0 <= c && c < 30)
+        _color = c;
+    else
+        throw std::out_of_range("This Color out of tile colorspace");
 }

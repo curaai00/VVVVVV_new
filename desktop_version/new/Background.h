@@ -21,8 +21,13 @@ public:
     SDL_Surface* surface;
     std::vector<SDL_Surface*> tiles;
 
+    unsigned int getColor(void) const;
+    void setColor(void);
+    void setColor(unsigned int c);
+
 private:
-    unsigned int scroll_start_y = 0;
+    unsigned int _color = 0;
+    unsigned int _scroll_start_y = 0;
 };
 
 inline SDL_Surface* GetSubSurface(SDL_Surface* metaSurface, SDL_Rect area)
@@ -37,14 +42,7 @@ inline SDL_Surface* GetSubSurface(SDL_Surface* metaSurface, SDL_Rect area)
                              metaSurface->format->Gmask,
                              metaSurface->format->Bmask,
                              metaSurface->format->Amask);
-    // SDL_Surface* subSurface = SDL_DisplayFormatAlpha(preSurface);
-
-    // SDL_FreeSurface(preSurface);
-
-    // Lastly, apply the area from the meta _surface onto the whole of the sub
-    // _surface.
     SDL_BlitSurface(metaSurface, &area, preSurface, 0);
 
-    // Return the new Bitmap _surface
     return preSurface;
 }

@@ -29,6 +29,8 @@ int main(int argc, char* argv[])
 
     while (key.isUp(SDLK_ESCAPE)) {
         key.pull();
+        win.event(key);
+
         win.render();
         SDL_Delay(50);
 
