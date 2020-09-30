@@ -16,9 +16,19 @@ Background::Background()
         }
     }
 }
+Background::~Background()
+{
+    if (surface)
+        SDL_FreeSurface(surface);
+    for (auto tile : tiles)
+        if (tile)
+            SDL_FreeSurface(tile);
+}
 
 void Background::draw(void)
 {
+    SDL_UnlockSurface(surface);
+
     for (int y = 0; y < 30; y++) {
         for (int x = 0; x < 40; x++) {
             auto yoff = (_scroll_start_y + y) % 120;
@@ -28,6 +38,8 @@ void Background::draw(void)
             SDL_BlitSurface(tiles[var + _color * 30], NULL, surface, &rect);
         }
     }
+
+    SDL_LockSurface(surface);
 }
 
 void Background::scroll(void)

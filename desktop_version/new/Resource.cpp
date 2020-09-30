@@ -82,6 +82,17 @@ void Asset::load(bool addnull)
     }
 }
 
+PNGAsset::PNGAsset(const char* relative_asset_path)
+    : Asset(relative_asset_path)
+{
+    load();
+}
+PNGAsset::~PNGAsset()
+{
+    if (asset)
+        SDL_FreeSurface(asset);
+}
+
 void PNGAsset::_load(unsigned char* fileIn, size_t length)
 {
     unsigned char* data;
@@ -92,6 +103,12 @@ void PNGAsset::_load(unsigned char* fileIn, size_t length)
         data, w, h, 24, w * 3, 0x000000FF, 0x0000FF00, 0x00FF0000, 0x00000000);
 
     free(data);
+}
+
+JsonAsset::JsonAsset(const char* relative_asset_path)
+    : Asset(relative_asset_path)
+{
+    load(true);
 }
 
 JsonAsset::~JsonAsset() {}

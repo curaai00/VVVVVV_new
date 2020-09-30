@@ -29,12 +29,8 @@ protected:
 class PNGAsset : public Asset
 {
 public:
-    PNGAsset(const char* relative_asset_path)
-        : Asset(relative_asset_path)
-    {
-        load();
-    }
-    inline virtual ~PNGAsset() { SDL_FreeSurface(asset); }
+    PNGAsset(const char* relative_asset_path);
+    virtual ~PNGAsset();
 
 protected:
     virtual void _load(unsigned char* fileIn, size_t length) override;
@@ -46,11 +42,7 @@ public:
 class JsonAsset : public Asset
 {
 public:
-    JsonAsset(const char* relative_asset_path)
-        : Asset(relative_asset_path)
-    {
-        load(true);
-    }
+    JsonAsset(const char* relative_asset_path);
     virtual ~JsonAsset();
 
 protected:

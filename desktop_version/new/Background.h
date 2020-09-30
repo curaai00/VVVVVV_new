@@ -12,6 +12,7 @@ class Background : public Eventable
 {
 public:
     Background();
+    ~Background();
 
     void draw(void);
     void scroll(void);
