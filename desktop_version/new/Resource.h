@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <json.hpp>
 
+#include <map>
 #include <stdlib.h>
 
 class Resource
@@ -50,4 +51,52 @@ protected:
 
 public:
     nlohmann::json asset;
+};
+
+class FontAsset : public Asset
+{
+public:
+    FontAsset(const char* relative_asset_path);
+    virtual ~FontAsset();
+protected:
+    virtual void _load(unsigned char* fileIn, size_t length) override;
+
+public:
+    int getFontIdx(uint32_t ch);
+    static int getFontLen(uint32_t ch);
+
+    std::map<int, int> font_positions;
+};
+
+class TileAsset : public PNGAsset
+{
+public:
+    TileAsset(const char* relatvie_asset_path);
+    virtual ~TileAsset();
+    SDL_Surface* getTile(unsigned int i) const;
+    size_t getTileSize(void) { return tiles.size(); }
+
+protected:
+    virtual void _load(unsigned char* fileIn, size_t length) override;
+
+private:
+    inline SDL_Surface* GetSubSurface(SDL_Rect area)
+    {
+        // we will slow things down.
+        SDL_Surface* preSurface =
+            SDL_CreateRGBSurface(SDL_SWSURFACE,
+                                 area.w,
+                                 area.h,
+                                 asset->format->BitsPerPixel,
+                                 asset->format->Rmask,
+                                 asset->format->Gmask,
+                                 asset->format->Bmask,
+                                 asset->format->Amask);
+        SDL_BlitSurface(asset, &area, preSurface, 0);
+
+        return preSurface;
+    }
+
+private:
+    std::vector<SDL_Surface*> tiles;
 };

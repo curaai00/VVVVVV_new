@@ -23,7 +23,9 @@ Window::Window()
 void Window::render(void)
 {
     back.draw();
-    SDL_BlitSurface(back.surface, NULL, m_screen, NULL);
+    SDL_BlitSurface(back.getSurface(), NULL, m_screen, NULL);
+    auto msg_rect = msg.getDrawRect();
+    SDL_BlitSurface(msg.getSurface(), NULL, m_screen, &msg_rect);
 
     SDL_UpdateTexture(m_screenTexture, NULL, m_screen->pixels, m_screen->pitch);
     SDL_RenderCopy(m_renderer, m_screenTexture, NULL, NULL);

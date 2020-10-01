@@ -17,7 +17,7 @@ TEST_F(TestBackground, makeTiles)
 {
     EXPECT_EQ(back.colortile.asset->h / 8, 30);
     EXPECT_EQ(back.colortile.asset->w / 8, 30);
-    EXPECT_EQ(back.tiles.size(), 900);
+    EXPECT_EQ(back.colortile.getTileSize(), 900);
 }
 
 TEST_F(TestBackground, spaceEvent)

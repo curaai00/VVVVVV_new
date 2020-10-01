@@ -1,8 +1,10 @@
 #include "Resource.h"
+#include "util.h"
 
 #include <exception>
 #include <physfs.h>
 #include <tinyxml2.h>
+#include <utf8/unchecked.h>
 
 // clang-format off
 #if defined(_WIN32)
@@ -26,6 +28,11 @@
 extern "C"
 {
     extern unsigned lodepng_decode24(unsigned char** out,
+                                     unsigned* w,
+                                     unsigned* h,
+                                     const unsigned char* in,
+                                     size_t insize);
+    extern unsigned lodepng_decode32(unsigned char** out,
                                      unsigned* w,
                                      unsigned* h,
                                      const unsigned char* in,
@@ -85,6 +92,9 @@ void Asset::load(bool addnull)
 PNGAsset::PNGAsset(const char* relative_asset_path)
     : Asset(relative_asset_path)
 {
+    if (!util::str::endsWith(relative_asset_path, ".png"))
+        throw std::invalid_argument("PNGAsset need '.png' formatted file");
+
     load();
 }
 PNGAsset::~PNGAsset()
@@ -98,9 +108,9 @@ void PNGAsset::_load(unsigned char* fileIn, size_t length)
     unsigned char* data;
     unsigned int w, h;
 
-    lodepng_decode24(&data, &w, &h, fileIn, length);
+    lodepng_decode32(&data, &w, &h, fileIn, length);
     asset = SDL_CreateRGBSurfaceFrom(
-        data, w, h, 24, w * 3, 0x000000FF, 0x0000FF00, 0x00FF0000, 0x00000000);
+        data, w, h, 32, w * 4, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 
     free(data);
 }
@@ -115,4 +125,72 @@ JsonAsset::~JsonAsset() {}
 void JsonAsset::_load(unsigned char* fileIn, size_t length)
 {
     asset = nlohmann::json::parse(fileIn);
+}
+
+FontAsset::FontAsset(const char* relative_asset_path)
+    : Asset(relative_asset_path)
+{
+    load(true);
+}
+
+FontAsset::~FontAsset() {}
+void FontAsset::_load(unsigned char* fileIn, size_t length)
+{
+    if (fileIn != NULL) {
+        unsigned char* cur = fileIn;
+        unsigned char* end = fileIn + length;
+        int pos = 0;
+        while (cur != end) {
+            int codepoint = utf8::unchecked::next(cur);
+            font_positions[codepoint] = pos;
+            ++pos;
+        }
+    }
+}
+int FontAsset::getFontIdx(uint32_t ch)
+{
+    if (font_positions.size() > 0) {
+        auto iter = font_positions.find(ch);
+        if (iter == font_positions.end()) {
+            iter = font_positions.find('?');
+            if (iter == font_positions.end()) {
+                throw std::out_of_range("font.txt missing fallback character!");
+            }
+        }
+        return iter->second;
+    } else {
+        return ch;
+    }
+};
+
+int FontAsset::getFontLen(uint32_t ch)
+{
+    return ch < 32 ? 6 : 8;
+}
+
+TileAsset::TileAsset(const char* relatvie_asset_path)
+    : PNGAsset(relatvie_asset_path)
+{
+    load();
+}
+
+TileAsset::~TileAsset()
+{
+    for (auto tile : tiles)
+        if (tile)
+            SDL_FreeSurface(tile);
+}
+
+void TileAsset::_load(unsigned char* fileIn, size_t length)
+{
+    PNGAsset::_load(fileIn, length);
+
+    for (int j = 0; j < asset->h; j += 8)
+        for (int i = 0; i < asset->w; i += 8)
+            tiles.push_back(GetSubSurface(SDL_Rect{ i, j, 8, 8 }));
+}
+
+SDL_Surface* TileAsset::getTile(unsigned int i) const
+{
+    return tiles[i];
 }

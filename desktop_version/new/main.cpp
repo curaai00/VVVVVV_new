@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "KeyPull.h"
+#include "Message.h"
 #include "Resource.h"
 #include "Window.h"
 

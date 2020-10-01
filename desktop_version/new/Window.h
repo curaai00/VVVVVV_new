@@ -2,6 +2,7 @@
 
 #include "Background.h"
 #include "Eventable.h"
+#include "Message.h"
 
 #include <SDL.h>
 
@@ -16,6 +17,7 @@ public:
     const int width = 320;
     const int height = 240;
     Background back;
+    Message msg{ SDL_Point{ 100, 50 }, SDL_Color{ 255, 0, 0, 255 }, "VVVVVV" };
 
 private:
     SDL_Window* m_window;
