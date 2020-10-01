@@ -110,7 +110,7 @@ void PNGAsset::_load(unsigned char* fileIn, size_t length)
 
     lodepng_decode32(&data, &w, &h, fileIn, length);
     asset = SDL_CreateRGBSurfaceFrom(
-        data, w, h, 32, w * 4, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
+        data, w, h, 32, w * 4, R_MASK, G_MASK, B_MASK, A_MASK);
 
     free(data);
 }

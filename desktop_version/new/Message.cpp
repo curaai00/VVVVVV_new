@@ -12,8 +12,8 @@ Message::Message(SDL_Point xy, SDL_Color color, std::string msg)
     int bfontpos = 0;
 
     // need for global rect of drawable
-    auto temp_surface = SDL_CreateRGBSurface(
-        0, 320, 240, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+    auto temp_surface =
+        SDL_CreateRGBSurface(0, 320, 240, 32, R_MASK, G_MASK, B_MASK, A_MASK);
     SDL_FillRect(temp_surface, NULL, 0x00000000);
     bool first = true;
     SDL_Rect font_rect;
@@ -38,14 +38,8 @@ Message::Message(SDL_Point xy, SDL_Color color, std::string msg)
     _draw_rect.w = font_rect.x - _draw_rect.x + font_rect.w;
     _draw_rect.h = font_rect.y - _draw_rect.y + font_rect.h;
 
-    _surface = SDL_CreateRGBSurface(0,
-                                    _draw_rect.w,
-                                    _draw_rect.h,
-                                    32,
-                                    0x00FF0000,
-                                    0x0000FF00,
-                                    0x000000FF,
-                                    0xFF000000);
+    _surface = SDL_CreateRGBSurface(
+        0, _draw_rect.w, _draw_rect.h, 32, R_MASK, G_MASK, B_MASK, A_MASK);
     SDL_BlitSurface(temp_surface, &_draw_rect, _surface, NULL);
     SDL_FreeSurface(temp_surface);
 }

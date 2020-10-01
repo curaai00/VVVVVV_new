@@ -16,8 +16,8 @@ protected:
 
 TEST_F(TestMessage, drawMessage)
 {
-    auto surface = SDL_CreateRGBSurface(
-        0, 320, 240, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+    auto surface =
+        SDL_CreateRGBSurface(0, 320, 240, 32, R_MASK, G_MASK, B_MASK, A_MASK);
     SDL_FillRect(surface, NULL, 0x00000000);
     auto msg_rect = msg.getDrawRect();
     SDL_BlitSurface(msg.getSurface(), NULL, surface, &msg_rect);

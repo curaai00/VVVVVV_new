@@ -6,7 +6,7 @@ Window::Window()
     SDL_CreateWindowAndRenderer(
         width, height, SDL_WINDOW_RESIZABLE, &m_window, &m_renderer);
     m_screen = SDL_CreateRGBSurface(
-        0, width, height, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+        0, width, height, 32, R_MASK, G_MASK, B_MASK, A_MASK);
     m_screenTexture = SDL_CreateTexture(m_renderer,
                                         SDL_PIXELFORMAT_ARGB8888,
                                         SDL_TEXTUREACCESS_STREAMING,
