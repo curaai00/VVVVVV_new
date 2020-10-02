@@ -14,17 +14,16 @@ const uint32_t A_MASK = 0xff000000;
 namespace util {
 namespace str {
 bool endsWith(const std::string& str, const std::string& suffix);
+int len(std::string& str);
 
 }; // namespace str
 
 namespace sdl {
-Uint32 ReadPixel(SDL_Surface* _surface, int x, int y);
+Uint32 ReadPixel(const SDL_Surface* _surface, int x, int y);
 void DrawPixel(SDL_Surface* _surface, int x, int y, Uint32 pixel);
-void BlitSurfaceColoured(SDL_Surface* _src,
-                         SDL_Rect* _srcRect,
-                         SDL_Surface* _dest,
-                         SDL_Rect* _destRect,
-                         SDL_Color& ct);
+SDL_Color uint2color(const SDL_Surface* surface, const Uint32& c);
+Uint32 color2uint(const SDL_Surface* surface, const SDL_Color& c);
+void BlitSurfaceColoured(SDL_Surface* surface, const SDL_Color& c);
 
 }; // namespace sdl
 

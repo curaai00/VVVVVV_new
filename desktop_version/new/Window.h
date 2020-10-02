@@ -3,6 +3,7 @@
 #include "Background.h"
 #include "Drawable.h"
 #include "Eventable.h"
+#include "Game.h"
 #include "Message.h"
 
 #include <SDL.h>
@@ -14,19 +15,16 @@ public:
     Window();
 
     void render(void);
-    void key_event(const KeyPull& key_pull);
+    void update(void) { game->update(); }
+    void key_event(const KeyPull& key_pull) { game->key_event(key_pull); }
+
+    void setGame(Game* _game) { game = _game; }
 
     const int width = 320;
     const int height = 240;
 
-    inline void addScreenLayer(ScreenDrawable* screen)
-    {
-        screen_layers.push_back(screen);
-    };
-
 private:
-    std::vector<ScreenDrawable*> screen_layers;
-
+    Game* game = nullptr;
     SDL_Window* m_window;
     SDL_Renderer* m_renderer;
     SDL_Texture* m_screenTexture;

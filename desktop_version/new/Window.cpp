@@ -20,21 +20,14 @@ Window::Window()
 
 void Window::render(void)
 {
-    for (ScreenDrawable* layer : screen_layers) {
-        layer->draw();
-        SDL_BlitSurface(layer->getSurface(), NULL, m_screen, NULL);
+    if (game) {
+        game->draw();
+
+        SDL_UpdateTexture(
+            m_screenTexture, NULL, game->surface->pixels, game->surface->pitch);
+        SDL_RenderCopy(m_renderer, m_screenTexture, NULL, NULL);
+        SDL_RenderPresent(m_renderer);
+        SDL_RenderClear(m_renderer);
+        SDL_FillRect(m_screen, NULL, 0x00000000);
     }
-
-    SDL_UpdateTexture(m_screenTexture, NULL, m_screen->pixels, m_screen->pitch);
-    SDL_RenderCopy(m_renderer, m_screenTexture, NULL, NULL);
-    SDL_RenderPresent(m_renderer);
-    SDL_RenderClear(m_renderer);
-    SDL_FillRect(m_screen, NULL, 0x00000000);
-}
-
-void Window::key_event(const KeyPull& key_pull)
-{
-    auto pressed_keys = key_pull.pressedKeys();
-    for (auto k : pressed_keys)
-        event(k);
 }
