@@ -1,7 +1,19 @@
 #include "util.h"
+#include <utf8/unchecked.h>
 
 using namespace util::str;
 using namespace util::sdl;
+
+int util::str::len(std::string& str)
+{
+    int bfontpos = 0;
+    std::string::iterator iter = str.begin();
+    while (iter != str.end()) {
+        int cur = utf8::unchecked::next(iter);
+        bfontpos += cur < 32 ? 6 : 8;
+    }
+    return bfontpos;
+}
 
 bool util::str::endsWith(const std::string& str, const std::string& suffix)
 {
@@ -9,7 +21,7 @@ bool util::str::endsWith(const std::string& str, const std::string& suffix)
            0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
 }
 
-Uint32 util::sdl::ReadPixel(SDL_Surface* _surface, int x, int y)
+Uint32 util::sdl::ReadPixel(const SDL_Surface* _surface, int x, int y)
 {
     int bpp = _surface->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to retrieve */
@@ -63,39 +75,42 @@ void util::sdl::DrawPixel(SDL_Surface* _surface, int x, int y, Uint32 pixel)
     }
 }
 
-void util::sdl::BlitSurfaceColoured(SDL_Surface* _src,
-                                    SDL_Rect* _srcRect,
-                                    SDL_Surface* _dest,
-                                    SDL_Rect* _destRect,
-                                    SDL_Color& ct)
+Uint32 util::sdl::color2uint(const SDL_Surface* surface, const SDL_Color& c)
 {
-    SDL_Rect* tempRect = _destRect;
+    Uint32 u_color;
+    auto get_shift_size = [](Uint32 mask) -> unsigned int {
+        for (int i = 0; i < 32; i++)
+            if (mask & 1 << i)
+                return i;
+        throw "Invalid pixel mask";
+    };
 
-    const SDL_PixelFormat& fmt = *(_src->format);
-    // const SDL_PixelFormat& destfmt = *(_dest->format);
+    const SDL_PixelFormat& fmt = *(surface->format);
+    u_color |= c.a << get_shift_size(fmt.Amask);
+    u_color |= c.r << get_shift_size(fmt.Rmask);
+    u_color |= c.g << get_shift_size(fmt.Gmask);
+    u_color |= c.b << get_shift_size(fmt.Bmask);
+    return u_color;
+}
 
-    SDL_Surface* tempsurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                                                    _src->w,
-                                                    _src->h,
-                                                    fmt.BitsPerPixel,
-                                                    fmt.Rmask,
-                                                    fmt.Gmask,
-                                                    fmt.Bmask,
-                                                    fmt.Amask);
+SDL_Color util::sdl::uint2color(const SDL_Surface* surface, const Uint32& c)
+{
+    const SDL_PixelFormat& fmt = *(surface->format);
+    SDL_Color color;
+    color.a = fmt.Amask & c;
+    color.r = fmt.Rmask & c;
+    color.g = fmt.Gmask & c;
+    color.b = fmt.Bmask & c;
+    return color;
+}
 
-    for (int x = 0; x < tempsurface->w; x++) {
-        for (int y = 0; y < tempsurface->h; y++) {
-            Uint32 pixel = ReadPixel(_src, x, y);
-            Uint32 Alpha = pixel & fmt.Amask;
-            Uint32 result = *((Uint32*)&ct) & 0x00FFFFFF;
-            Uint32 CTAlpha = *((Uint32*)&ct) & fmt.Amask;
-            float div1 = ((Alpha >> 24) / 255.0f);
-            float div2 = ((CTAlpha >> 24) / 255.0f);
-            Uint32 UseAlpha = (div1 * div2) * 255.0f;
-            DrawPixel(tempsurface, x, y, result | (UseAlpha << 24));
-        }
-    }
+void util::sdl::BlitSurfaceColoured(SDL_Surface* surface, const SDL_Color& c)
+{
+    const SDL_PixelFormat& fmt = *(surface->format);
+    auto u_color = color2uint(surface, c);
 
-    SDL_BlitSurface(tempsurface, _srcRect, _dest, tempRect);
-    SDL_FreeSurface(tempsurface);
+    for (int x = 0; x < surface->w; x++)
+        for (int y = 0; y < surface->h; y++)
+            if (ReadPixel(surface, x, y) & fmt.Amask)
+                DrawPixel(surface, x, y, u_color);
 }

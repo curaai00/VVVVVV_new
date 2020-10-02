@@ -27,11 +27,12 @@ int main(int argc, char* argv[])
     }
 
     Background back;
-    Message msg{ SDL_Point{ 10, 90 },
+    Message msg{ SDL_Point{ 5, 175 },
                  SDL_Color{ 255, 0, 0, 255 },
-                 "[ Press ACTION to Start ]" };
+                 "[ Press ACTION to Start ]",
+                 true };
     // 23 is sprite idx of Big V
-    SpriteSet titleSprite{ SDL_Point{ 100, 20 }, { 23, 23, 23, 23, 23, 23 } };
+    SpriteSet titleSprite{ SDL_Point{ 64, 50 }, { 23, 23, 23, 23, 23, 23 } };
 
     Layer intro_layer;
     intro_layer.addDrawable(&msg);

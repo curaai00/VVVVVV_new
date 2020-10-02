@@ -10,7 +10,10 @@
 class Message : public ObjectDrawable
 {
 public:
-    Message(SDL_Point xy, SDL_Color color, std::string msg);
+    Message(SDL_Point xy,
+            SDL_Color color,
+            std::string msg,
+            bool center = false);
     inline void draw(void) override {}
 
     const SDL_Point xy;
