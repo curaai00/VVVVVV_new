@@ -23,7 +23,7 @@ public:
     bool event(const SDL_Keycode k) override;
 
     JsonAsset towerdata{ "tower.json" };
-    TileAsset colortile{ "graphics/tiles3.png" };
+    TileAsset colortile{ "graphics/tiles3.png", SDL_Point{ 8, 8 } };
 
     std::vector<unsigned short> tower;
 

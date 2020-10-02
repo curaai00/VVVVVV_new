@@ -13,10 +13,12 @@ public:
     Message(SDL_Point xy, SDL_Color color, std::string msg);
     inline void draw(void) override {}
 
-    SDL_Rect tfont_rect{ 0, 0, 8, 8 }; // temp rect
     const SDL_Point xy;
     const SDL_Color color;
     const std::string msg;
 
-    TileAsset font_tile{ "graphics/font.png" };
+    TileAsset font_tile{ "graphics/font.png", SDL_Point{ 8, 8 } };
+
+private:
+    SDL_Rect tfont_rect{ 0, 0, 8, 8 }; // temp rect
 };

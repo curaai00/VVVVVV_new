@@ -58,6 +58,7 @@ class FontAsset : public Asset
 public:
     FontAsset(const char* relative_asset_path);
     virtual ~FontAsset();
+
 protected:
     virtual void _load(unsigned char* fileIn, size_t length) override;
 
@@ -71,10 +72,11 @@ public:
 class TileAsset : public PNGAsset
 {
 public:
-    TileAsset(const char* relatvie_asset_path);
+    TileAsset(const char* relatvie_asset_path, SDL_Point size);
     virtual ~TileAsset();
     SDL_Surface* getTile(unsigned int i) const;
-    size_t getTileSize(void) { return tiles.size(); }
+    size_t getTileCount(void) { return tiles.size(); }
+    SDL_Point getTileSize(void) { return _size; }
 
 protected:
     virtual void _load(unsigned char* fileIn, size_t length) override;
@@ -99,4 +101,5 @@ private:
 
 private:
     std::vector<SDL_Surface*> tiles;
+    SDL_Point _size;
 };
