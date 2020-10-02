@@ -16,16 +16,14 @@ Window::Window()
     SDL_SetWindowTitle(m_window, "VVVVVV");
     auto icon = PNGAsset("VVVVVV.png");
     SDL_SetWindowIcon(m_window, icon.asset);
-
-    addEventable(&back);
 }
 
 void Window::render(void)
 {
-    back.draw();
-    SDL_BlitSurface(back.getSurface(), NULL, m_screen, NULL);
-    auto msg_rect = msg.getDrawRect();
-    SDL_BlitSurface(msg.getSurface(), NULL, m_screen, &msg_rect);
+    for (ScreenDrawable* layer : screen_layers) {
+        layer->draw();
+        SDL_BlitSurface(layer->getSurface(), NULL, m_screen, NULL);
+    }
 
     SDL_UpdateTexture(m_screenTexture, NULL, m_screen->pixels, m_screen->pitch);
     SDL_RenderCopy(m_renderer, m_screenTexture, NULL, NULL);

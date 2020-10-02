@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Drawable.h"
-#include "Eventable.h"
+#include "Layer.h"
 #include "Resource.h"
 
 #include <SDL.h>
@@ -9,9 +8,7 @@
 #include <array>
 #include <vector>
 
-class Background
-    : public Eventable
-    , public ScreenDrawable
+class Background : public Layer
 {
 public:
     Background();
@@ -19,8 +16,6 @@ public:
 
     void draw(void) override;
     void scroll(void);
-
-    bool event(const SDL_Keycode k) override;
 
     JsonAsset towerdata{ "tower.json" };
     TileAsset colortile{ "graphics/tiles3.png", SDL_Point{ 8, 8 } };

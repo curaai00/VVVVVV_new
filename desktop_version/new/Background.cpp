@@ -1,8 +1,7 @@
 #include "Background.h"
 
 Background::Background()
-    : Eventable()
-    , ScreenDrawable()
+    : Layer()
 {
     auto res = towerdata.asset.count("background");
     tower = towerdata.asset["background"].get<std::vector<unsigned short>>();
@@ -11,6 +10,8 @@ Background::~Background() {}
 
 void Background::draw(void)
 {
+    SDL_FillRect(_surface, NULL, 0x00000000);
+
     for (int y = 0; y < 30; y++) {
         for (int x = 0; x < 40; x++) {
             auto yoff = (_scroll_start_y + y) % 120;
@@ -25,18 +26,6 @@ void Background::draw(void)
 void Background::scroll(void)
 {
     ++_scroll_start_y %= 120;
-}
-
-bool Background::event(const SDL_Keycode k)
-{
-    switch (k) {
-        case SDLK_SPACE:
-            setColor();
-            break;
-        default:
-            return false;
-    }
-    return true;
 }
 
 unsigned int Background::getColor(void) const

@@ -36,7 +36,7 @@ Message::Message(SDL_Point xy, SDL_Color color, std::string msg)
         bfontpos += curr < 32 ? 6 : 8;
     }
     _draw_rect.w = font_rect.x - _draw_rect.x + font_rect.w;
-    _draw_rect.h = font_rect.y - _draw_rect.y + font_rect.h;
+    _draw_rect.h = font_rect.h;
 
     _surface = SDL_CreateRGBSurface(
         0, _draw_rect.w, _draw_rect.h, 32, R_MASK, G_MASK, B_MASK, A_MASK);

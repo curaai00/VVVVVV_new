@@ -3,6 +3,7 @@
 #include "KeyPull.h"
 #include "Message.h"
 #include "Resource.h"
+#include "Sprite.h"
 #include "Window.h"
 
 #include <SDL.h>
@@ -25,7 +26,20 @@ int main(int argc, char* argv[])
         std::invalid_argument("AssetPath is Invalid");
     }
 
+    Background back;
+    Message msg{ SDL_Point{ 10, 90 },
+                 SDL_Color{ 255, 0, 0, 255 },
+                 "[ Press ACTION to Start ]" };
+    // 23 is sprite idx of Big V
+    SpriteSet titleSprite{ SDL_Point{ 100, 20 }, { 23, 23, 23, 23, 23, 23 } };
+
+    Layer intro_layer;
+    intro_layer.addDrawable(&msg);
+    intro_layer.addDrawable(&titleSprite);
+
     auto win = Window();
+    win.addScreenLayer(&back);
+    win.addScreenLayer(&intro_layer);
     auto key = KeyPull();
 
     while (key.isUp(SDLK_ESCAPE)) {
@@ -35,7 +49,7 @@ int main(int argc, char* argv[])
         win.render();
         SDL_Delay(50);
 
-        win.back.scroll();
+        back.scroll();
     }
 
     return 0;

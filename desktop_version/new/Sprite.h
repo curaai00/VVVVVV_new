@@ -17,3 +17,14 @@ public:
 private:
     TileAsset sprite_tile{ "graphics/sprites.png", SDL_Point{ 32, 32 } };
 };
+
+class SpriteSet : public ObjectDrawable
+{
+public:
+    SpriteSet(SDL_Point xy, std::vector<unsigned int> sprite_idx_list);
+    virtual ~SpriteSet(){};
+    void draw(void) override{};
+
+private:
+    TileAsset sprite_tile{ "graphics/sprites.png", SDL_Point{ 32, 32 } };
+};
