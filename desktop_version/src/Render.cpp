@@ -1387,12 +1387,8 @@ void gamecompleterender2()
 
 void gamerender()
 {
-
-
-
     if(!game.blackout)
     {
-
         if (map.towermode)
         {
             if (!game.colourblindmode)

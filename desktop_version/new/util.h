@@ -1,6 +1,8 @@
 #pragma once
 
 #include <SDL.h>
+#include <cmath>
+#include <stdlib.h>
 #include <string>
 
 #ifndef SDL_BYTE_MASK
@@ -26,5 +28,20 @@ Uint32 color2uint(const SDL_Surface* surface, const SDL_Color& c);
 void BlitSurfaceColoured(SDL_Surface* surface, const SDL_Color& c);
 
 }; // namespace sdl
+
+namespace math {
+inline float fRandom()
+{
+    return float(rand()) / float(RAND_MAX);
+}
+inline int clamp(int x, int a, int b)
+{
+    if (x < a)
+        x = a;
+    if (b < x)
+        x = b;
+    return x;
+}
+};
 
 }; // namespace util

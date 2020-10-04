@@ -22,9 +22,10 @@ void Window::render(void)
 {
     if (game) {
         game->draw();
+        SDL_Surface* surface = game->getSurface();
 
         SDL_UpdateTexture(
-            m_screenTexture, NULL, game->surface->pixels, game->surface->pitch);
+            m_screenTexture, NULL, surface->pixels, surface->pitch);
         SDL_RenderCopy(m_renderer, m_screenTexture, NULL, NULL);
         SDL_RenderPresent(m_renderer);
         SDL_RenderClear(m_renderer);

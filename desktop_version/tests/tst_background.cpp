@@ -10,7 +10,7 @@ public:
     TestBackground() {}
 
 protected:
-    Background back;
+    IntroBackground back;
 };
 
 TEST_F(TestBackground, makeTiles)
@@ -23,6 +23,6 @@ TEST_F(TestBackground, makeTiles)
 TEST_F(TestBackground, spaceEvent)
 {
     EXPECT_EQ(back.getColor(), 0);
-    EXPECT_TRUE(back.event(SDLK_SPACE));
+    back.setColor();
     EXPECT_EQ(back.getColor(), 1);
 }

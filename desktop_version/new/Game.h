@@ -33,12 +33,25 @@ public:
             event(k);
     }
 
+    SDL_Surface* getSurface(void) { return surface; }
+
     void addScreenLayer(ScreenDrawable* screen)
     {
         screen_layers.push_back(screen);
     };
 
-public:
+    enum class State
+    {
+        NONE,
+        MENU,
+        VVVVVV,
+        PAUSED
+    };
+    State getState(void) { return _state; }
+    void setState(State s) { _state = s; }
+
+protected:
     std::vector<ScreenDrawable*> screen_layers;
     SDL_Surface* surface;
+    State _state = State::NONE;
 };
