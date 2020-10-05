@@ -3,6 +3,7 @@
 #include "KeyPull.h"
 #include "Menu.h"
 #include "Window.h"
+#include "vvvvvv.h"
 
 #include <SDL.h>
 #include <physfs.h>
@@ -27,7 +28,8 @@ int main(int argc, char* argv[])
     auto key = KeyPull();
 
     Menu* menu = new Menu();
-    win.setGame(menu);
+    VVVVVV* vvvvvv = new VVVVVV{};
+    win.setGame(vvvvvv);
 
     while (key.isUp(SDLK_ESCAPE)) {
         key.pull();
@@ -41,5 +43,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-
-/// roomx 113, 105

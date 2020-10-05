@@ -21,6 +21,7 @@ public:
 
     void draw(void)
     {
+        SDL_FillRect(surface, NULL, 0);
         for (ScreenDrawable* layer : screen_layers) {
             layer->draw();
             SDL_BlitSurface(layer->getSurface(), NULL, surface, NULL);
