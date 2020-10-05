@@ -9,16 +9,7 @@
 #include <array>
 #include <vector>
 
-class Background : public ScreenDrawable
-{
-public:
-    Background(){};
-    virtual ~Background(){};
-    virtual void draw(void) = 0;
-    virtual void update(void) = 0;
-};
-
-class IntroBackground : public Background
+class IntroBackground : public ScreenDrawable
 {
 public:
     IntroBackground();
@@ -46,7 +37,7 @@ private:
     unsigned int _scroll_start_y = 0;
 };
 
-class SpaceBackground : public Background
+class SpaceBackground : public ScreenDrawable
 {
 public:
     SpaceBackground();

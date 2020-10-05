@@ -1,6 +1,5 @@
 #include "../new/Sprite.h"
 #include "../new/util.h"
-#include "SDL_image.h"
 #include "gtest/gtest.h"
 
 #include <exception>

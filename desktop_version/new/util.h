@@ -26,6 +26,7 @@ void DrawPixel(SDL_Surface* _surface, int x, int y, Uint32 pixel);
 SDL_Color uint2color(const SDL_Surface* surface, const Uint32& c);
 Uint32 color2uint(const SDL_Surface* surface, const SDL_Color& c);
 void BlitSurfaceColoured(SDL_Surface* surface, const SDL_Color& c);
+bool cmpColor(const SDL_Color& a, const SDL_Color& b);
 
 }; // namespace sdl
 

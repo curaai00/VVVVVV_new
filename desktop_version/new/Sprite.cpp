@@ -20,8 +20,6 @@ Sprite::Sprite(SDL_Point xy, unsigned int sprite_idx)
 
 Sprite::~Sprite() {}
 
-void Sprite::draw(void) {}
-
 unsigned int Sprite::name2idx(std::string name)
 {
     if (name == "V")

@@ -4,7 +4,7 @@
 #include <tuple>
 
 IntroBackground::IntroBackground()
-    : Background()
+    : ScreenDrawable()
 {
     auto res = towerdata.asset.count("background");
     tower = towerdata.asset["background"].get<std::vector<unsigned short>>();
@@ -67,7 +67,9 @@ void IntroBackground::setColor(unsigned int c)
         throw std::out_of_range("This Color out of tile colorspace");
 }
 
-SpaceBackground::SpaceBackground() {}
+SpaceBackground::SpaceBackground()
+    : ScreenDrawable()
+{}
 
 SpaceBackground::~SpaceBackground() {}
 

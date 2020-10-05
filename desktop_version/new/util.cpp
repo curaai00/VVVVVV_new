@@ -114,3 +114,8 @@ void util::sdl::BlitSurfaceColoured(SDL_Surface* surface, const SDL_Color& c)
             if (ReadPixel(surface, x, y) & fmt.Amask)
                 DrawPixel(surface, x, y, u_color);
 }
+
+bool util::sdl::cmpColor(const SDL_Color& a, const SDL_Color& b)
+{
+    return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
+}

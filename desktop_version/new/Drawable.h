@@ -20,6 +20,7 @@ public:
             SDL_FreeSurface(_surface);
     }
     virtual void draw(void) = 0;
+    virtual void update(void) = 0;
     SDL_Surface* getSurface(void) { return _surface; }
     SDL_Rect getDrawRect(void) { return _draw_rect; }
 

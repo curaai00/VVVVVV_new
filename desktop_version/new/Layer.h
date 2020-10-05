@@ -24,10 +24,11 @@ public:
             SDL_BlitSurface(draw_surface, NULL, _surface, &draw_rect);
         }
     }
+    void update(void) override {}
 
     // TODO: Need collision check after
-    inline void addDrawable(ObjectDrawable* obj) { _objects.push_back(obj); }
+    inline void addDrawable(Drawable* obj) { _objects.push_back(obj); }
 
 private:
-    std::vector<ObjectDrawable*> _objects;
+    std::vector<Drawable*> _objects;
 };
