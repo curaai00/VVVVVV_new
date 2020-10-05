@@ -14,5 +14,5 @@ public:
 
 private:
     SpaceBackground spacebackground;
-    Map map{ 113, 105 };
+    Map map{ 114, 105 };
 };

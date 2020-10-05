@@ -21,6 +21,7 @@ public:
     }
     virtual void draw(void) = 0;
     virtual void update(void) = 0;
+    // TODO rename: remove get keyword
     SDL_Surface* getSurface(void) { return _surface; }
     SDL_Rect getDrawRect(void) { return _draw_rect; }
 
@@ -35,12 +36,12 @@ public:
     ScreenDrawable()
         : Drawable()
     {
-        _surface = SDL_CreateRGBSurface(
-            0, 320, 240, 32, R_MASK, G_MASK, B_MASK, A_MASK);
+        _surface = SDL_CreateRGBSurface(0, 320, 240, 32, R_MASK, G_MASK, B_MASK, A_MASK);
         _draw_rect = SDL_Rect{ 0, 0, 320, 240 };
     }
 };
 
+// Remove ObjectDrawble, indicate Drawable directly
 class ObjectDrawable : public Drawable
 {
 public:

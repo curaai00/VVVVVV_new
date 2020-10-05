@@ -32,22 +32,3 @@ private:
     // 23 is sprite idx of Big V
     SpriteSet titleSprite{ SDL_Point{ 64, 50 }, { 23, 23, 23, 23, 23, 23 } };
 };
-
-// class MenuEventController : public Eventable
-// {
-
-//     bool event(const SDL_Keycode k)
-//     {
-//         switch (k) {
-//             case SDLK_SPACE:
-//                 setState(Game::State::VVVVVV);
-//                 break;
-//             default:
-//                 return false;
-//         }
-//         return true;
-//     }
-
-// private:
-//     int idx_option;
-// };

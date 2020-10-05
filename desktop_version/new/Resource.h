@@ -6,6 +6,8 @@
 #include <map>
 #include <stdlib.h>
 
+#define SURFACE_ARR_SIZE 1200
+
 class Resource
 {
 public:
