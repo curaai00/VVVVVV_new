@@ -18,8 +18,7 @@ void IntroBackground::draw(void)
         auto yoff = (_scroll_start_y + y) % 120;
         auto var = tower[yoff * 40 + x];
         SDL_Rect rect{ x * 8, y * 8, 8, 8 };
-        SDL_BlitSurface(
-            colortile.getTile(var + _color * 30), NULL, _surface, &rect);
+        SDL_BlitSurface(colortile.tile(var + _color * 30), NULL, _surface, &rect);
     };
     auto fill_row = [&](const int y) {
         for (int x = 0; x < 40; x++)
@@ -77,8 +76,7 @@ void SpaceBackground::draw(void)
 {
     SDL_FillRect(_surface, NULL, 0);
 
-    auto draw_star = [](SDL_Surface* surface,
-                        const SpaceBackground::Star& star) {
+    auto draw_star = [](SDL_Surface* surface, const SpaceBackground::Star& star) {
         Uint8 c = star.speed <= 6 ? 0x22 : 0x55;
         Uint32 color = SDL_MapRGB(surface->format, c, c, c);
         SDL_FillRect(surface, &star.draw_rect, color);

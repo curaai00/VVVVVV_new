@@ -16,7 +16,7 @@ protected:
 
 TEST_F(TestSprite, loadSimpleV)
 {
-    auto surface = sprite.getSurface();
+    auto surface = sprite.surface();
     auto pix1 = util::sdl::ReadPixel(surface, 0, 0);
     auto pix2 = util::sdl::ReadPixel(surface, 4, 8);
     EXPECT_EQ(pix1, 0x00000000);

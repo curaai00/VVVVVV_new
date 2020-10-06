@@ -2,6 +2,7 @@
 
 VVVVVV::VVVVVV()
 {
+    map.setRoom({ 114, 105 });
     addScreenLayer(&spacebackground);
     addScreenLayer(&map);
 }

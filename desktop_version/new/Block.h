@@ -7,17 +7,18 @@ class Block : public Drawable
 {
 public:
     Block(const std::array<unsigned short, SURFACE_ARR_SIZE>& room_arr,
-          const TileAsset& tile_asset);
-    ~Block();
+          const TileAsset& tile_asset){};
+    ~Block(){};
 
     // TODO
-    SDL_Point is_acrossed(SDL_Point point);
+    bool is_acrossed(const SDL_Point& point) const;
     bool is_transparent(void) const { return _is_transparent; }
 
-    // TODO
-    void construct(TileAsset& tile_asset);
+    void construct(const std::array<unsigned short, SURFACE_ARR_SIZE>& room_arr,
+                   const TileAsset& tile_asset);
     const std::vector<unsigned short>& block_indicies(void) { return _block_indicies; }
-    const int tileCount(void);
+    // use this instaed of drawrect
+    int tileCount(void) const { return static_cast<int>(_block_tiles.size()); }
 
 protected:
     std::vector<unsigned short> _block_indicies;
@@ -29,22 +30,43 @@ class Wall : public Block
 {
 public:
     Wall(const std::array<unsigned short, SURFACE_ARR_SIZE>& room_arr,
-         const TileAsset& tile_asset);
-    ~Wall();
+         const TileAsset& tile_asset)
+        : Block(room_arr, tile_asset)
+    {
+        _block_indicies = { 83, 124, 125, 163, 164, 165, 203, 205, 244 };
+        construct(room_arr, tile_asset);
+    }
+    ~Wall(){};
+    void draw(void) override { return; }
+    void update(void) override { return; }
 };
 
 class Thorn : public Block
 {
 public:
     Thorn(const std::array<unsigned short, SURFACE_ARR_SIZE>& room_arr,
-          const TileAsset& tile_asset);
-    ~Thorn();
+          const TileAsset& tile_asset)
+        : Block(room_arr, tile_asset)
+    {
+        _block_indicies = { 6 };
+        construct(room_arr, tile_asset);
+    }
+    ~Thorn(){};
+    void draw(void) override { return; }
+    void update(void) override { return; }
 };
 
 class BackWall : public Block
 {
 public:
     BackWall(const std::array<unsigned short, SURFACE_ARR_SIZE>& room_arr,
-             const TileAsset& tile_asset);
-    ~BackWall();
+             const TileAsset& tile_asset)
+        : Block(room_arr, tile_asset)
+    {
+        _block_indicies = { 680 };
+        construct(room_arr, tile_asset);
+    }
+    ~BackWall(){};
+    void draw(void) override { return; }
+    void update(void) override { return; }
 };

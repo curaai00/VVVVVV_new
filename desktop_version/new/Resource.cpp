@@ -13,7 +13,7 @@
 #include <shlobj.h>
 // clang-format on
 
-#elif defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) ||      \
+#elif defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) ||                \
     defined(__OpenBSD__) || defined(__HAIKU__) || defined(__DragonFly__)
 #include <dirent.h>
 #include <limits.h>
@@ -39,10 +39,7 @@ extern "C"
                                      size_t insize);
 }
 
-void Resource::load2Mem(const char* name,
-                        unsigned char** mem,
-                        size_t* len,
-                        bool addnull)
+void Resource::load2Mem(const char* name, unsigned char** mem, size_t* len, bool addnull)
 {
     PHYSFS_File* handle = PHYSFS_openRead(name);
     if (handle == NULL) {
@@ -109,8 +106,8 @@ void PNGAsset::_load(unsigned char* fileIn, size_t length)
     unsigned int w, h;
 
     lodepng_decode32(&data, &w, &h, fileIn, length);
-    asset = SDL_CreateRGBSurfaceFrom(
-        data, w, h, 32, w * 4, R_MASK, G_MASK, B_MASK, A_MASK);
+    asset =
+        SDL_CreateRGBSurfaceFrom(data, w, h, 32, w * 4, R_MASK, G_MASK, B_MASK, A_MASK);
 
     free(data);
 }
@@ -174,12 +171,12 @@ TileAsset::TileAsset(const char* relatvie_asset_path, SDL_Point size)
 {
     load();
 }
-
 TileAsset::~TileAsset()
 {
     for (auto tile : tiles)
         if (tile)
             SDL_FreeSurface(tile);
+    tiles.clear();
 }
 
 void TileAsset::_load(unsigned char* fileIn, size_t length)
@@ -191,7 +188,7 @@ void TileAsset::_load(unsigned char* fileIn, size_t length)
             tiles.push_back(GetSubSurface(SDL_Rect{ i, j, _size.x, _size.y }));
 }
 
-SDL_Surface* TileAsset::getTile(unsigned int i) const
+SDL_Surface* TileAsset::tile(unsigned int i) const
 {
     return tiles[i];
 }

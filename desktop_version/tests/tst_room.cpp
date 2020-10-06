@@ -1,4 +1,5 @@
-#include "../new/Map.h"
+#include "../new/Room.h"
+#include "../new/util.h"
 #include "gtest/gtest.h"
 
 class TestRoom : public ::testing::Test
@@ -15,15 +16,26 @@ protected:
 
 TEST_F(TestRoom, load)
 {
-    EXPECT_STREQ(room->name(), "Conundrum");
-    EXPECT_EQ(room->blockCount(), 2);
+    EXPECT_STREQ(room->name().c_str(), "Conundrum");
+    EXPECT_EQ(room->blockCount(), 3);
 }
 TEST_F(TestRoom, blocks)
 {
+    room->draw();
+
+    SDL_Rect rect;
+    // empty 414
     auto blocks = room->blocks();
-    EXPECT_EQ(blocks[0]->getDrawRect(), SDL_Rect(0, 0, 320, 240));
-    EXPECT_EQ(blocks[0]->tileCount(), 1234);
+    rect = SDL_Rect{ 0, 0, 320, 240 };
+    EXPECT_TRUE(util::sdl::cmpRect(blocks[0]->rect(), rect));
+    EXPECT_EQ(blocks[0]->tileCount(), 772);
+
     // something small spikes
-    EXPECT_EQ(blocks[1]->getDrawRect(), SDL_Rect(1, 2, 3, 4));
-    EXPECT_EQ(blocks[1]->tileCount(), 10);
+    EXPECT_EQ(blocks[1]->tileCount(), 14);
+    rect = SDL_Rect{ 104, 192, 112, 8 };
+    EXPECT_TRUE(util::sdl::cmpRect(blocks[1]->rect(), rect));
+
+    EXPECT_EQ(blocks[2]->tileCount(), 414);
+    rect = SDL_Rect{ 0, 104, 320, 88 };
+    EXPECT_TRUE(util::sdl::cmpRect(blocks[2]->rect(), rect));
 }

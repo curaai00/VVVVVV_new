@@ -3,28 +3,25 @@
 #include "Drawable.h"
 #include "Eventable.h"
 
-class Game : public EventCompsitor
+class Game
+    : public EventCompsitor
+    , public ScreenDrawable
 {
 public:
     Game()
-    {
-        surface = SDL_CreateRGBSurface(
-            0, 320, 240, 32, R_MASK, G_MASK, B_MASK, A_MASK);
-    }
-    virtual ~Game()
-    {
-        if (surface)
-            SDL_FreeSurface(surface);
-    }
+        : EventCompsitor()
+        , ScreenDrawable()
+    {}
+    virtual ~Game() {}
 
     virtual void update(void) = 0;
 
     void draw(void)
     {
-        SDL_FillRect(surface, NULL, 0);
+        SDL_FillRect(_surface, NULL, 0);
         for (ScreenDrawable* layer : screen_layers) {
             layer->draw();
-            SDL_BlitSurface(layer->getSurface(), NULL, surface, NULL);
+            SDL_BlitSurface(layer->surface(), NULL, _surface, NULL);
         }
     }
     void key_event(const KeyPull& key_pull)
@@ -34,12 +31,9 @@ public:
             event(k);
     }
 
-    SDL_Surface* getSurface(void) { return surface; }
+    SDL_Surface* surface(void) { return _surface; }
 
-    void addScreenLayer(ScreenDrawable* screen)
-    {
-        screen_layers.push_back(screen);
-    };
+    void addScreenLayer(ScreenDrawable* screen) { screen_layers.push_back(screen); };
 
     enum class State
     {
@@ -53,6 +47,5 @@ public:
 
 protected:
     std::vector<ScreenDrawable*> screen_layers;
-    SDL_Surface* surface;
     State _state = State::NONE;
 };

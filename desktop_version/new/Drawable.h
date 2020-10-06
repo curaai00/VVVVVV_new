@@ -22,8 +22,8 @@ public:
     virtual void draw(void) = 0;
     virtual void update(void) = 0;
     // TODO rename: remove get keyword
-    SDL_Surface* getSurface(void) { return _surface; }
-    SDL_Rect getDrawRect(void) { return _draw_rect; }
+    SDL_Surface* surface(void) { return _surface; }
+    SDL_Rect rect(void) { return _draw_rect; }
 
 protected:
     SDL_Surface* _surface;

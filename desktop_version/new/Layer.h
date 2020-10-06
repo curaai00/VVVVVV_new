@@ -19,8 +19,8 @@ public:
 
         for (auto obj : _objects) {
             obj->draw();
-            auto draw_rect = obj->getDrawRect();
-            auto draw_surface = obj->getSurface();
+            auto draw_rect = obj->rect();
+            auto draw_surface = obj->surface();
             SDL_BlitSurface(draw_surface, NULL, _surface, &draw_rect);
         }
     }

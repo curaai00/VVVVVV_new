@@ -13,6 +13,7 @@ class Window : public EventCompsitor
 {
 public:
     Window();
+    ~Window();
 
     void render(void);
     void update(void) { game->update(); }

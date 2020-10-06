@@ -21,6 +21,33 @@ bool util::str::endsWith(const std::string& str, const std::string& suffix)
            0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
 }
 
+SDL_Surface* util::sdl::CreateSurface(const SDL_Point& size)
+{
+    auto res =
+        SDL_CreateRGBSurface(0, size.x, size.y, 32, R_MASK, G_MASK, B_MASK, A_MASK);
+    SDL_FillRect(res, NULL, 0);
+    return res;
+}
+void util::sdl::blit(SDL_Surface* src,
+                     const SDL_Rect* src_r,
+                     SDL_Surface* dst,
+                     const SDL_Rect* dst_r)
+{
+    if (dst_r) {
+        SDL_Rect _dst_r{ *dst_r };
+        SDL_BlitSurface(src, src_r, dst, &_dst_r);
+    } else {
+        SDL_BlitSurface(src, src_r, dst, NULL);
+    }
+}
+
+SDL_Surface* util::sdl::patch(SDL_Surface* src, const SDL_Rect* rect)
+{
+    auto dst = CreateSurface(SDL_Point{ rect->w, rect->h });
+    blit(src, rect, dst, NULL);
+    return dst;
+}
+
 Uint32 util::sdl::ReadPixel(const SDL_Surface* _surface, int x, int y)
 {
     int bpp = _surface->format->BytesPerPixel;
@@ -118,4 +145,9 @@ void util::sdl::BlitSurfaceColoured(SDL_Surface* surface, const SDL_Color& c)
 bool util::sdl::cmpColor(const SDL_Color& a, const SDL_Color& b)
 {
     return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
+}
+
+bool util::sdl::cmpRect(const SDL_Rect& a, const SDL_Rect& b)
+{
+    return a.x == b.x && a.y == b.y && a.w == b.w && a.h == b.h;
 }

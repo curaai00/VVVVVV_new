@@ -25,8 +25,7 @@ Message::Message(SDL_Point xy, SDL_Color color, std::string msg, bool center)
         font_rect.x = xy.x + bfontpos;
         font_rect.y = xy.y;
 
-        SDL_BlitSurface(
-            font_tile.getTile(curr), NULL, temp_surface, &font_rect);
+        SDL_BlitSurface(font_tile.tile(curr), NULL, temp_surface, &font_rect);
         bfontpos += curr < 32 ? 6 : 8;
     }
 

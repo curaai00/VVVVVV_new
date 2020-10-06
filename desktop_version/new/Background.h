@@ -54,7 +54,7 @@ public:
                           Sint16(util::math::fRandom() * 240),
                           2,
                           2 };
-            speed = 4 + util::math::fRandom() * 4;
+            speed = 4 + static_cast<int>(util::math::fRandom() * 4);
         }
         SDL_Rect draw_rect;
         int speed;

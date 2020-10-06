@@ -76,28 +76,27 @@ class TileAsset : public PNGAsset
 public:
     TileAsset(const char* relatvie_asset_path, SDL_Point size);
     virtual ~TileAsset();
-    SDL_Surface* getTile(unsigned int i) const;
-    size_t getTileCount(void) { return tiles.size(); }
-    SDL_Point getTileSize(void) { return _size; }
+
+    SDL_Surface* tile(unsigned int i) const;
+    size_t tilecount(void) const { return tiles.size(); }
+    SDL_Point tilesize(void) const { return _size; }
 
 protected:
     virtual void _load(unsigned char* fileIn, size_t length) override;
 
 private:
-    inline SDL_Surface* GetSubSurface(SDL_Rect area)
+    inline SDL_Surface* GetSubSurface(const SDL_Rect& area)
     {
         // we will slow things down.
-        SDL_Surface* preSurface =
-            SDL_CreateRGBSurface(SDL_SWSURFACE,
-                                 area.w,
-                                 area.h,
-                                 asset->format->BitsPerPixel,
-                                 asset->format->Rmask,
-                                 asset->format->Gmask,
-                                 asset->format->Bmask,
-                                 asset->format->Amask);
-        SDL_BlitSurface(asset, &area, preSurface, 0);
-
+        SDL_Surface* preSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                                                       area.w,
+                                                       area.h,
+                                                       asset->format->BitsPerPixel,
+                                                       asset->format->Rmask,
+                                                       asset->format->Gmask,
+                                                       asset->format->Bmask,
+                                                       asset->format->Amask);
+        SDL_BlitSurface(asset, &area, preSurface, NULL);
         return preSurface;
     }
 
