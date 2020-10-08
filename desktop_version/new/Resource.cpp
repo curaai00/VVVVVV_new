@@ -98,6 +98,7 @@ PNGAsset::~PNGAsset()
 {
     if (asset)
         SDL_FreeSurface(asset);
+    free(_asset_ptr);
 }
 
 void PNGAsset::_load(unsigned char* fileIn, size_t length)
@@ -105,11 +106,9 @@ void PNGAsset::_load(unsigned char* fileIn, size_t length)
     unsigned char* data;
     unsigned int w, h;
 
-    lodepng_decode32(&data, &w, &h, fileIn, length);
-    asset =
-        SDL_CreateRGBSurfaceFrom(data, w, h, 32, w * 4, R_MASK, G_MASK, B_MASK, A_MASK);
-
-    free(data);
+    lodepng_decode32(&_asset_ptr, &w, &h, fileIn, length);
+    asset = SDL_CreateRGBSurfaceFrom(
+        _asset_ptr, w, h, 32, w * 4, R_MASK, G_MASK, B_MASK, A_MASK);
 }
 
 JsonAsset::JsonAsset(const char* relative_asset_path)

@@ -36,6 +36,8 @@ Message::Message(SDL_Point xy, SDL_Color color, std::string msg, bool center)
 
     _surface = SDL_CreateRGBSurface(
         0, _draw_rect.w, _draw_rect.h, 32, R_MASK, G_MASK, B_MASK, A_MASK);
+
+    // TODO Add color component
     SDL_BlitSurface(temp_surface, &_draw_rect, _surface, NULL);
     util::sdl::BlitSurfaceColoured(_surface, color);
     _prev_color = color;

@@ -40,6 +40,9 @@ protected:
 
 public:
     SDL_Surface* asset;
+
+private:
+    unsigned char* _asset_ptr;
 };
 
 class JsonAsset : public Asset

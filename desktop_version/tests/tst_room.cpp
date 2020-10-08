@@ -5,13 +5,17 @@
 class TestRoom : public ::testing::Test
 {
 public:
-    TestRoom() { room = new Room{ room_table, map_tile, room_pos }; }
+    TestRoom()
+    {
+        SDL_Point room_pos{ 114, 105 };
+        TileAsset map_tile{ "graphics/tiles.png", SDL_Point{ 8, 8 } };
+        JsonAsset room_table{ "spacestation.json" };
+        room = new Room{ room_table, map_tile, room_pos };
+    }
+    ~TestRoom() { delete room; }
 
 protected:
     Room* room;
-    SDL_Point room_pos{ 114, 105 };
-    TileAsset map_tile{ "graphics/tiles.png", SDL_Point{ 8, 8 } };
-    JsonAsset room_table{ "spacestation.json" };
 };
 
 TEST_F(TestRoom, load)

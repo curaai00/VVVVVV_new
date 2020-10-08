@@ -19,7 +19,6 @@ public:
         if (_surface)
             SDL_FreeSurface(_surface);
     }
-    virtual void draw(void) = 0;
     virtual void update(void) = 0;
     // TODO rename: remove get keyword
     SDL_Surface* surface(void) { return _surface; }

@@ -1,28 +1,43 @@
 #include "../new/Background.h"
+#include "../new/util.h"
 #include "gtest/gtest.h"
 
 #include <exception>
 #include <iostream>
 
-class TestBackground : public ::testing::Test
+using namespace util::sdl;
+
+class TestIntroBackground : public ::testing::Test
 {
-public:
-    TestBackground() {}
+protected:
+    virtual void SetUp() { back = new IntroBackground(); }
+    virtual void TearDown() { delete back; }
 
 protected:
-    IntroBackground back;
+    IntroBackground* back;
 };
 
-TEST_F(TestBackground, makeTiles)
+TEST_F(TestIntroBackground, color)
 {
-    EXPECT_EQ(back.colortile.asset->h / 8, 30);
-    EXPECT_EQ(back.colortile.asset->w / 8, 30);
-    EXPECT_EQ(back.colortile.getTileCount(), 900);
+    auto _surface = back.surface();
+    auto res_c = uint2color(ReadPixel(_surface, 0, 0));
+    // change after
+    auto expect_c = color2uint(0);
+    EXPECT_EQ(res_c, expect_c);
+
+    back.stripe.setColor();
+    res_c = uint2color(ReadPixel(_surface, 0, 0));
+    // change after
+    expect_c = color2uint(0);
+    EXPECT_EQ(res_c, expect_c);
 }
 
-TEST_F(TestBackground, spaceEvent)
+TEST_F(TestIntroBackground, scroll)
 {
-    EXPECT_EQ(back.getColor(), 0);
-    back.setColor();
-    EXPECT_EQ(back.getColor(), 1);
+    back.update();
+
+    auto res_c = uint2color(ReadPixel(_surface, 0, 0));
+    // change after
+    auto expect_c = color2uint(0);
+    EXPECT_EQ(res_c, expect_c);
 }

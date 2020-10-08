@@ -15,6 +15,7 @@ Window::Window()
 }
 Window::~Window()
 {
+    delete game;
 
     SDL_FreeSurface(m_screen);
     SDL_DestroyRenderer(m_renderer);
