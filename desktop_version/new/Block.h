@@ -37,7 +37,6 @@ public:
         construct(room_arr, tile_asset);
     }
     ~Wall(){};
-    void draw(void) override { return; }
     void update(void) override { return; }
 };
 
@@ -52,7 +51,6 @@ public:
         construct(room_arr, tile_asset);
     }
     ~Thorn(){};
-    void draw(void) override { return; }
     void update(void) override { return; }
 };
 
@@ -67,6 +65,5 @@ public:
         construct(room_arr, tile_asset);
     }
     ~BackWall(){};
-    void draw(void) override { return; }
     void update(void) override { return; }
 };

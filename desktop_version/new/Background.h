@@ -32,5 +32,5 @@ public:
     void update(void) override;
 
 private:
-    SpaceComponent _space;
+    SpaceComponent space;
 };

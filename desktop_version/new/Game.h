@@ -20,7 +20,7 @@ public:
     {
         SDL_FillRect(_surface, NULL, 0);
         for (ScreenDrawable* layer : screen_layers) {
-            layer->draw();
+            layer->update();
             SDL_BlitSurface(layer->surface(), NULL, _surface, NULL);
         }
     }

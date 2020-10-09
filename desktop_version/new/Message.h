@@ -10,12 +10,8 @@
 class Message : public Drawable
 {
 public:
-    Message(SDL_Point xy,
-            SDL_Color color,
-            std::string msg,
-            bool center = false);
+    Message(SDL_Point xy, SDL_Color color, std::string msg, bool center = false);
 
-    void draw(void) override;
     void update(void) override;
 
     SDL_Point xy;

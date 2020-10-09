@@ -19,25 +19,26 @@ protected:
 
 TEST_F(TestIntroBackground, color)
 {
-    auto _surface = back.surface();
-    auto res_c = uint2color(ReadPixel(_surface, 0, 0));
+    auto _surface = back->surface();
+    auto res_c = ReadPixel(_surface, 0, 0);
     // change after
-    auto expect_c = color2uint(0);
+    auto expect_c = color2uint(_surface, SDL_Color{ 0, 0, 0, 0 });
     EXPECT_EQ(res_c, expect_c);
 
-    back.stripe.setColor();
-    res_c = uint2color(ReadPixel(_surface, 0, 0));
+    back->stripe.setColor();
+    res_c = ReadPixel(_surface, 0, 0);
     // change after
-    expect_c = color2uint(0);
+    expect_c = color2uint(_surface, SDL_Color{ 0, 0, 0, 0 });
     EXPECT_EQ(res_c, expect_c);
 }
 
 TEST_F(TestIntroBackground, scroll)
 {
-    back.update();
+    back->update();
+    auto _surface = back->surface();
 
-    auto res_c = uint2color(ReadPixel(_surface, 0, 0));
+    auto res_c = ReadPixel(_surface, 0, 0);
     // change after
-    auto expect_c = color2uint(0);
+    auto expect_c = color2uint(_surface, SDL_Color{ 0, 0, 0, 0 });
     EXPECT_EQ(res_c, expect_c);
 }

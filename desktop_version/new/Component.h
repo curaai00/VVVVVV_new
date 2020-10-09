@@ -8,8 +8,9 @@ class Component
 public:
     Component(SDL_Surface* _surface)
         : _surface(_surface){};
+    SDL_Surface* surface() { return _surface; }
 
-private:
+protected:
     SDL_Surface* _surface;
 };
 

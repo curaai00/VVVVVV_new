@@ -10,7 +10,6 @@ public:
 
     void setRoom(const SDL_Point& room_pos);
 
-    void draw(void) override;
     void update(void) override;
 
 private:

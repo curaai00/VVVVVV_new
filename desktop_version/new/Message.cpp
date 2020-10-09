@@ -45,15 +45,11 @@ Message::Message(SDL_Point xy, SDL_Color color, std::string msg, bool center)
     SDL_FreeSurface(temp_surface);
 }
 
-void Message::draw(void)
+void Message::update(void)
 {
     if (util::sdl::cmpColor(_prev_color, color)) {
         util::sdl::BlitSurfaceColoured(_surface, color);
     }
     _prev_color = color;
-}
-
-void Message::update(void)
-{
     return;
 }

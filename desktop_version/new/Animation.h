@@ -59,26 +59,24 @@ public:
         : AnimateComponent(
               SDL_CreateRGBSurface(0, 320, 240, 32, R_MASK, G_MASK, B_MASK, A_MASK),
               0)
-    {}
+    {
+        JsonAsset towerdata{ "tower.json" };
+        auto res = towerdata.asset.count("background");
+        tower = towerdata.asset["background"].get<std::vector<unsigned short>>();
+    }
     void update(void) override;
 
-    unsigned int getColor(void) const;
+    unsigned int getColor(void) const { return _color; }
     void setColor(void);
     void setColor(unsigned int c);
 
 private:
-    void draw_tower(void);
-
-private:
-    JsonAsset towerdata{ "tower.json" };
     TileAsset colortile{ "graphics/tiles3.png", SDL_Point{ 8, 8 } };
 
     std::vector<unsigned short> tower;
 
-    unsigned int getColor(void) const;
-    void setColor(void);
-    void setColor(unsigned int c);
     unsigned int _color = 0;
+    unsigned int _prev_color = 0;
     unsigned int _scroll_start_y = 0;
 };
 

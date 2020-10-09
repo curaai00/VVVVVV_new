@@ -13,12 +13,11 @@ public:
     Layer(){};
     ~Layer(){};
 
-    inline virtual void draw(void) override
+    void draw(void)
     {
         SDL_FillRect(_surface, NULL, 0x00000000);
 
         for (auto obj : _objects) {
-            obj->draw();
             auto draw_rect = obj->rect();
             auto draw_surface = obj->surface();
             SDL_BlitSurface(draw_surface, NULL, _surface, &draw_rect);
