@@ -7,9 +7,10 @@ class Block : public Drawable
 {
 public:
     Block(const std::array<unsigned short, SURFACE_ARR_SIZE>& room_arr,
-          const TileAsset& tile_asset){};
+          const TileAsset& tile_asset) : Drawable(Type::STATIC){};
     ~Block(){};
 
+    void update(void) override {return;}
     // TODO
     bool is_acrossed(const SDL_Point& point) const;
     bool is_transparent(void) const { return _is_transparent; }
@@ -37,7 +38,6 @@ public:
         construct(room_arr, tile_asset);
     }
     ~Wall(){};
-    void update(void) override { return; }
 };
 
 class Thorn : public Block
@@ -51,7 +51,6 @@ public:
         construct(room_arr, tile_asset);
     }
     ~Thorn(){};
-    void update(void) override { return; }
 };
 
 class BackWall : public Block
@@ -65,5 +64,4 @@ public:
         construct(room_arr, tile_asset);
     }
     ~BackWall(){};
-    void update(void) override { return; }
 };

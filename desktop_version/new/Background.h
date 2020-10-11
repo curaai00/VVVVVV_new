@@ -11,7 +11,7 @@
 #include <vector>
 
 // Add StripeComponent
-class IntroBackground : public ScreenDrawable
+class IntroBackground : public Layer
 {
 public:
     IntroBackground();
@@ -23,7 +23,7 @@ public:
 };
 
 // Add StarComponent
-class SpaceBackground : public ScreenDrawable
+class SpaceBackground : public Layer
 {
 public:
     SpaceBackground();

@@ -10,12 +10,12 @@ class Menu : public Game
 public:
     Menu()
     {
-        Layer* intro_layer = new Layer();
+        Layer* intro_layer = new Layer(Type::STATIC);
         intro_layer->addDrawable(&titleSprite);
         intro_layer->addDrawable(&msg);
 
-        addScreenLayer(&back);
-        addScreenLayer(intro_layer);
+        addLayer(&back);
+        addLayer(intro_layer);
 
         // addEventable(&event_ctrl);
     }

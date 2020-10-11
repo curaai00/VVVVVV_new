@@ -2,7 +2,7 @@
 #include "util.h"
 
 Message::Message(SDL_Point xy, SDL_Color color, std::string msg, bool center)
-    : Drawable()
+    : Drawable(Type::STATIC)
     , xy(xy)
     , color(color)
     , msg(msg)
@@ -13,9 +13,7 @@ Message::Message(SDL_Point xy, SDL_Color color, std::string msg, bool center)
     int bfontpos = 0;
 
     // need for global rect of drawable
-    auto temp_surface =
-        SDL_CreateRGBSurface(0, 320, 240, 32, R_MASK, G_MASK, B_MASK, A_MASK);
-    SDL_FillRect(temp_surface, NULL, 0x00000000);
+    auto temp_surface = util::sdl::CreateSurface({320, 240});
     SDL_Rect font_rect;
 
     auto iter = msg.begin();
@@ -34,8 +32,7 @@ Message::Message(SDL_Point xy, SDL_Color color, std::string msg, bool center)
     _draw_rect.w = font_rect.x - _draw_rect.x + font_rect.w;
     _draw_rect.h = font_rect.h;
 
-    _surface = SDL_CreateRGBSurface(
-        0, _draw_rect.w, _draw_rect.h, 32, R_MASK, G_MASK, B_MASK, A_MASK);
+    _surface = util::sdl::CreateSurface({_draw_rect.w, _draw_rect.h});
 
     // TODO Add color component
     SDL_BlitSurface(temp_surface, &_draw_rect, _surface, NULL);
@@ -43,13 +40,4 @@ Message::Message(SDL_Point xy, SDL_Color color, std::string msg, bool center)
     _prev_color = color;
 
     SDL_FreeSurface(temp_surface);
-}
-
-void Message::update(void)
-{
-    if (util::sdl::cmpColor(_prev_color, color)) {
-        util::sdl::BlitSurfaceColoured(_surface, color);
-    }
-    _prev_color = color;
-    return;
 }

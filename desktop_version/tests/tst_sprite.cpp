@@ -20,5 +20,5 @@ TEST_F(TestSprite, loadSimpleV)
     auto pix1 = util::sdl::ReadPixel(surface, 0, 0);
     auto pix2 = util::sdl::ReadPixel(surface, 4, 8);
     EXPECT_EQ(pix1, 0x00000000);
-    EXPECT_EQ(pix2, 0xFF01A4D9);
+    EXPECT_EQ(pix2, 0xFFD9A401);
 }

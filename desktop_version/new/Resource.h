@@ -1,6 +1,7 @@
 #pragma once
 
-#include <SDL.h>
+#include "util.h"
+
 #include <json.hpp>
 
 #include <map>
@@ -91,14 +92,7 @@ private:
     inline SDL_Surface* GetSubSurface(const SDL_Rect& area)
     {
         // we will slow things down.
-        SDL_Surface* preSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                                                       area.w,
-                                                       area.h,
-                                                       asset->format->BitsPerPixel,
-                                                       asset->format->Rmask,
-                                                       asset->format->Gmask,
-                                                       asset->format->Bmask,
-                                                       asset->format->Amask);
+        SDL_Surface* preSurface =util::sdl::CreateSurface({area.w, area.h});
         SDL_BlitSurface(asset, &area, preSurface, NULL);
         return preSurface;
     }

@@ -1,7 +1,7 @@
 #include "Room.h"
 
 Room::Room(const JsonAsset& room_table, const TileAsset& tile_asset, SDL_Point room_pos)
-    : Layer()
+    : Layer(Type::STATIC)
 {
     int rx, ry;
     rx = room_pos.x;
@@ -17,12 +17,18 @@ Room::Room(const JsonAsset& room_table, const TileAsset& tile_asset, SDL_Point r
         map_json_data["content"].get<std::array<unsigned short, SURFACE_ARR_SIZE>>();
     _name = map_json_data["roomname"].get<std::string>();
 
+    _roomenter = new RoomEnterComponnet{ _name };
+
     _blocks.push_back(new Wall{ _cell_arr, tile_asset });
     _blocks.push_back(new Thorn{ _cell_arr, tile_asset });
     _blocks.push_back(new BackWall{ _cell_arr, tile_asset });
 
     for (auto block : _blocks)
         addDrawable(block);
+
+    draw_objects();
+    _roomenter->draw_to_parent(_surface);
+    
 }
 
 Room::~Room()
@@ -31,6 +37,5 @@ Room::~Room()
         if (b != nullptr)
             delete b;
     _blocks.clear();
+    delete _roomenter;
 }
-
-void Room::update(void) {}

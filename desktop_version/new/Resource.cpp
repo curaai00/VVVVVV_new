@@ -1,5 +1,4 @@
 #include "Resource.h"
-#include "util.h"
 
 #include <exception>
 #include <physfs.h>

@@ -4,26 +4,26 @@
 #include <tuple>
 
 IntroBackground::IntroBackground()
-    : ScreenDrawable()
-{}
+: Layer(Type::DYNAMIC)
+{
+    addDrawable(&stripe);
+}
 IntroBackground::~IntroBackground() {}
 
 void IntroBackground::update(void)
 {
     stripe.update();
-
-    SDL_BlitSurface(stripe.surface(), NULL, _surface, NULL);
 }
 
 SpaceBackground::SpaceBackground()
-    : ScreenDrawable()
-{}
+: Layer(Type::DYNAMIC)
+{
+    addDrawable(&space);
+}
 
 SpaceBackground::~SpaceBackground() {}
 
 void SpaceBackground ::update(void)
 {
     space.update();
-
-    SDL_BlitSurface(space.surface(), NULL, _surface, NULL);
 }

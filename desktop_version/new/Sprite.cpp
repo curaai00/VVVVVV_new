@@ -5,11 +5,10 @@ Sprite::Sprite(SDL_Point xy, std::string sprite_name)
 {}
 
 Sprite::Sprite(SDL_Point xy, unsigned int sprite_idx)
-    : ObjectDrawable()
+    : Drawable(Type::STATIC)
 {
     auto size = sprite_tile.tilesize();
-    _surface =
-        SDL_CreateRGBSurface(0, size.x, size.y, 32, R_MASK, G_MASK, B_MASK, A_MASK);
+    _surface = util::sdl::CreateSurface({size.x, size.y});
     SDL_BlitSurface(sprite_tile.tile(sprite_idx), NULL, _surface, NULL);
 
     _draw_rect.x = xy.x;
@@ -29,10 +28,10 @@ unsigned int Sprite::name2idx(std::string name)
 }
 
 SpriteSet::SpriteSet(SDL_Point xy, std::vector<unsigned int> sprite_idx_list)
+: Drawable(Type::STATIC)
 {
     auto size = sprite_tile.tilesize();
-    _surface = SDL_CreateRGBSurface(
-        0, size.x * sprite_idx_list.size(), size.y, 32, R_MASK, G_MASK, B_MASK, A_MASK);
+    _surface = util::sdl::CreateSurface({static_cast<int>(size.x * sprite_idx_list.size()), size.y});
     auto tile_size = sprite_tile.tilesize();
     SDL_Rect for_tile_rect{ 0, 0, tile_size.x, tile_size.y };
 

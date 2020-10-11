@@ -9,8 +9,7 @@ class Game
 {
 public:
     Game()
-        : EventCompsitor()
-        , ScreenDrawable()
+        : EventCompsitor(), ScreenDrawable(Type::DYNAMIC)
     {}
     virtual ~Game() {}
 
@@ -19,7 +18,7 @@ public:
     void draw(void)
     {
         SDL_FillRect(_surface, NULL, 0);
-        for (ScreenDrawable* layer : screen_layers) {
+        for (Layer* layer : screen_layers) {
             layer->update();
             SDL_BlitSurface(layer->surface(), NULL, _surface, NULL);
         }
@@ -33,7 +32,10 @@ public:
 
     SDL_Surface* surface(void) { return _surface; }
 
-    void addScreenLayer(ScreenDrawable* screen) { screen_layers.push_back(screen); };
+    void addLayer(Layer* layer) { 
+        screen_layers.push_back(layer);
+        addEventable(layer);
+         };
 
     enum class State
     {
@@ -46,6 +48,6 @@ public:
     void setState(State s) { _state = s; }
 
 protected:
-    std::vector<ScreenDrawable*> screen_layers;
+    std::vector<Layer*> screen_layers;
     State _state = State::NONE;
 };

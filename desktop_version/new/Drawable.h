@@ -1,50 +1,47 @@
 #pragma once
 
-#include <SDL.h>
+#include "util.h"
 
-#ifndef SDL_BYTE_MASK
-#define SDL_BYTE_MASK
-const uint32_t R_MASK = 0x000000ff;
-const uint32_t G_MASK = 0x0000ff00;
-const uint32_t B_MASK = 0x00ff0000;
-const uint32_t A_MASK = 0xff000000;
-#endif
 
 class Drawable
 {
 public:
-    Drawable() {}
-    virtual ~Drawable()
+    enum class Type
     {
-        if (_surface)
-            SDL_FreeSurface(_surface);
-    }
+        STATIC,
+        DYNAMIC
+    };
+
+    Drawable(Type _type) :_type(_type) {}
+    virtual ~Drawable() {}
+
+
     virtual void update(void) = 0;
-    // TODO rename: remove get keyword
     SDL_Surface* surface(void) { return _surface; }
     SDL_Rect rect(void) { return _draw_rect; }
+    Type type(void) {return _type;}
+
+    void draw_to_parent(SDL_Surface* parent)
+    {
+        SDL_BlitSurface(surface(), NULL, parent, &_draw_rect);
+    }
+    
 
 protected:
     SDL_Surface* _surface;
     SDL_Rect _draw_rect;
+    const Type _type=Type::STATIC;
 };
+
 
 class ScreenDrawable : public Drawable
 {
 public:
-    ScreenDrawable()
-        : Drawable()
+    ScreenDrawable(Type _type)
+        : Drawable(_type)
     {
-        _surface = SDL_CreateRGBSurface(0, 320, 240, 32, R_MASK, G_MASK, B_MASK, A_MASK);
+        _surface = util::sdl::CreateSurface({320, 240});
         _draw_rect = SDL_Rect{ 0, 0, 320, 240 };
     }
-};
-
-// Remove ObjectDrawble, indicate Drawable directly
-class ObjectDrawable : public Drawable
-{
-public:
-    ObjectDrawable()
-        : Drawable()
-    {}
+    virtual void update(void) = 0;
 };

@@ -8,8 +8,8 @@
 class AnimateComponent : public Component
 {
 public:
-    AnimateComponent(SDL_Surface* _surface, unsigned int tick)
-        : Component(_surface)
+    AnimateComponent(SDL_Surface* _surface, const SDL_Rect& _rect, unsigned int tick)
+        : Component(_surface, _rect, Type::DYNAMIC)
         , _duration(tick)
     {}
 
@@ -26,9 +26,7 @@ class SpaceComponent : public AnimateComponent
 {
 public:
     SpaceComponent(void)
-        : AnimateComponent(
-              SDL_CreateRGBSurface(0, 320, 240, 32, R_MASK, G_MASK, B_MASK, A_MASK),
-              0)
+        : AnimateComponent(util::sdl::CreateSurface({320, 240}), SDL_Rect{ 320, 240 }, 0)
     {}
 
     void update(void) override;
@@ -56,9 +54,7 @@ class StripeComponent : public AnimateComponent
 {
 public:
     StripeComponent(void)
-        : AnimateComponent(
-              SDL_CreateRGBSurface(0, 320, 240, 32, R_MASK, G_MASK, B_MASK, A_MASK),
-              0)
+        : AnimateComponent(util::sdl::CreateSurface({320, 240}), SDL_Rect{ 320, 240 }, 0)
     {
         JsonAsset towerdata{ "tower.json" };
         auto res = towerdata.asset.count("background");
@@ -78,20 +74,4 @@ private:
     unsigned int _color = 0;
     unsigned int _prev_color = 0;
     unsigned int _scroll_start_y = 0;
-};
-
-class RoomEnterComponnet : public AnimateComponent
-{
-public:
-    // TODO 120 is temp variable change after
-    RoomEnterComponnet(const std::string& roomname)
-        : AnimateComponent(
-              SDL_CreateRGBSurface(0, 320, 240, 32, R_MASK, G_MASK, B_MASK, A_MASK),
-              120)
-        , _roomname(roomname)
-    {}
-    void update(void) override;
-
-private:
-    std::string _roomname;
 };

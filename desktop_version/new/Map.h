@@ -2,15 +2,13 @@
 
 #include "Room.h"
 
-class Map : public ScreenDrawable
+class Map 
 {
 public:
     Map();
     virtual ~Map();
 
-    void setRoom(const SDL_Point& room_pos);
-
-    void update(void) override;
+    Room* setRoom(const SDL_Point& room_pos);
 
 private:
     Room* room = nullptr;

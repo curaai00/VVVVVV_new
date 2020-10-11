@@ -2,9 +2,8 @@
 
 VVVVVV::VVVVVV()
 {
-    map.setRoom({ 114, 105 });
-    addScreenLayer(&spacebackground);
-    addScreenLayer(&map);
+    addLayer(&spacebackground);
+    addLayer(map.setRoom({ 114, 105 }));
 }
 
 VVVVVV::~VVVVVV() {}
@@ -12,5 +11,4 @@ VVVVVV::~VVVVVV() {}
 void VVVVVV::update(void)
 {
     spacebackground.update();
-    map.update();
 }

@@ -1,24 +1,24 @@
 #pragma once
 
-#include "SDL.h"
+#include "Drawable.h"
 #include "util.h"
 
-class Component
+class Component : public Drawable
 {
 public:
-    Component(SDL_Surface* _surface)
-        : _surface(_surface){};
-    SDL_Surface* surface() { return _surface; }
-
-protected:
-    SDL_Surface* _surface;
+    Component(SDL_Surface* surface, const SDL_Rect& rect, Type _type)
+        : Drawable(_type)
+    {
+        this->_surface = surface;
+        this->_draw_rect = rect;
+    };
 };
 
 class ColorComponent : public Component
 {
 public:
-    ColorComponent(SDL_Surface* _surface, const SDL_Color& color)
-        : Component(_surface)
+    ColorComponent(SDL_Surface* surface, const SDL_Rect& rect, const SDL_Color& color)
+        : Component(surface, rect, Type::STATIC)
         , _color(color)
     {}
 

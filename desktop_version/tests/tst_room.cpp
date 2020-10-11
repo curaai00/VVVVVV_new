@@ -25,7 +25,7 @@ TEST_F(TestRoom, load)
 }
 TEST_F(TestRoom, blocks)
 {
-    room->draw();
+    room->update();
 
     SDL_Rect rect;
     // empty 414
