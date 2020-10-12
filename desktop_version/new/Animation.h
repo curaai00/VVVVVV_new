@@ -8,13 +8,16 @@
 class AnimateComponent : public Component
 {
 public:
-    AnimateComponent(SDL_Surface* _surface, const SDL_Rect& _rect, unsigned int tick)
-        : Component(_surface, _rect, Type::DYNAMIC)
-        , _duration(tick)
-    {}
+    AnimateComponent(SDL_Surface *_surface, const SDL_Rect &_rect, unsigned int tick)
+        : Component(_surface, _rect, Type::DYNAMIC), _duration(tick)
+    {
+    }
 
     virtual void update(void) = 0;
-    bool is_playing(void) const { return _is_playing; }
+    bool is_playing(void) const
+    {
+        return _is_playing;
+    }
 
 private:
     unsigned int _animation_tick = 0;
@@ -25,9 +28,9 @@ private:
 class SpaceComponent : public AnimateComponent
 {
 public:
-    SpaceComponent(void)
-        : AnimateComponent(util::sdl::CreateSurface({320, 240}), SDL_Rect{ 320, 240 }, 0)
-    {}
+    SpaceComponent(void) : AnimateComponent(util::sdl::CreateSurface({320, 240}), SDL_Rect{320, 240}, 0)
+    {
+    }
 
     void update(void) override;
 
@@ -35,10 +38,7 @@ public:
     {
         Star()
         {
-            draw_rect = { Sint16(util::math::fRandom() * 320),
-                          Sint16(util::math::fRandom() * 240),
-                          2,
-                          2 };
+            draw_rect = {Sint16(util::math::fRandom() * 320), Sint16(util::math::fRandom() * 240), 2, 2};
             speed = 4 + static_cast<int>(util::math::fRandom() * 4);
         }
         SDL_Rect draw_rect;
@@ -53,21 +53,23 @@ private:
 class StripeComponent : public AnimateComponent
 {
 public:
-    StripeComponent(void)
-        : AnimateComponent(util::sdl::CreateSurface({320, 240}), SDL_Rect{ 320, 240 }, 0)
+    StripeComponent(void) : AnimateComponent(util::sdl::CreateSurface({320, 240}), SDL_Rect{320, 240}, 0)
     {
-        JsonAsset towerdata{ "tower.json" };
+        JsonAsset towerdata{"tower.json"};
         auto res = towerdata.asset.count("background");
         tower = towerdata.asset["background"].get<std::vector<unsigned short>>();
     }
     void update(void) override;
 
-    unsigned int getColor(void) const { return _color; }
+    unsigned int getColor(void) const
+    {
+        return _color;
+    }
     void setColor(void);
     void setColor(unsigned int c);
 
 private:
-    TileAsset colortile{ "graphics/tiles3.png", SDL_Point{ 8, 8 } };
+    TileAsset colortile{"graphics/tiles3.png", SDL_Point{8, 8}};
 
     std::vector<unsigned short> tower;
 

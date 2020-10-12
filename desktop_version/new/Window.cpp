@@ -3,11 +3,10 @@
 
 Window::Window()
 {
-    SDL_CreateWindowAndRenderer(
-        width, height, SDL_WINDOW_RESIZABLE, &m_window, &m_renderer);
+    SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_RESIZABLE, &m_window, &m_renderer);
     m_screen = util::sdl::CreateSurface({width, height});
-    m_screenTexture = SDL_CreateTexture(
-        m_renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, width, height);
+    m_screenTexture =
+        SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, width, height);
 
     SDL_SetWindowTitle(m_window, "VVVVVV");
     auto icon = PNGAsset("VVVVVV.png");
@@ -25,9 +24,10 @@ Window::~Window()
 
 void Window::render(void)
 {
-    if (game) {
+    if (game)
+    {
         game->draw();
-        SDL_Surface* surface = game->surface();
+        SDL_Surface *surface = game->surface();
 
         SDL_UpdateTexture(m_screenTexture, NULL, surface->pixels, surface->pitch);
         SDL_RenderCopy(m_renderer, m_screenTexture, NULL, NULL);

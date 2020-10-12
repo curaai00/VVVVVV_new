@@ -1,11 +1,10 @@
 #include "Sprite.h"
 
-Sprite::Sprite(SDL_Point xy, std::string sprite_name)
-    : Sprite(xy, Sprite::name2idx(sprite_name))
-{}
+Sprite::Sprite(SDL_Point xy, std::string sprite_name) : Sprite(xy, Sprite::name2idx(sprite_name))
+{
+}
 
-Sprite::Sprite(SDL_Point xy, unsigned int sprite_idx)
-    : Drawable(Type::STATIC)
+Sprite::Sprite(SDL_Point xy, unsigned int sprite_idx) : Drawable(Type::STATIC)
 {
     auto size = sprite_tile.tilesize();
     _surface = util::sdl::CreateSurface({size.x, size.y});
@@ -17,7 +16,9 @@ Sprite::Sprite(SDL_Point xy, unsigned int sprite_idx)
     _draw_rect.h = size.y;
 }
 
-Sprite::~Sprite() {}
+Sprite::~Sprite()
+{
+}
 
 unsigned int Sprite::name2idx(std::string name)
 {
@@ -27,17 +28,16 @@ unsigned int Sprite::name2idx(std::string name)
         throw "Not implemented yet";
 }
 
-SpriteSet::SpriteSet(SDL_Point xy, std::vector<unsigned int> sprite_idx_list)
-: Drawable(Type::STATIC)
+SpriteSet::SpriteSet(SDL_Point xy, std::vector<unsigned int> sprite_idx_list) : Drawable(Type::STATIC)
 {
     auto size = sprite_tile.tilesize();
     _surface = util::sdl::CreateSurface({static_cast<int>(size.x * sprite_idx_list.size()), size.y});
     auto tile_size = sprite_tile.tilesize();
-    SDL_Rect for_tile_rect{ 0, 0, tile_size.x, tile_size.y };
+    SDL_Rect for_tile_rect{0, 0, tile_size.x, tile_size.y};
 
-    for (int i = 0; i < sprite_idx_list.size(); i++) {
-        SDL_BlitSurface(
-            sprite_tile.tile(sprite_idx_list[i]), NULL, _surface, &for_tile_rect);
+    for (int i = 0; i < sprite_idx_list.size(); i++)
+    {
+        SDL_BlitSurface(sprite_tile.tile(sprite_idx_list[i]), NULL, _surface, &for_tile_rect);
         for_tile_rect.x += tile_size.x;
     }
     _draw_rect.x = xy.x;

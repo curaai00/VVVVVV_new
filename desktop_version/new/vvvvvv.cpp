@@ -3,10 +3,12 @@
 VVVVVV::VVVVVV()
 {
     addLayer(&spacebackground);
-    addLayer(map.setRoom({ 114, 105 }));
+    addLayer(map.setRoom({114, 105}));
 }
 
-VVVVVV::~VVVVVV() {}
+VVVVVV::~VVVVVV()
+{
+}
 
 void VVVVVV::update(void)
 {

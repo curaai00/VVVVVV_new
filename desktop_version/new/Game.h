@@ -3,39 +3,44 @@
 #include "Drawable.h"
 #include "Eventable.h"
 
-class Game
-    : public EventCompsitor
-    , public ScreenDrawable
+class Game : public EventCompsitor, public ScreenDrawable
 {
 public:
-    Game()
-        : EventCompsitor(), ScreenDrawable(Type::DYNAMIC)
-    {}
-    virtual ~Game() {}
+    Game() : EventCompsitor(), ScreenDrawable(Type::DYNAMIC)
+    {
+    }
+    virtual ~Game()
+    {
+    }
 
     virtual void update(void) = 0;
 
     void draw(void)
     {
         SDL_FillRect(_surface, NULL, 0);
-        for (Layer* layer : screen_layers) {
+        for (Layer *layer : screen_layers)
+        {
             layer->update();
             SDL_BlitSurface(layer->surface(), NULL, _surface, NULL);
         }
     }
-    void key_event(const KeyPull& key_pull)
+    void key_event(const KeyPull &key_pull)
     {
         auto pressed_keys = key_pull.pressedKeys();
         for (auto k : pressed_keys)
             event(k);
     }
 
-    SDL_Surface* surface(void) { return _surface; }
+    SDL_Surface *surface(void)
+    {
+        return _surface;
+    }
 
-    void addLayer(Layer* layer) { 
+    void addLayer(Layer *layer)
+    {
         screen_layers.push_back(layer);
         addEventable(layer);
-         };
+    };
 
     enum class State
     {
@@ -44,10 +49,16 @@ public:
         VVVVVV,
         PAUSED
     };
-    State getState(void) { return _state; }
-    void setState(State s) { _state = s; }
+    State getState(void)
+    {
+        return _state;
+    }
+    void setState(State s)
+    {
+        _state = s;
+    }
 
 protected:
-    std::vector<Layer*> screen_layers;
+    std::vector<Layer *> screen_layers;
     State _state = State::NONE;
 };

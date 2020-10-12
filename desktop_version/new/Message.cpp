@@ -2,10 +2,7 @@
 #include "util.h"
 
 Message::Message(SDL_Point xy, SDL_Color color, std::string msg, bool center)
-    : Drawable(Type::STATIC)
-    , xy(xy)
-    , color(color)
-    , msg(msg)
+    : Drawable(Type::STATIC), xy(xy), color(color), msg(msg)
 {
     if (center)
         xy.x = 160 - util::str::len(msg) / 2;
@@ -17,7 +14,8 @@ Message::Message(SDL_Point xy, SDL_Color color, std::string msg, bool center)
     SDL_Rect font_rect;
 
     auto iter = msg.begin();
-    while (iter != msg.end()) {
+    while (iter != msg.end())
+    {
         auto curr = utf8::unchecked::next(iter);
         font_rect = tfont_rect;
         font_rect.x = xy.x + bfontpos;
@@ -34,10 +32,13 @@ Message::Message(SDL_Point xy, SDL_Color color, std::string msg, bool center)
 
     _surface = util::sdl::CreateSurface({_draw_rect.w, _draw_rect.h});
 
-    // TODO Add color component
     SDL_BlitSurface(temp_surface, &_draw_rect, _surface, NULL);
-    util::sdl::BlitSurfaceColoured(_surface, color);
-    _prev_color = color;
-
     SDL_FreeSurface(temp_surface);
+
+    _color = new ColorComponent(_surface, {0, 0, _draw_rect.w, _draw_rect.h}, color);
+}
+
+Message::~Message()
+{
+    delete _color;
 }
