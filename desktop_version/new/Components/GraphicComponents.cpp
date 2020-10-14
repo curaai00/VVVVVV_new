@@ -1,4 +1,4 @@
-#include "Animation.h"
+#include "GraphicComponents.h"
 
 void SpaceComponent::update(void)
 {

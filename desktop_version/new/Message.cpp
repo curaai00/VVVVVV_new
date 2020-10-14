@@ -1,11 +1,14 @@
 #include "Message.h"
 #include "util.h"
 
-Message::Message(SDL_Point xy, SDL_Color color, std::string msg, bool center)
-    : Drawable(Type::STATIC), xy(xy), color(color), msg(msg)
+Message::Message(SDL_Point xy, SDL_Color color, std::string msg,
+                 bool center)
+    : Drawable()
+    , xy(xy)
+    , color(color)
+    , msg(msg)
 {
-    if (center)
-        xy.x = 160 - util::str::len(msg) / 2;
+    if (center) xy.x = 160 - util::str::len(msg) / 2;
 
     int bfontpos = 0;
 
@@ -21,7 +24,8 @@ Message::Message(SDL_Point xy, SDL_Color color, std::string msg, bool center)
         font_rect.x = xy.x + bfontpos;
         font_rect.y = xy.y;
 
-        SDL_BlitSurface(font_tile.tile(curr), NULL, temp_surface, &font_rect);
+        SDL_BlitSurface(font_tile.tile(curr), NULL, temp_surface,
+                        &font_rect);
         bfontpos += curr < 32 ? 6 : 8;
     }
 
@@ -35,10 +39,8 @@ Message::Message(SDL_Point xy, SDL_Color color, std::string msg, bool center)
     SDL_BlitSurface(temp_surface, &_draw_rect, _surface, NULL);
     SDL_FreeSurface(temp_surface);
 
-    _color = new ColorComponent(_surface, {0, 0, _draw_rect.w, _draw_rect.h}, color);
+    _color = new ColorComponent(color);
+    _color->paint(_surface);
 }
 
-Message::~Message()
-{
-    delete _color;
-}
+Message::~Message() { delete _color; }

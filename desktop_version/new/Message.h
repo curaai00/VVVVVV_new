@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Component.h"
+#include "Components/DrawComponents.h"
 #include "Drawable.h"
 #include "Resource.h"
 
@@ -11,15 +11,11 @@
 class Message : public Drawable
 {
 public:
-    Message(SDL_Point xy, SDL_Color color, std::string msg, bool center = false);
+    Message(SDL_Point xy, SDL_Color color, std::string msg,
+            bool center = false);
     ~Message();
     Message &operator=(const Message &) = delete; // Disallow copying
     Message(const Message &) = delete;
-
-    void update(void) override
-    {
-        return;
-    };
 
     SDL_Point xy;
     SDL_Color color;

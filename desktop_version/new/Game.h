@@ -6,12 +6,12 @@
 class Game : public EventCompsitor, public ScreenDrawable
 {
 public:
-    Game() : EventCompsitor(), ScreenDrawable(Type::DYNAMIC)
+    Game()
+        : EventCompsitor()
+        , ScreenDrawable()
     {
     }
-    virtual ~Game()
-    {
-    }
+    virtual ~Game() {}
 
     virtual void update(void) = 0;
 
@@ -31,10 +31,7 @@ public:
             event(k);
     }
 
-    SDL_Surface *surface(void)
-    {
-        return _surface;
-    }
+    SDL_Surface *surface(void) { return _surface; }
 
     void addLayer(Layer *layer)
     {
@@ -49,14 +46,8 @@ public:
         VVVVVV,
         PAUSED
     };
-    State getState(void)
-    {
-        return _state;
-    }
-    void setState(State s)
-    {
-        _state = s;
-    }
+    State getState(void) { return _state; }
+    void setState(State s) { _state = s; }
 
 protected:
     std::vector<Layer *> screen_layers;

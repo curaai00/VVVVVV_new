@@ -10,7 +10,7 @@ class Menu : public Game
 public:
     Menu()
     {
-        Layer *intro_layer = new Layer(Type::STATIC);
+        Layer *intro_layer = new Layer();
         intro_layer->addDrawable(&titleSprite);
         intro_layer->addDrawable(&msg);
 
@@ -19,18 +19,15 @@ public:
 
         // addEventable(&event_ctrl);
     }
-    ~Menu()
-    {
-    }
+    ~Menu() {}
 
-    inline void update(void)
-    {
-        back.update();
-    }
+    inline void update(void) { back.update(); }
 
 private:
     IntroBackground back;
-    Message msg{SDL_Point{5, 175}, SDL_Color{255, 0, 0, 255}, "[ Press ACTION to Start ]", true};
+    Message msg{SDL_Point{5, 175}, SDL_Color{255, 0, 0, 255},
+                "[ Press ACTION to Start ]", true};
     // 23 is sprite idx of Big V
-    SpriteSet titleSprite{SDL_Point{64, 50}, {23, 23, 23, 23, 23, 23}};
+    SpriteSet titleSprite{SDL_Point{64, 50},
+                          {23, 23, 23, 23, 23, 23}};
 };

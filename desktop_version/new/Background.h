@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Animation.h"
+#include "Components/GraphicComponents.h"
 #include "Layer.h"
 #include "Resource.h"
 #include "util.h"

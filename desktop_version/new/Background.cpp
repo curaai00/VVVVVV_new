@@ -3,29 +3,21 @@
 
 #include <tuple>
 
-IntroBackground::IntroBackground() : Layer(Type::DYNAMIC)
+IntroBackground::IntroBackground()
+    : Layer()
 {
     addDrawable(&stripe);
 }
-IntroBackground::~IntroBackground()
-{
-}
+IntroBackground::~IntroBackground() {}
 
-void IntroBackground::update(void)
-{
-    stripe.update();
-}
+void IntroBackground::update(void) { stripe.update(); }
 
-SpaceBackground::SpaceBackground() : Layer(Type::DYNAMIC)
+SpaceBackground::SpaceBackground()
+    : Layer()
 {
     addDrawable(&space);
 }
 
-SpaceBackground::~SpaceBackground()
-{
-}
+SpaceBackground::~SpaceBackground() {}
 
-void SpaceBackground ::update(void)
-{
-    space.update();
-}
+void SpaceBackground ::update(void) { space.update(); }
