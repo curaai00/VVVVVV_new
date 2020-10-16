@@ -1,10 +1,14 @@
 #pragma once
 
 #include <SDL.h>
+#include <algorithm>
 #include <cmath>
 #include <exception>
+#include <iostream>
+#include <numeric>
 #include <stdlib.h>
 #include <string>
+#include <vector>
 
 #ifndef SDL_BYTE_MASK
 #define SDL_BYTE_MASK
@@ -43,6 +47,19 @@ public:
 
 namespace util
 {
+template <typename T> std::vector<T> range(T N1, T N2)
+{
+    T small = N1 < N2 ? N1 : N2;
+    T big = N1 < N2 ? N2 : N1;
+
+    std::vector<T> numbers(big - small);
+    std::iota(numbers.begin(), numbers.end(), small);
+
+    if (big == N1) std::reverse(numbers.begin(), numbers.end());
+
+    return numbers;
+}
+
 namespace str
 {
 bool endsWith(const std::string &str, const std::string &suffix);
@@ -69,6 +86,8 @@ void BlitSurfaceColoured(SDL_Surface *surface, const SDL_Color &c);
 bool cmpColor(const SDL_Color &a, const SDL_Color &b);
 bool cmpPos(const SDL_Point &a, const SDL_Point &b);
 bool cmpRect(const SDL_Rect &a, const SDL_Rect &b);
+
+SDL_Rect getTightRect(const SDL_Surface *surface);
 
 }; // namespace sdl
 

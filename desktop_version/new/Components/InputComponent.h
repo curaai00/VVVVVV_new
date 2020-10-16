@@ -21,7 +21,24 @@ public:
         _orientation = Orientation::DOWN;
     }
 
-    bool event(const SDL_Keycode k) override { throw NotImplementedError(); }
+    bool event(const SDL_Keycode k) override
+    {
+        switch (k)
+        {
+        case SDLK_LEFT:
+        case SDLK_a:
+            _cur_pos.x -= _speed.x;
+            break;
+        case SDLK_RIGHT:
+        case SDLK_d:
+            _cur_pos.x += _speed.x;
+            break;
+
+        default:
+            return false;
+        }
+        return true;
+    }
 
     SDL_Point speed(void) const { return _speed; }
 

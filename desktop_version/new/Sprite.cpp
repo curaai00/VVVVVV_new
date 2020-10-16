@@ -8,14 +8,15 @@ Sprite::Sprite(SDL_Point xy, std::string sprite_name)
 Sprite::Sprite(SDL_Point xy, unsigned int sprite_idx)
     : Drawable()
 {
-    auto size = sprite_tile.tilesize();
-    _surface = util::sdl::CreateSurface({size.x, size.y});
-    SDL_BlitSurface(sprite_tile.tile(sprite_idx), NULL, _surface, NULL);
+    auto tile = sprite_tile.tile(sprite_idx);
+    auto rect = util::sdl::getTightRect(tile);
+
+    _surface = util::sdl::patch(tile, &rect);
 
     _draw_rect.x = xy.x;
     _draw_rect.y = xy.y;
-    _draw_rect.w = size.x;
-    _draw_rect.h = size.y;
+    _draw_rect.w = rect.w;
+    _draw_rect.h = rect.h;
 }
 
 Sprite::~Sprite() {}

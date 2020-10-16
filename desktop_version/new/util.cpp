@@ -1,4 +1,5 @@
 #include "util.h"
+#include <functional>
 #include <utf8/unchecked.h>
 
 using namespace util::str;
@@ -157,4 +158,37 @@ bool util::sdl::cmpRect(const SDL_Rect &a, const SDL_Rect &b)
 bool util::sdl::cmpPos(const SDL_Point &a, const SDL_Point &b)
 {
     return a.x == b.x && a.y == b.y;
+}
+
+SDL_Rect util::sdl::getTightRect(const SDL_Surface *surface)
+{
+    using check_func = std::function<bool(const SDL_Surface *, const int)>;
+
+    auto check_row = [](const SDL_Surface *surface, const int y) -> bool {
+        for (int x = 0; x < surface->w; x++)
+            if (ReadPixel(surface, x, y) != 0) return true;
+        return false;
+    };
+    auto check_col = [](const SDL_Surface *surface, const int x) -> bool {
+        for (int y = 0; y < surface->h; y++)
+            if (ReadPixel(surface, x, y) != 0) return true;
+        return false;
+    };
+    auto find_var = [&surface](check_func func, unsigned int max,
+                               bool reversed = false) -> int {
+        auto range = util::range<unsigned int>(0, max);
+        if (reversed) std::reverse(range.begin(), range.end());
+
+        for (auto i : range)
+            if (func(surface, i)) return static_cast<int>(i);
+
+        throw std::invalid_argument("Cannot find var in range");
+    };
+
+    auto min_x = find_var(check_col, surface->w);
+    auto max_x = find_var(check_col, surface->w, true);
+    auto min_y = find_var(check_row, surface->h);
+    auto max_y = find_var(check_row, surface->h, true);
+
+    return SDL_Rect{min_x, min_y, max_x - min_x, max_y - min_y};
 }
