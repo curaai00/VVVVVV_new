@@ -12,7 +12,8 @@
 class Resource
 {
 public:
-    static void load2Mem(const char *name, unsigned char **mem, size_t *len, bool addnull = false);
+    static void load2Mem(const char *name, unsigned char **mem, size_t *len,
+                         bool addnull = false);
 };
 
 class Asset
@@ -77,16 +78,12 @@ class TileAsset : public PNGAsset
 public:
     TileAsset(const char *relatvie_asset_path, SDL_Point size);
     virtual ~TileAsset();
+    TileAsset(const TileAsset &tileasset);
+    TileAsset &operator=(TileAsset const &tileasset);
 
     SDL_Surface *tile(unsigned int i) const;
-    size_t tilecount(void) const
-    {
-        return tiles.size();
-    }
-    SDL_Point tilesize(void) const
-    {
-        return _size;
-    }
+    size_t tilecount(void) const { return tiles.size(); }
+    SDL_Point tilesize(void) const { return _size; }
 
 protected:
     virtual void _load(unsigned char *fileIn, size_t length) override;

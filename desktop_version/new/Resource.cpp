@@ -12,8 +12,8 @@
 #include <shlobj.h>
 // clang-format on
 
-#elif defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) ||                      \
-    defined(__HAIKU__) || defined(__DragonFly__)
+#elif defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__) ||           \
+    defined(__OpenBSD__) || defined(__HAIKU__) || defined(__DragonFly__)
 #include <dirent.h>
 #include <limits.h>
 #include <spawn.h>
@@ -26,13 +26,14 @@
 
 extern "C"
 {
-    extern unsigned lodepng_decode24(unsigned char **out, unsigned *w, unsigned *h, const unsigned char *in,
-                                     size_t insize);
-    extern unsigned lodepng_decode32(unsigned char **out, unsigned *w, unsigned *h, const unsigned char *in,
-                                     size_t insize);
+    extern unsigned lodepng_decode24(unsigned char **out, unsigned *w, unsigned *h,
+                                     const unsigned char *in, size_t insize);
+    extern unsigned lodepng_decode32(unsigned char **out, unsigned *w, unsigned *h,
+                                     const unsigned char *in, size_t insize);
 }
 
-void Resource::load2Mem(const char *name, unsigned char **mem, size_t *len, bool addnull)
+void Resource::load2Mem(const char *name, unsigned char **mem, size_t *len,
+                        bool addnull)
 {
     PHYSFS_File *handle = PHYSFS_openRead(name);
     if (handle == NULL)
@@ -62,13 +63,12 @@ void Resource::load2Mem(const char *name, unsigned char **mem, size_t *len, bool
     PHYSFS_close(handle);
 }
 
-Asset::Asset(const char *relative_asset_path) : asset_path(relative_asset_path)
+Asset::Asset(const char *relative_asset_path)
+    : asset_path(relative_asset_path)
 {
 }
 
-Asset::~Asset()
-{
-}
+Asset::~Asset() {}
 
 void Asset::load(bool addnull)
 {
@@ -82,12 +82,14 @@ void Asset::load(bool addnull)
 
     if (!length)
     {
-        std::string err_msg = std::string{"Can't find asset-resource from path: "} + asset_path;
+        std::string err_msg =
+            std::string{"Can't find asset-resource from path: "} + asset_path;
         throw std::invalid_argument(err_msg);
     }
 }
 
-PNGAsset::PNGAsset(const char *relative_asset_path) : Asset(relative_asset_path)
+PNGAsset::PNGAsset(const char *relative_asset_path)
+    : Asset(relative_asset_path)
 {
     if (!util::str::endsWith(relative_asset_path, ".png"))
         throw std::invalid_argument("PNGAsset need '.png' formatted file");
@@ -96,8 +98,7 @@ PNGAsset::PNGAsset(const char *relative_asset_path) : Asset(relative_asset_path)
 }
 PNGAsset::~PNGAsset()
 {
-    if (asset)
-        SDL_FreeSurface(asset);
+    if (asset) SDL_FreeSurface(asset);
     free(_asset_ptr);
 }
 
@@ -107,30 +108,29 @@ void PNGAsset::_load(unsigned char *fileIn, size_t length)
     unsigned int w, h;
 
     lodepng_decode32(&_asset_ptr, &w, &h, fileIn, length);
-    asset = SDL_CreateRGBSurfaceFrom(_asset_ptr, w, h, 32, w * 4, R_MASK, G_MASK, B_MASK, A_MASK);
+    asset = SDL_CreateRGBSurfaceFrom(_asset_ptr, w, h, 32, w * 4, R_MASK, G_MASK,
+                                     B_MASK, A_MASK);
 }
 
-JsonAsset::JsonAsset(const char *relative_asset_path) : Asset(relative_asset_path)
+JsonAsset::JsonAsset(const char *relative_asset_path)
+    : Asset(relative_asset_path)
 {
     load(true);
 }
 
-JsonAsset::~JsonAsset()
-{
-}
+JsonAsset::~JsonAsset() {}
 void JsonAsset::_load(unsigned char *fileIn, size_t length)
 {
     asset = nlohmann::json::parse(fileIn);
 }
 
-FontAsset::FontAsset(const char *relative_asset_path) : Asset(relative_asset_path)
+FontAsset::FontAsset(const char *relative_asset_path)
+    : Asset(relative_asset_path)
 {
     load(true);
 }
 
-FontAsset::~FontAsset()
-{
-}
+FontAsset::~FontAsset() {}
 void FontAsset::_load(unsigned char *fileIn, size_t length)
 {
     if (fileIn != NULL)
@@ -167,21 +167,32 @@ int FontAsset::getFontIdx(uint32_t ch)
     }
 };
 
-int FontAsset::getFontLen(uint32_t ch)
-{
-    return ch < 32 ? 6 : 8;
-}
+int FontAsset::getFontLen(uint32_t ch) { return ch < 32 ? 6 : 8; }
 
-TileAsset::TileAsset(const char *relatvie_asset_path, SDL_Point size) : PNGAsset(relatvie_asset_path), _size(size)
+TileAsset::TileAsset(const char *relatvie_asset_path, SDL_Point size)
+    : PNGAsset(relatvie_asset_path)
+    , _size(size)
 {
     load();
 }
 TileAsset::~TileAsset()
 {
     for (auto tile : tiles)
-        if (tile)
-            SDL_FreeSurface(tile);
+    {
+        if (tile) SDL_FreeSurface(tile);
+    }
     tiles.clear();
+}
+
+TileAsset::TileAsset(const TileAsset &tileasset)
+    : TileAsset(tileasset.asset_path, _size)
+{
+}
+
+TileAsset &TileAsset::operator=(TileAsset const &tileasset)
+{
+    TileAsset another(tileasset);
+    return another;
 }
 
 void TileAsset::_load(unsigned char *fileIn, size_t length)
@@ -193,7 +204,4 @@ void TileAsset::_load(unsigned char *fileIn, size_t length)
             tiles.push_back(GetSubSurface(SDL_Rect{i, j, _size.x, _size.y}));
 }
 
-SDL_Surface *TileAsset::tile(unsigned int i) const
-{
-    return tiles[i];
-}
+SDL_Surface *TileAsset::tile(unsigned int i) const { return tiles[i]; }

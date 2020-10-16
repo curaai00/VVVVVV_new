@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Block.h"
+#include "Character.h"
 #include "Components/GraphicComponents.h"
 #include "Layer.h"
 #include "Message.h"
@@ -21,13 +22,11 @@ private:
             , _roomname(roomname)
         {
             auto fill_black = [](SDL_Surface *surface) {
-                auto c =
-                    util::sdl::color2uint(surface, {0, 0, 0, 255});
+                auto c = util::sdl::color2uint(surface, {0, 0, 0, 255});
                 SDL_FillRect(surface, NULL, c);
             };
             auto draw_msg = [&roomname](SDL_Surface *surface) {
-                Message msg{
-                    {0, 1}, {255, 255, 255, 255}, roomname, true};
+                Message msg{{0, 1}, {255, 255, 255, 255}, roomname, true};
                 msg.draw_to_parent(surface);
             };
 
@@ -49,12 +48,11 @@ public:
     Room(const Room &room) = delete;
     Room &operator=(const Room &room) = delete;
 
-    std::string name(void) const { return _name; }
+    virtual void update(void) override;
 
-    int blockCount(void) const
-    {
-        return static_cast<int>(_blocks.size());
-    };
+    Character *character() { return _character; }
+    std::string name(void) const { return _name; }
+    int blockCount(void) const { return static_cast<int>(_blocks.size()); };
     const std::vector<Block *> &blocks(void) { return _blocks; }
 
 private:
@@ -64,4 +62,6 @@ private:
     std::array<unsigned short, SURFACE_ARR_SIZE> _cell_arr;
     std::vector<Block *> _blocks;
     RoomEnterComponnet *_roomenter;
+
+    Character *_character;
 };

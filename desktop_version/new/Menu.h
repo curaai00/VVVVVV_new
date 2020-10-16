@@ -10,7 +10,7 @@ class Menu : public Game
 public:
     Menu()
     {
-        Layer *intro_layer = new Layer();
+        StaticLayer *intro_layer = new StaticLayer();
         intro_layer->addDrawable(&titleSprite);
         intro_layer->addDrawable(&msg);
 
@@ -21,7 +21,11 @@ public:
     }
     ~Menu() {}
 
-    inline void update(void) { back.update(); }
+    void update(void)
+    {
+        for (Layer *layer : screen_layers)
+            layer->update();
+    }
 
 private:
     IntroBackground back;

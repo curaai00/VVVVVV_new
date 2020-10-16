@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Background.h"
+#include "Character.h"
 #include "Game.h"
 #include "Map.h"
 
@@ -15,4 +16,6 @@ public:
 private:
     SpaceBackground spacebackground;
     Map map;
+    Room *room;
+    Character *player;
 };

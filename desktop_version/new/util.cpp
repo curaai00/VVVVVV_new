@@ -18,16 +18,19 @@ int util::str::len(std::string &str)
 
 bool util::str::endsWith(const std::string &str, const std::string &suffix)
 {
-    return str.size() >= suffix.size() && 0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
+    return str.size() >= suffix.size() &&
+           0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
 }
 
 SDL_Surface *util::sdl::CreateSurface(const SDL_Point &size)
 {
-    auto res = SDL_CreateRGBSurface(0, size.x, size.y, 32, R_MASK, G_MASK, B_MASK, A_MASK);
+    auto res =
+        SDL_CreateRGBSurface(0, size.x, size.y, 32, R_MASK, G_MASK, B_MASK, A_MASK);
     SDL_FillRect(res, NULL, 0);
     return res;
 }
-void util::sdl::blit(SDL_Surface *src, const SDL_Rect *src_r, SDL_Surface *dst, const SDL_Rect *dst_r)
+void util::sdl::blit(SDL_Surface *src, const SDL_Rect *src_r, SDL_Surface *dst,
+                     const SDL_Rect *dst_r)
 {
     if (dst_r)
     {
@@ -108,8 +111,7 @@ Uint32 util::sdl::color2uint(const SDL_Surface *surface, const SDL_Color &c)
     Uint32 u_color;
     auto get_shift_size = [](Uint32 mask) -> unsigned int {
         for (int i = 0; i < 32; i++)
-            if (mask & 1 << i)
-                return i;
+            if (mask & 1 << i) return i;
         throw "Invalid pixel mask";
     };
 
@@ -151,4 +153,8 @@ bool util::sdl::cmpColor(const SDL_Color &a, const SDL_Color &b)
 bool util::sdl::cmpRect(const SDL_Rect &a, const SDL_Rect &b)
 {
     return a.x == b.x && a.y == b.y && a.w == b.w && a.h == b.h;
+}
+bool util::sdl::cmpPos(const SDL_Point &a, const SDL_Point &b)
+{
+    return a.x == b.x && a.y == b.y;
 }

@@ -38,6 +38,14 @@ public:
         screen_layers.push_back(layer);
         addEventable(layer);
     };
+    void popLayer(void)
+    {
+        if (screen_layers.size() != 0)
+        {
+            delete screen_layers.back();
+            screen_layers.pop_back();
+        }
+    }
 
     enum class State
     {

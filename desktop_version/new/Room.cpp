@@ -15,11 +15,11 @@ Room::Room(const JsonAsset &room_table, const TileAsset &tile_asset,
     _room_pos = SDL_Point{rx, ry};
     auto map_json_data = room_table.asset[sry + srx];
     _cell_arr =
-        map_json_data["content"]
-            .get<std::array<unsigned short, SURFACE_ARR_SIZE>>();
+        map_json_data["content"].get<std::array<unsigned short, SURFACE_ARR_SIZE>>();
     _name = map_json_data["roomname"].get<std::string>();
 
     _roomenter = new RoomEnterComponnet{_name};
+    addDrawable(_roomenter);
 
     _blocks.push_back(new Wall{_cell_arr, tile_asset});
     _blocks.push_back(new Thorn{_cell_arr, tile_asset});
@@ -28,8 +28,12 @@ Room::Room(const JsonAsset &room_table, const TileAsset &tile_asset,
     for (auto block : _blocks)
         addDrawable(block);
 
+    // y: 183
+    _character = new Character{{290, 151}};
+    addEventable(_character);
+    addDrawable(_character);
+
     draw_objects();
-    _roomenter->draw_to_parent(_surface);
 }
 
 Room::~Room()
@@ -38,4 +42,10 @@ Room::~Room()
         if (b != nullptr) delete b;
     _blocks.clear();
     delete _roomenter;
+}
+
+void Room::update(void)
+{
+    _character->update();
+    draw_objects();
 }

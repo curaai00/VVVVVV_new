@@ -20,21 +20,26 @@ public:
         SDL_FillRect(_surface, NULL, 0x00000000);
 
         for (auto obj : _objects)
-        {
-            auto draw_rect = obj->rect();
-            auto draw_surface = obj->surface();
-            SDL_BlitSurface(draw_surface, NULL, _surface, &draw_rect);
-        }
+            obj->draw_to_parent(_surface);
     }
 
-    virtual void update(void) { return; }
+    virtual void update(void) = 0;
 
     // TODO: Need collision check after
-    inline void addDrawable(Drawable *obj)
-    {
-        _objects.push_back(obj);
-    }
+    inline void addDrawable(Drawable *obj) { _objects.push_back(obj); }
 
 private:
     std::vector<Drawable *> _objects;
+};
+
+class StaticLayer : public Layer
+{
+public:
+    StaticLayer()
+        : Layer()
+    {
+    }
+    ~StaticLayer() {}
+
+    virtual void update(void) override { return; }
 };

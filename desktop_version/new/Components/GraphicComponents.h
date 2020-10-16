@@ -31,8 +31,7 @@ protected:
 class MotionComponent : public AnimateComponent
 {
 public:
-    MotionComponent(const std::vector<Sprite> &motions,
-                    SDL_Point &pos)
+    MotionComponent(const std::vector<Sprite> &motions, SDL_Point &pos)
         : AnimateComponent(0)
         , _motions(motions)
         , _cur_pos(pos)
@@ -40,27 +39,33 @@ public:
         set(0);
     }
 
-    void update(void) override { throw NotImplementedError(); }
+    void update(void) override
+    {
+        if (util::sdl::cmpPos(_cur_pos, _prev_pos)) set((_idx + 1) % length());
+    }
 
     void set(unsigned int idx)
     {
         if (length() - 1 < idx)
-            throw std::invalid_argument(
-                "Set motion idx out of range in motions");
+            throw std::invalid_argument("Set motion idx out of range in motions");
 
+        _idx = idx;
         _surface = _motions[idx].surface();
         _draw_rect = _motions[idx].rect();
     }
-    unsigned int length(void) const { return _motions.size(); }
+    unsigned int length(void) const
+    {
+        return static_cast<unsigned int>(_motions.size());
+    }
 
 protected:
     SDL_Point &_cur_pos;
     SDL_Point _prev_pos;
     std::vector<Sprite> _motions;
+    unsigned int _idx;
 };
 
-class SpaceComponent : public AnimateComponent,
-                       public ScreenDrawable
+class SpaceComponent : public AnimateComponent, public ScreenDrawable
 {
 public:
     SpaceComponent(void)
@@ -99,8 +104,7 @@ public:
 
         JsonAsset towerdata{"tower.json"};
         auto res = towerdata.asset.count("background");
-        tower = towerdata.asset["background"]
-                    .get<std::vector<unsigned short>>();
+        tower = towerdata.asset["background"].get<std::vector<unsigned short>>();
     }
     void update(void) override;
 
