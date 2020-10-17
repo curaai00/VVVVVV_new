@@ -29,7 +29,7 @@ Room::Room(const JsonAsset &room_table, const TileAsset &tile_asset,
         addDrawable(block);
 
     // y: 183
-    _character = new Character{{290, 151}};
+    _character = new Character{{290, 163}};
     addEventable(_character);
     addDrawable(_character);
 

@@ -8,16 +8,17 @@
 class Sprite : public Drawable
 {
 public:
+    Sprite(const Sprite &sprite);
     Sprite(SDL_Point xy, std::string sprite_name);
     Sprite(SDL_Point xy, unsigned int sprite_idx);
     virtual ~Sprite();
-
-    // Sprite(const Sprite &sprite);
-    // Sprite &operator=(Sprite const &sprite);
+    Sprite &operator=(Sprite const &sprite) = delete;
 
     static unsigned int name2idx(std::string name);
+    int sprite_idx(void) const { return _sprite_idx; }
 
 private:
+    const int _sprite_idx;
     TileAsset sprite_tile{"graphics/sprites.png", SDL_Point{32, 32}};
 };
 

@@ -6,11 +6,6 @@ VVVVVV::VVVVVV()
     addLayer(map.setRoom({114, 105}));
 }
 
-VVVVVV::~VVVVVV()
-{
-}
+VVVVVV::~VVVVVV() {}
 
-void VVVVVV::update(void)
-{
-    spacebackground.update();
-}
+void VVVVVV::update(void) { spacebackground.update(); }

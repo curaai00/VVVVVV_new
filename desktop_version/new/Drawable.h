@@ -14,7 +14,7 @@ public:
     }
 
     SDL_Surface *surface(void) { return _surface; }
-    SDL_Rect rect(void) { return _draw_rect; }
+    SDL_Rect rect(void) const { return _draw_rect; }
 
 protected:
     SDL_Surface *_surface;

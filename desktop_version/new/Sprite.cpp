@@ -4,9 +4,14 @@ Sprite::Sprite(SDL_Point xy, std::string sprite_name)
     : Sprite(xy, Sprite::name2idx(sprite_name))
 {
 }
+Sprite::Sprite(const Sprite &another)
+    : Sprite(SDL_Point{another.rect().x, another.rect().y}, another.sprite_idx())
+{
+}
 
 Sprite::Sprite(SDL_Point xy, unsigned int sprite_idx)
     : Drawable()
+    , _sprite_idx(sprite_idx)
 {
     auto tile = sprite_tile.tile(sprite_idx);
     auto rect = util::sdl::getTightRect(tile);

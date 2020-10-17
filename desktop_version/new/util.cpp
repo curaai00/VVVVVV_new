@@ -25,6 +25,8 @@ bool util::str::endsWith(const std::string &str, const std::string &suffix)
 
 SDL_Surface *util::sdl::CreateSurface(const SDL_Point &size)
 {
+    if (size.x == 0 || size.y == 0)
+        throw std::invalid_argument("Invalid size argument for CreateSurface");
     auto res =
         SDL_CreateRGBSurface(0, size.x, size.y, 32, R_MASK, G_MASK, B_MASK, A_MASK);
     SDL_FillRect(res, NULL, 0);

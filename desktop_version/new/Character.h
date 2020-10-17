@@ -14,7 +14,7 @@ public:
     {
 
         _motion = new MotionComponent{
-            std::vector<Sprite>{char_sprite_normal, char_sprite_move}, _pos};
+            std::vector<Sprite>{Sprite{{0, 0}, 0}, Sprite{{0, 0}, 1}}, _pos};
         _move = new MoveComponent{_pos};
 
         addEventable(_move);
