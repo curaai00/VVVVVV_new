@@ -41,7 +41,11 @@ public:
 
     void update(void) override
     {
-        if (util::sdl::cmpPos(_cur_pos, _prev_pos)) set((_idx + 1) % length());
+        if (!util::sdl::cmpPos(_cur_pos, _prev_pos))
+        {
+            set((_idx + 1) % length());
+        }
+        _prev_pos = _cur_pos;
     }
 
     void set(unsigned int idx)

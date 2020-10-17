@@ -192,5 +192,5 @@ SDL_Rect util::sdl::getTightRect(const SDL_Surface *surface)
     auto min_y = find_var(check_row, surface->h);
     auto max_y = find_var(check_row, surface->h, true);
 
-    return SDL_Rect{min_x, min_y, max_x - min_x, max_y - min_y};
+    return SDL_Rect{min_x, min_y, max_x - min_x + 1, max_y - min_y + 1};
 }
