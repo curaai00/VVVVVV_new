@@ -3,11 +3,11 @@
 #include "../util.h"
 #include "Component.h"
 
-class DrawableComponent : public Component
+class DrawableComponent : virtual public Component
 {
 public:
     DrawableComponent(const SDL_Rect &rect)
-        : DrawableComponent(util::sdl::CreateSurface(rect))
+        : DrawableComponent(util::sdl::CreateSurface({rect.w, rect.h}), rect)
     {
     }
 
@@ -35,7 +35,7 @@ public:
     {
     }
 
-    virtual void udpate(void) = 0;
+    virtual void udpate(void) override { return; };
 };
 
 class AnimateComponent : virtual public DrawableComponent
@@ -44,7 +44,6 @@ public:
     AnimateComponent(SDL_Surface *surface, const SDL_Rect &rect, unsigned int tick)
         : DrawableComponent(surface, rect)
     {
-        throw NotImplementedError();
     }
 
     virtual void udpate(void) = 0;

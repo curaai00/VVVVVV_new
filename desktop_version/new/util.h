@@ -18,6 +18,47 @@ const uint32_t B_MASK = 0x00ff0000;
 const uint32_t A_MASK = 0xff000000;
 #endif
 
+struct noncopyable
+{
+    noncopyable(){};
+    noncopyable(const noncopyable &) = delete;
+    noncopyable &operator=(const noncopyable &) = delete;
+};
+
+template <class T, typename Param, void (T::*f)(Param)> class Compositor
+{
+public:
+    Compositor(void){};
+    Compositor(std::vector<T *> elements)
+        : _elements(elements)
+    {
+    }
+    Compositor(const Compositor &) = delete;
+    Compositor &operator=(const Compositor &) = delete;
+
+    // get function pointer of update function to enforce update method
+    void update(Param p)
+    {
+        for (auto element : _elements)
+            (element->*f)(p);
+    }
+    Compositor &add(T *element)
+    {
+        _elements.push_back(element);
+        return *this;
+    }
+    Compositor &rm(T *element)
+    {
+        auto res = std::find(_elements.begin(), _elements.end(), element);
+        if (res != _elements.end()) _elements.erase(res);
+    }
+
+    const std::vector<T *> &elements(void) { return _elements; }
+
+protected:
+    std::vector<T *> _elements;
+};
+
 class NotImplementedError : public std::logic_error
 {
 private:

@@ -1,35 +1,25 @@
 #pragma once
 
-#include "Drawable.h"
-#include "Eventable.h"
+#include "Components/DrawableComponent.h"
+#include "Components/DrawingComponents.h"
+#include "Entity.h"
 
-#include <vector>
+inline Entity *make_background(void) { ; }
 
-class Layer : public ScreenDrawable, public EventCompsitor
+class Layer : Compositor<Entity, void, &Entity::update>
 {
 public:
     Layer()
-        : ScreenDrawable()
-        , EventCompsitor()
+        : Compositor<Entity, void, &Entity::update>()
     {
+        add(&clear);
+        add(&screen);
     }
     ~Layer() {}
 
-    void draw_objects(void)
-    {
-        SDL_FillRect(_surface, NULL, 0x00000000);
-
-        for (auto obj : _objects)
-            obj->draw_to_parent(_surface);
-    }
-
-    virtual void update(void) = 0;
-
-    // TODO: Need collision check after
-    inline void addDrawable(Drawable *obj) { _objects.push_back(obj); }
-
-private:
-    std::vector<Drawable *> _objects;
+public:
+    FullScreenComponent screen;
+    ClearComponent clear(screen->surface());
 };
 
 class StaticLayer : public Layer

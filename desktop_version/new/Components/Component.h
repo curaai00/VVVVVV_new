@@ -5,5 +5,5 @@
 class Component
 {
 public:
-    virtual void udpate(void) = 0;
+    virtual void update(void) = 0;
 };
