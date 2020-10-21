@@ -3,19 +3,18 @@
 
 Window::Window()
 {
-    SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_RESIZABLE, &m_window, &m_renderer);
+    SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_RESIZABLE, &m_window,
+                                &m_renderer);
     m_screen = util::sdl::CreateSurface({width, height});
-    m_screenTexture =
-        SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, width, height);
+    m_screenTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_ABGR8888,
+                                        SDL_TEXTUREACCESS_STREAMING, width, height);
 
-    SDL_SetWindowTitle(m_window, "VVVVVV");
-    auto icon = PNGAsset("VVVVVV.png");
-    SDL_SetWindowIcon(m_window, icon.asset);
+    // SDL_SetWindowTitle(m_window, "VVVVVV");
+    // auto icon = PNGAsset("VVVVVV.png");
+    // SDL_SetWindowIcon(m_window, icon.asset);
 }
 Window::~Window()
 {
-    delete game;
-
     SDL_FreeSurface(m_screen);
     SDL_DestroyRenderer(m_renderer);
     SDL_DestroyTexture(m_screenTexture);
@@ -24,15 +23,13 @@ Window::~Window()
 
 void Window::render(void)
 {
-    if (game)
-    {
-        game->draw();
-        SDL_Surface *surface = game->surface();
+    entity->update();
+    SDL_Surface *surface = entity->surface();
+    SDL_SaveBMP(surface, "temp.bmp");
 
-        SDL_UpdateTexture(m_screenTexture, NULL, surface->pixels, surface->pitch);
-        SDL_RenderCopy(m_renderer, m_screenTexture, NULL, NULL);
-        SDL_RenderPresent(m_renderer);
-        SDL_RenderClear(m_renderer);
-        SDL_FillRect(m_screen, NULL, 0x00000000);
-    }
+    SDL_UpdateTexture(m_screenTexture, NULL, surface->pixels, surface->pitch);
+    SDL_RenderCopy(m_renderer, m_screenTexture, NULL, NULL);
+    SDL_RenderPresent(m_renderer);
+    SDL_RenderClear(m_renderer);
+    SDL_FillRect(m_screen, NULL, 0x00000000);
 }

@@ -3,7 +3,7 @@
 #include "../util.h"
 #include "Component.h"
 
-class DrawableComponent : virtual public Component
+class DrawableComponent : public virtual Component
 {
 public:
     DrawableComponent(const SDL_Rect &rect)
@@ -18,7 +18,7 @@ public:
     {
     }
 
-    virtual void udpate(void) = 0;
+    virtual void update(void) = 0;
     SDL_Surface *surface(void) { return _surface; }
     SDL_Rect rect(void) const { return _rect; }
 
@@ -27,7 +27,7 @@ protected:
     SDL_Rect _rect;
 };
 
-class FullScreenComponent : virtual public DrawableComponent
+class FullScreenComponent : public virtual DrawableComponent
 {
 public:
     FullScreenComponent(void)
@@ -35,18 +35,22 @@ public:
     {
     }
 
-    virtual void udpate(void) override { return; };
+    virtual void update(void) = 0;
 };
 
-class AnimateComponent : virtual public DrawableComponent
+class AnimateComponent : public virtual DrawableComponent
 {
 public:
+    AnimateComponent(const SDL_Rect &rect, unsigned int tick)
+        : DrawableComponent(rect)
+    {
+    }
     AnimateComponent(SDL_Surface *surface, const SDL_Rect &rect, unsigned int tick)
         : DrawableComponent(surface, rect)
     {
     }
 
-    virtual void udpate(void) = 0;
+    virtual void update(void) = 0;
 
 protected:
     unsigned int _tick = 0;
