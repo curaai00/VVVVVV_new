@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "Components/BackgroundComponent.h"
+#include "KeyPull.h"
 #include "Window.h"
 
 #include <SDL.h>
@@ -23,6 +24,8 @@ int main(int argc, char *argv[])
         std::invalid_argument("AssetPath is Invalid");
     }
     auto win = Window();
+    auto key = KeyPull();
+
     auto back = new StripeComponent();
     DrawableEntity *entity = new DrawableEntity();
     entity->add(back);
@@ -30,8 +33,9 @@ int main(int argc, char *argv[])
 
     win.entity = entity;
 
-    while (true)
+    while (key.isUp(SDLK_SPACE))
     {
+        key.pull();
         win.render();
         SDL_Delay(50);
     }

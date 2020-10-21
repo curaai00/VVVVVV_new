@@ -21,3 +21,6 @@ data/**/*.png
 data/**/*.vvvvvv
 data/**/*.vvv
 !data/*.json
+VVVVVV_run
+VVVVVV_tst
+VVVVVV_new
