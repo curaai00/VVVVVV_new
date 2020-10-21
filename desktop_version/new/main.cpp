@@ -26,10 +26,12 @@ int main(int argc, char *argv[])
     auto win = Window();
     auto key = KeyPull();
 
-    auto back = new StripeComponent();
+    Layer layer;
+
     DrawableEntity *entity = new DrawableEntity();
-    entity->add(back);
-    entity->set_surface(back->surface());
+    StripeComponent stripe;
+    DrawToComponent draw({layer->surface(), NULL}, {stripe->surface(), NULL});
+    entity->add(&stripe)->add(&draw)->set_surface(stripe->surface());
 
     win.entity = entity;
 

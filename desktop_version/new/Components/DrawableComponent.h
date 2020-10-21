@@ -17,6 +17,11 @@ public:
         , _rect(rect)
     {
     }
+    ~DrawableComponent(void)
+    {
+        if (_surface) SDL_FreeSurface(_surface);
+        delete _surface;
+    }
 
     virtual void update(void) = 0;
     SDL_Surface *surface(void) { return _surface; }

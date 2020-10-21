@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h "
+#include "Drawable.h"
 #include <memory>
 
 #include "InputComponent.h"
@@ -17,6 +18,23 @@ protected:
     SDL_Surface *_surface;
 };
 
+class DrawToComponent : public DrawingComponent
+{
+public:
+    DrawToComponent(const Drawable &src, const Drawable &dst)
+        : DrawingComponent(dst.surface)
+    {
+    }
+    void update(void) override
+    {
+        SDL_BlitSurface(src.surface, src.rect, dst.surface, dst.rect);
+    }
+
+protected:
+    Drawable src;
+    Drawable dst;
+};
+
 class ClearComponent : DrawingComponent
 {
 public:
@@ -24,7 +42,7 @@ public:
         : DrawingComponent(surface)
     {
     }
-    void update(void) override { SDL_FillRect(surface, NULL, 0); }
+    void update(void) override { SDL_FillRect(_surface, NULL, 0); }
 };
 
 class ColorComponent : DrawingComponent

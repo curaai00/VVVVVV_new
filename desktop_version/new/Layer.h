@@ -17,19 +17,9 @@ public:
     }
     ~Layer() {}
 
+    SDL_Surface *surface(void) { return screen.surface(); }
+
 public:
     FullScreenComponent screen;
     ClearComponent clear(screen->surface());
-};
-
-class StaticLayer : public Layer
-{
-public:
-    StaticLayer()
-        : Layer()
-    {
-    }
-    ~StaticLayer() {}
-
-    virtual void update(void) override { return; }
 };
