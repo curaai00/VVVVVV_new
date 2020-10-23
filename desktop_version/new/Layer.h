@@ -6,20 +6,21 @@
 
 inline Entity *make_background(void) { ; }
 
-class Layer : Compositor<Entity, void, &Entity::update>
+class Layer : public Compositor<Entity, void>
 {
 public:
     Layer()
-        : Compositor<Entity, void, &Entity::update>()
+        : Compositor<Entity>(&Entity::update)
     {
-        add(&clear);
-        add(&screen);
+        this->push(&_bottom_entity);
+
+        _bottom_entity.push(new ClearComponent(surface()));
     }
     ~Layer() {}
 
     SDL_Surface *surface(void) { return screen.surface(); }
 
 public:
-    FullScreenComponent screen;
-    ClearComponent clear(screen->surface());
+    DrawableEntity _bottom_entity;
+    StaticFullComponent screen;
 };

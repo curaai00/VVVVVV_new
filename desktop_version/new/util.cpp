@@ -5,11 +5,11 @@
 using namespace util::str;
 using namespace util::sdl;
 
-int util::str::len(std::string &str)
+int util::str::len(const std::string &str)
 {
     int bfontpos = 0;
-    std::string::iterator iter = str.begin();
-    while (iter != str.end())
+    auto iter = str.cbegin();
+    while (iter != str.cend())
     {
         int cur = utf8::unchecked::next(iter);
         bfontpos += cur < 32 ? 6 : 8;

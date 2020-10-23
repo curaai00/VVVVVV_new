@@ -46,15 +46,15 @@ public:
         for (auto element : _elements)
             (element->*_update_func)(p);
     }
-    Compositor &add(T *element)
-    {
-        _elements.push_back(element);
-        return *this;
-    }
-    Compositor &rm(T *element)
+    void push(T *element) { _elements.push_back(element); }
+    T *pop(T *element)
     {
         auto res = std::find(_elements.begin(), _elements.end(), element);
-        if (res != _elements.end()) _elements.erase(res);
+        if (res != _elements.end())
+            _elements.erase(res);
+        else
+            std::invalid_argument("Can't remove element");
+        return *res;
     }
 
     const std::vector<T *> &elements(void) { return _elements; }
@@ -87,15 +87,16 @@ public:
         for (auto element : _elements)
             (element->*_update_func)();
     }
-    Compositor &add(T *element)
-    {
-        _elements.push_back(element);
-        return *this;
-    }
-    Compositor &rm(T *element)
+
+    void push(T *element) { _elements.push_back(element); }
+    T *pop(T *element)
     {
         auto res = std::find(_elements.begin(), _elements.end(), element);
-        if (res != _elements.end()) _elements.erase(res);
+        if (res != _elements.end())
+            _elements.erase(res);
+        else
+            std::invalid_argument("Can't remove element");
+        return *res;
     }
 
     const std::vector<T *> &elements(void) { return _elements; }
@@ -106,12 +107,6 @@ protected:
 private:
     void (T::*_update_func)();
 };
-// template <class T>
-// void Compositor<T, void, void (T::*f)(void)>::update()
-// {
-//     for (auto element : _elements)
-//         (element->*f)();
-// }
 
 class NotImplementedError : public std::logic_error
 {
@@ -140,34 +135,6 @@ public:
     inline virtual const char *what() const throw() { return _text.c_str(); }
 };
 
-// template <>
-// class Compositor<class T, void, void (T::*f)(void)>
-// {
-// public:
-//     Compositor &operator=(const Compositor &) = delete;
-
-//     // get function pointer of update function to enforce update method
-//     void update()
-//     {
-//         for (auto element : _elements)
-//             (element->*f)();
-//     }
-//     Compositor &add(T *element)
-//     {
-//         _elements.push_back(element);
-//         return *this;
-//     }
-//     Compositor &rm(T *element)
-//     {
-//         auto res = std::find(_elements.begin(), _elements.end(), element);
-//         if (res != _elements.end()) _elements.erase(res);
-//     }
-
-//     const std::vector<T *> &elements(void) { return _elements; }
-
-// protected:
-//     std::vector<T *> _elements;
-// };
 namespace util
 {
 template <typename T>
@@ -187,7 +154,7 @@ std::vector<T> range(T N1, T N2)
 namespace str
 {
 bool endsWith(const std::string &str, const std::string &suffix);
-int len(std::string &str);
+int len(const std::string &str);
 
 }; // namespace str
 

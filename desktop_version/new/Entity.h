@@ -7,6 +7,10 @@
 class Entity : public Compositor<Component, void>
 {
 public:
+    Entity(const std::vector<Component *> &components)
+        : Entity()
+    {
+    }
     Entity(void)
         : Compositor<Component>(&Component::update)
     {
@@ -16,7 +20,11 @@ public:
 class DrawableEntity : public Entity
 {
 public:
-    DrawableEntity(void)
+    DrawableEntity(const std::vector<Component *> &components)
+        : Entity(components)
+    {
+    }
+    DrawableEntity()
         : Entity()
     {
     }

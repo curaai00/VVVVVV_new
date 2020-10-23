@@ -5,7 +5,7 @@
 #include <SDL.h>
 #include <vector>
 
-class Window
+class Window : public Compositor<Layer, void>
 {
 public:
     Window();
