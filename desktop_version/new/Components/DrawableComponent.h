@@ -1,7 +1,10 @@
 #pragma once
 
+#include "../Resource.h"
 #include "../util.h"
 #include "Component.h"
+
+#include <utf8/unchecked.h>
 
 class DrawableComponent : public virtual Component
 {
@@ -26,13 +29,14 @@ public:
     virtual void update(void) = 0;
     SDL_Surface *surface(void) { return _surface; }
     SDL_Rect rect(void) const { return _rect; }
+    void set_rect(const SDL_Rect &rect) const { _rect = rect; }
 
 protected:
     SDL_Surface *_surface;
     SDL_Rect _rect;
 };
 
-class FullScreenComponent : public virtual DrawableComponent
+class FullScreenComponent : public DrawableComponent
 {
 public:
     FullScreenComponent(void)
@@ -41,6 +45,17 @@ public:
     }
 
     virtual void update(void) = 0;
+};
+
+class StaticFullComponent : public FullScreenComponent
+{
+public:
+    StaticFullComponent(void)
+        : FullScreenComponent()
+    {
+    }
+    ~StaticFullComponent(){};
+    void update(void) { return; }
 };
 
 class AnimateComponent : public virtual DrawableComponent
@@ -61,4 +76,50 @@ protected:
     unsigned int _tick = 0;
     unsigned int _duration = 0;
     bool _is_playing = false;
+};
+
+class MessageComponent : public DrawableComponent
+{
+public:
+    MessageComponent(const TileAsset &font_tiles, const std::string &msg,
+                     const SDL_Point &top_left, bool is_centred = false)
+        : DrawableComponent(
+              calc_rect(msg, is_centred ? cvt_center_pt(msg, top_left.y) : top_left))
+    {
+        SDL_Rect font_rect;
+
+        int bfontpos = 0;
+        auto iter = msg.cbegin();
+        while (iter != msg.cend())
+        {
+            auto curr = utf8::unchecked::next(iter);
+            font_rect = tfont_rect;
+            font_rect.x = top_left.x + bfontpos;
+            font_rect.y = top_left.y;
+
+            SDL_BlitSurface(font_tiles.tile(curr), NULL, _surface, &font_rect);
+            bfontpos += curr < 32 ? 6 : 8;
+        }
+    }
+
+protected:
+    static SDL_Point cvt_center_pt(const std::string &msg, int y)
+    {
+        SDL_Point xy;
+
+        xy.x = 160 - util::str::len(msg) / 2;
+        xy.y = y;
+        return xy;
+    }
+    static SDL_Rect calc_rect(const std::string &msg, const SDL_Point &top_left)
+    {
+        SDL_Rect rect;
+        rect.x = top_left.x;
+        rect.y = top_left.y;
+        rect.w = util::str::len(msg);
+        rect.h = tfont_rect.h;
+
+        return rect;
+    }
+    static constexpr SDL_Rect tfont_rect{0, 0, 8, 8};
 };
