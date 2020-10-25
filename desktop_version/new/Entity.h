@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Components/Component.h"
+#include "Drawable.h"
 #include <vector>
 
 // using Entity = Compositor<Component>;
@@ -14,6 +15,11 @@ public:
     Entity(void)
         : Compositor<Component>(&Component::update)
     {
+    }
+    ~Entity(void)
+    {
+        for (auto component : _elements)
+            delete component;
     }
 };
 
@@ -29,12 +35,11 @@ public:
     {
     }
 
-    void set_surface(SDL_Surface *surface) { _surface = surface; }
-    void set_rect(const SDL_Rect &rect) { _rect = rect; }
-    SDL_Surface *surface(void) { return _surface; }
-    SDL_Rect rect(void) const { return _rect; }
+    void set_drawable(Drawable drawable) { _drawable = drawable; }
+    const Drawable &drawable(void) { return _drawable; }
+    SDL_Surface *surface(void) { return _drawable.surface; }
+    SDL_Rect rect(void) const { return _drawable.rect; }
 
 protected:
-    SDL_Surface *_surface;
-    SDL_Rect _rect;
+    Drawable _drawable;
 };

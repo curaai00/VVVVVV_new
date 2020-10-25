@@ -4,23 +4,27 @@
 #include "Components/DrawingComponents.h"
 #include "Entity.h"
 
-inline Entity *make_background(void) { ; }
-
 class Layer : public Compositor<Entity, void>
 {
 public:
     Layer()
         : Compositor<Entity>(&Entity::update)
     {
-        this->push(&_bottom_entity);
+        _bottom_entity = new DrawableEntity{};
+        this->push(_bottom_entity);
 
-        _bottom_entity.push(new ClearComponent(surface()));
+        _bottom_entity->push(new ClearComponent(surface()));
     }
-    ~Layer() {}
+    ~Layer()
+    {
+        for (auto entity : _elements)
+            delete entity;
+    }
 
     SDL_Surface *surface(void) { return screen.surface(); }
+    const Drawable &drawable(void) { return screen.drawable(); }
 
 public:
-    DrawableEntity _bottom_entity;
+    DrawableEntity *_bottom_entity;
     StaticFullComponent screen;
 };

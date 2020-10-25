@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Drawable.h"
 #include "../Resource.h"
 #include "../util.h"
 #include "Component.h"
@@ -16,24 +17,19 @@ public:
 
     DrawableComponent(SDL_Surface *surface, const SDL_Rect &rect)
         : Component()
-        , _surface(surface)
-        , _rect(rect)
+        , _drawable({surface, rect})
     {
     }
-    ~DrawableComponent(void)
-    {
-        if (_surface) SDL_FreeSurface(_surface);
-        delete _surface;
-    }
+    ~DrawableComponent(void) {}
 
     virtual void update(void) = 0;
-    SDL_Surface *surface(void) { return _surface; }
-    SDL_Rect rect(void) const { return _rect; }
-    void set_rect(const SDL_Rect &rect) const { _rect = rect; }
+    const Drawable &drawable(void) { return _drawable; }
+    SDL_Surface *surface(void) { return _drawable.surface; }
+    SDL_Rect rect(void) const { return _drawable.rect; }
+    void set_rect(const SDL_Rect &rect) { _drawable.rect = rect; }
 
 protected:
-    SDL_Surface *_surface;
-    SDL_Rect _rect;
+    Drawable _drawable;
 };
 
 class FullScreenComponent : public DrawableComponent
@@ -94,13 +90,14 @@ public:
         {
             auto curr = utf8::unchecked::next(iter);
             font_rect = tfont_rect;
-            font_rect.x = top_left.x + bfontpos;
-            font_rect.y = top_left.y;
+            font_rect.x = bfontpos;
+            font_rect.y = 0;
 
-            SDL_BlitSurface(font_tiles.tile(curr), NULL, _surface, &font_rect);
+            SDL_BlitSurface(font_tiles.tile(curr), NULL, surface(), &font_rect);
             bfontpos += curr < 32 ? 6 : 8;
         }
     }
+    void update(void) override { return; }
 
 protected:
     static SDL_Point cvt_center_pt(const std::string &msg, int y)

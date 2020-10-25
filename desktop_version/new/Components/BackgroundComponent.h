@@ -23,7 +23,7 @@ public:
             auto yoff = (_scroll_start_y + y) % 120;
             auto var = tower[yoff * 40 + x];
             SDL_Rect rect{x * 8, y * 8, 8, 8};
-            SDL_BlitSurface(colortile.tile(var + _color * 30), NULL, _surface,
+            SDL_BlitSurface(colortile.tile(var + _color * 30), NULL, surface(),
                             &rect);
         };
         auto fill_row = [&](const int y) {
@@ -36,7 +36,7 @@ public:
         {
             SDL_Rect prev_region{0, 8, 320, 240};
             SDL_Rect new_region{0, 0, 320, 232};
-            SDL_BlitSurface(_surface, &prev_region, _surface, &new_region);
+            SDL_BlitSurface(surface(), &prev_region, surface(), &new_region);
             fill_row(29);
         }
         else

@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "Components/BackgroundComponent.h"
 #include "KeyPull.h"
+#include "Menu.h"
 #include "Window.h"
 
 #include <SDL.h>
@@ -26,18 +26,12 @@ int main(int argc, char *argv[])
     auto win = Window();
     auto key = KeyPull();
 
-    Layer layer;
-
-    DrawableEntity *entity = new DrawableEntity();
-    StripeComponent stripe;
-    DrawToComponent draw({layer->surface(), NULL}, {stripe->surface(), NULL});
-    entity->add(&stripe)->add(&draw)->set_surface(stripe->surface());
-
-    win.entity = entity;
+    win.set_game(new Menu{});
 
     while (key.isUp(SDLK_SPACE))
     {
         key.pull();
+        win.update();
         win.render();
         SDL_Delay(50);
     }

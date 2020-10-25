@@ -8,7 +8,8 @@ class DrawingComponent : public Component
 {
 public:
     DrawingComponent(SDL_Surface *surface)
-        : Component(){};
+        : Component()
+        , _surface(surface){};
 
     SDL_Surface *surface(void) { return _surface; }
     virtual void update(void) = 0;
