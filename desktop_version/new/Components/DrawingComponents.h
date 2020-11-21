@@ -23,11 +23,13 @@ class DrawToComponent : public DrawingComponent
 public:
     DrawToComponent(const Drawable &src, const Drawable &dst)
         : DrawingComponent(dst.surface)
+        , src(src)
+        , dst(dst)
     {
     }
     void update(void) override
     {
-        SDL_BlitSurface(src.surface, &src.rect, dst.surface, &dst.rect);
+        SDL_BlitSurface(src.surface, NULL, dst.surface, &src.rect);
     }
 
 protected:

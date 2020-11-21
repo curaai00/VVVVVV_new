@@ -5,6 +5,7 @@
 #include "../util.h"
 #include "Component.h"
 
+#include <iostream>
 #include <utf8/unchecked.h>
 
 class DrawableComponent : public virtual Component

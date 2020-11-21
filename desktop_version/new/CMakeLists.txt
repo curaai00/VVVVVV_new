@@ -11,7 +11,7 @@ ELSE()
 ENDIF()
 
 FILE(GLOB_RECURSE SOURCES LIST_DIRECTORIES false *.c *.cpp)
-list(FILTER VVV_SRC EXCLUDE REGEX ".*new/main.cpp$")
+list(FILTER SOURCES EXCLUDE REGEX ".*new/main.cpp$")
 
 INCLUDE_DIRECTORIES(
 	../../third_party/tinyxml2

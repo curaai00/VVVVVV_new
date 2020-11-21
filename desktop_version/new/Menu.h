@@ -15,9 +15,9 @@ public:
 
         this->push(&msg_layer);
         auto msg_entity = new DrawableEntity{};
-        std::string asf{"[Press ACTION to Start]"};
-        auto msg_cmpt = new MessageComponent{font_asset, asf, true};
-        msg_entity->set_drawable();
+        auto msg_cmpt = new MessageComponent{
+            font_asset, "[Press ACTION to Start]", {5, 175}, true};
+        msg_entity->set_drawable(msg_cmpt->drawable());
         msg_entity->push(msg_cmpt);
         msg_entity->push(
             new DrawToComponent{msg_entity->drawable(), msg_layer.drawable()});
