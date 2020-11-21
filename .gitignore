@@ -1,15 +1,7 @@
 build 
 .vscode
 third_party/SDL2*
-desktop_version/Debugnode_modules/
-package.json
-package-lock.json
-node_modules/
-package.json
-package-lock.json
-node_modules/
-package.json
-package-lock.json
+desktop_version/Debug
 node_modules/
 package.json
 package-lock.json
