@@ -1,29 +1,10 @@
-#include "util.h"
-#include <functional>
-#include <utf8/unchecked.h>
+#include "sdl.h"
 
-using namespace util::str;
-using namespace util::sdl;
-
-int util::str::len(const std::string &str)
+namespace util
 {
-    int bfontpos = 0;
-    auto iter = str.cbegin();
-    while (iter != str.cend())
-    {
-        int cur = utf8::unchecked::next(iter);
-        bfontpos += cur < 32 ? 6 : 8;
-    }
-    return bfontpos;
-}
-
-bool util::str::endsWith(const std::string &str, const std::string &suffix)
+namespace sdl
 {
-    return str.size() >= suffix.size() &&
-           0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
-}
-
-SDL_Surface *util::sdl::CreateSurface(const SDL_Point &size)
+SDL_Surface *CreateSurface(const SDL_Point &size)
 {
     if (size.x == 0 || size.y == 0)
         throw std::invalid_argument("Invalid size argument for CreateSurface");
@@ -32,8 +13,18 @@ SDL_Surface *util::sdl::CreateSurface(const SDL_Point &size)
     SDL_FillRect(res, NULL, 0);
     return res;
 }
-void util::sdl::blit(SDL_Surface *src, const SDL_Rect *src_r, SDL_Surface *dst,
-                     const SDL_Rect *dst_r)
+
+void DeleteSurface(SDL_Surface *surface)
+{
+    if (surface != nullptr)
+    {
+        SDL_FreeSurface(surface);
+        delete surface;
+    }
+}
+
+void blit(SDL_Surface *src, const SDL_Rect *src_r, SDL_Surface *dst,
+          const SDL_Rect *dst_r)
 {
     if (dst_r)
     {
@@ -46,14 +37,14 @@ void util::sdl::blit(SDL_Surface *src, const SDL_Rect *src_r, SDL_Surface *dst,
     }
 }
 
-SDL_Surface *util::sdl::patch(SDL_Surface *src, const SDL_Rect *rect)
+SDL_Surface *patch(SDL_Surface *src, const SDL_Rect *rect)
 {
     auto dst = CreateSurface(SDL_Point{rect->w, rect->h});
     blit(src, rect, dst, NULL);
     return dst;
 }
 
-Uint32 util::sdl::ReadPixel(const SDL_Surface *_surface, int x, int y)
+Uint32 ReadPixel(const SDL_Surface *_surface, int x, int y)
 {
     int bpp = _surface->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to retrieve */
@@ -81,7 +72,7 @@ Uint32 util::sdl::ReadPixel(const SDL_Surface *_surface, int x, int y)
     }
 }
 
-void util::sdl::DrawPixel(SDL_Surface *_surface, int x, int y, Uint32 pixel)
+void DrawPixel(SDL_Surface *_surface, int x, int y, Uint32 pixel)
 {
     int bpp = _surface->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to set */
@@ -109,7 +100,7 @@ void util::sdl::DrawPixel(SDL_Surface *_surface, int x, int y, Uint32 pixel)
     }
 }
 
-Uint32 util::sdl::color2uint(const SDL_Surface *surface, const SDL_Color &c)
+Uint32 color2uint(const SDL_Surface *surface, const SDL_Color &c)
 {
     Uint32 u_color;
     auto get_shift_size = [](Uint32 mask) -> unsigned int {
@@ -126,7 +117,7 @@ Uint32 util::sdl::color2uint(const SDL_Surface *surface, const SDL_Color &c)
     return u_color;
 }
 
-SDL_Color util::sdl::uint2color(const SDL_Surface *surface, const Uint32 &c)
+SDL_Color uint2color(const SDL_Surface *surface, const Uint32 &c)
 {
     const SDL_PixelFormat &fmt = *(surface->format);
     SDL_Color color;
@@ -137,7 +128,7 @@ SDL_Color util::sdl::uint2color(const SDL_Surface *surface, const Uint32 &c)
     return color;
 }
 
-void util::sdl::BlitSurfaceColoured(SDL_Surface *surface, const SDL_Color &c)
+void BlitSurfaceColoured(SDL_Surface *surface, const SDL_Color &c)
 {
     const SDL_PixelFormat &fmt = *(surface->format);
     auto u_color = color2uint(surface, c);
@@ -148,21 +139,21 @@ void util::sdl::BlitSurfaceColoured(SDL_Surface *surface, const SDL_Color &c)
                 DrawPixel(surface, x, y, u_color);
 }
 
-bool util::sdl::cmpColor(const SDL_Color &a, const SDL_Color &b)
+bool cmpColor(const SDL_Color &a, const SDL_Color &b)
 {
     return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
 }
 
-bool util::sdl::cmpRect(const SDL_Rect &a, const SDL_Rect &b)
+bool cmpRect(const SDL_Rect &a, const SDL_Rect &b)
 {
     return a.x == b.x && a.y == b.y && a.w == b.w && a.h == b.h;
 }
-bool util::sdl::cmpPos(const SDL_Point &a, const SDL_Point &b)
+bool cmpPos(const SDL_Point &a, const SDL_Point &b)
 {
     return a.x == b.x && a.y == b.y;
 }
 
-SDL_Rect util::sdl::getTightRect(const SDL_Surface *surface)
+SDL_Rect getTightRect(const SDL_Surface *surface)
 {
     using check_func = std::function<bool(const SDL_Surface *, const int)>;
 
@@ -194,3 +185,29 @@ SDL_Rect util::sdl::getTightRect(const SDL_Surface *surface)
 
     return SDL_Rect{min_x, min_y, max_x - min_x + 1, max_y - min_y + 1};
 }
+
+void rotate(SDL_Surface *surf, FlipStatus flip)
+{
+    if (flip.vertical == flip.horizontal && flip.vertical == false) return;
+
+    auto temp = CreateSurface({surf->w, surf->h});
+
+    for (int x = 0, rx = temp->w - 1; x < temp->w; x++, rx--)
+    {
+        for (int y = 0, ry = temp->h - 1; y < temp->h; y++, ry--)
+        {
+            auto pixel = ReadPixel(surf, x, y);
+            auto tx = flip.horizontal ? ry : y;
+            auto ty = flip.vertical ? rx : x;
+
+            DrawPixel(temp, tx, ty, pixel);
+        }
+    }
+
+    blit(temp, NULL, surf, NULL);
+    DeleteSurface(temp);
+}
+
+}; // namespace sdl
+
+}; // namespace util
