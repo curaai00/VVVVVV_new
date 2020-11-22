@@ -21,6 +21,12 @@ public:
             delete entity;
     }
 
+    void push_drawable_entity(DrawableEntity *entity)
+    {
+        entity->push(new DrawToComponent{entity->drawable(), drawable()});
+        push(entity);
+    }
+
     SDL_Surface *surface(void) { return screen.surface(); }
     const Drawable &drawable(void) { return screen.drawable(); }
 

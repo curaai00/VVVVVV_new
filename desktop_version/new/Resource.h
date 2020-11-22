@@ -1,6 +1,8 @@
 #pragma once
 
 #include "util.h"
+#include "utils/sdl.h"
+#include "utils/str.h"
 
 #include <json.hpp>
 
@@ -81,7 +83,7 @@ public:
     TileAsset(const TileAsset &tileasset);
     TileAsset &operator=(TileAsset const &tileasset);
 
-    SDL_Surface *tile(unsigned int i) const;
+    SDL_Surface *tile(unsigned int i);
     size_t tilecount(void) const { return tiles.size(); }
     SDL_Point tilesize(void) const { return _size; }
 

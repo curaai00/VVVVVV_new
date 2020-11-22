@@ -15,6 +15,7 @@ struct FlipStatus
 
 SDL_Surface *CreateSurface(const SDL_Point &rect);
 void DeleteSurface(SDL_Surface *surface);
+SDL_Surface *CopySurface(SDL_Surface *src, SDL_Surface *dst = nullptr);
 
 void blit(SDL_Surface *src, const SDL_Rect *src_r, SDL_Surface *dst,
           const SDL_Rect *dst_r);
@@ -33,7 +34,7 @@ bool cmpPos(const SDL_Point &a, const SDL_Point &b);
 bool cmpRect(const SDL_Rect &a, const SDL_Rect &b);
 
 SDL_Rect getTightRect(const SDL_Surface *surface);
-void rotate(SDL_Surface *surf, FlipStatus flip);
+SDL_Surface *rotate(SDL_Surface *surf, FlipStatus flip);
 
 }; // namespace sdl
 

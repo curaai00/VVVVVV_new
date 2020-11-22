@@ -16,11 +16,14 @@ SDL_Surface *CreateSurface(const SDL_Point &size)
 
 void DeleteSurface(SDL_Surface *surface)
 {
-    if (surface != nullptr)
-    {
-        SDL_FreeSurface(surface);
-        delete surface;
-    }
+    if (surface != nullptr) delete surface;
+}
+
+SDL_Surface *CopySurface(SDL_Surface *src, SDL_Surface *dst)
+{
+    if (dst == nullptr) dst = CreateSurface({src->w, src->h});
+    blit(src, NULL, dst, NULL);
+    return dst;
 }
 
 void blit(SDL_Surface *src, const SDL_Rect *src_r, SDL_Surface *dst,
@@ -186,11 +189,11 @@ SDL_Rect getTightRect(const SDL_Surface *surface)
     return SDL_Rect{min_x, min_y, max_x - min_x + 1, max_y - min_y + 1};
 }
 
-void rotate(SDL_Surface *surf, FlipStatus flip)
+SDL_Surface *rotate(SDL_Surface *surf, FlipStatus flip)
 {
-    if (flip.vertical == flip.horizontal && flip.vertical == false) return;
-
     auto temp = CreateSurface({surf->w, surf->h});
+    if (flip.vertical == flip.horizontal && flip.vertical == false)
+        return CopySurface(surf, temp);
 
     for (int x = 0, rx = temp->w - 1; x < temp->w; x++, rx--)
     {
@@ -203,9 +206,7 @@ void rotate(SDL_Surface *surf, FlipStatus flip)
             DrawPixel(temp, tx, ty, pixel);
         }
     }
-
-    blit(temp, NULL, surf, NULL);
-    DeleteSurface(temp);
+    return temp;
 }
 
 }; // namespace sdl

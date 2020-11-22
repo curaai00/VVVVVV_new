@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Drawable.h"
+#include "../utils/sdl.h"
 #include "Component.h"
 #include <memory>
 
@@ -121,4 +122,21 @@ public:
 
 protected:
     FlipState _state;
+};
+
+class RotationComponent : public DrawingComponent
+{
+public:
+    RotationComponent(SDL_Surface *surface, util::sdl::FlipStatus flip)
+        : DrawingComponent(surface)
+    {
+        util::sdl::rotate(surface, flip);
+    }
+
+    ~RotationComponent() {}
+
+    void update(void) override { return; }
+
+private:
+    util::sdl::FlipStatus flip_status;
 };

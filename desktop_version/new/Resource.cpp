@@ -204,4 +204,4 @@ void TileAsset::_load(unsigned char *fileIn, size_t length)
             tiles.push_back(GetSubSurface(SDL_Rect{i, j, _size.x, _size.y}));
 }
 
-SDL_Surface *TileAsset::tile(unsigned int i) const { return tiles[i]; }
+SDL_Surface *TileAsset::tile(unsigned int i) { return tiles[i]; }

@@ -9,26 +9,27 @@ public:
     Menu()
         : Game(State::MENU)
     {
-        // this->push(&back_layer);
         back_layer.push(&back_entity);
         back_entity.push(new StripeComponent);
 
         this->push(&msg_layer);
         auto msg_entity = new DrawableEntity{};
-        auto msg_cmpt = new MessageComponent{
-            font_asset, "[Press ACTION to Start]", {5, 175}, true};
-        msg_entity->set_drawable(msg_cmpt->drawable());
-        msg_entity->push(msg_cmpt);
-        msg_entity->push(
-            new DrawToComponent{msg_entity->drawable(), msg_layer.drawable()});
-        msg_layer.push(msg_entity);
+        msg_entity->add_drawable_component(
+            new MessageComponent{{5, 175}, "[Press ACTION to Start]", true});
+
+        auto title_entity = new DrawableEntity{};
+        util::sdl::FlipStatus fs;
+        auto spr_cmpt = new SpriteComponent{
+            {64, 50}, {23, 23, 23, 23, 23, 23}, {fs, fs, fs, fs, fs, fs}};
+        title_entity->add_drawable_component(spr_cmpt);
+
+        msg_layer.push_drawable_entity(msg_entity);
+        msg_layer.push_drawable_entity(title_entity);
     }
 
     ~Menu() {}
 
 protected:
-    TileAsset font_asset{"graphics/font.png", SDL_Point{8, 8}};
-
     DrawableEntity back_entity;
     Layer back_layer;
     Layer msg_layer;

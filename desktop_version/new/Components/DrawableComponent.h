@@ -3,7 +3,10 @@
 #include "../Drawable.h"
 #include "../Resource.h"
 #include "../util.h"
+#include "../utils/sdl.h"
+#include "../utils/str.h"
 #include "Component.h"
+#include "SDL.h"
 
 #include <iostream>
 #include <utf8/unchecked.h>
@@ -78,8 +81,8 @@ protected:
 class MessageComponent : public DrawableComponent
 {
 public:
-    MessageComponent(const TileAsset &font_tiles, const std::string &msg,
-                     const SDL_Point &top_left, bool is_centred = false)
+    MessageComponent(const SDL_Point &top_left, const std::string &msg,
+                     bool is_centred = false)
         : DrawableComponent(
               calc_rect(msg, is_centred ? cvt_center_pt(msg, top_left.y) : top_left))
     {
@@ -94,7 +97,7 @@ public:
             font_rect.x = bfontpos;
             font_rect.y = 0;
 
-            SDL_BlitSurface(font_tiles.tile(curr), NULL, surface(), &font_rect);
+            SDL_BlitSurface(font_asset.tile(curr), NULL, surface(), &font_rect);
             bfontpos += curr < 32 ? 6 : 8;
         }
     }
@@ -120,4 +123,56 @@ protected:
         return rect;
     }
     static constexpr SDL_Rect tfont_rect{0, 0, 8, 8};
+    TileAsset font_asset{"graphics/font.png", SDL_Point{8, 8}};
+};
+
+class SpriteComponent : public DrawableComponent
+{
+
+public:
+    SpriteComponent(const SDL_Point &tl, const std::vector<unsigned int> &sprite_idx,
+                    const std::vector<util::sdl::FlipStatus> &orientation,
+                    bool is_horizontal = true)
+        : DrawableComponent(calc_rect(tl, sprite_idx.size(), is_horizontal))
+    {
+        auto get_tile =
+            [&tiles = sprite_tile](
+                const unsigned int &idx,
+                const util::sdl::FlipStatus &orientation) -> SDL_Surface * {
+            auto tile = tiles.tile(idx);
+            return util::sdl::rotate(tile, orientation);
+        };
+
+        std::vector<SDL_Surface *> tiles;
+        for (auto i : util::range<int>(0, sprite_idx.size()))
+            tiles.push_back(get_tile(sprite_idx[i], orientation[i]));
+
+        for (int i = 0; i < tiles.size(); i++)
+        {
+            SDL_Rect rect;
+            if (is_horizontal)
+                rect = SDL_Rect{i * tilesize, 0, tilesize, tilesize};
+            else
+                rect = SDL_Rect{0, i * tilesize, tilesize, tilesize};
+            util::sdl::blit(tiles[i], NULL, surface(), &rect);
+        }
+
+        for (auto tile : tiles)
+            util::sdl::DeleteSurface(tile);
+    }
+    ~SpriteComponent();
+    void update(void) override { return; }
+
+private:
+    static SDL_Rect calc_rect(const SDL_Point &tl, int size, bool is_horizontal)
+    {
+        SDL_Point wh;
+        wh = is_horizontal ? SDL_Point{tilesize * size, tilesize}
+                           : SDL_Point{tilesize, tilesize * size};
+        return SDL_Rect{tl.x, tl.y, wh.x, wh.y};
+    }
+
+private:
+    static constexpr int tilesize = 32;
+    TileAsset sprite_tile{"graphics/sprites.png", SDL_Point{tilesize, tilesize}};
 };
