@@ -40,6 +40,12 @@ public:
     Compositor(const Compositor &) = delete;
     Compositor &operator=(const Compositor &) = delete;
 
+    ~Compositor()
+    {
+        for (auto elem : _elements)
+            delete elem;
+    }
+
     // get function pointer of update function to enforce update method
     void update(A p)
     {
