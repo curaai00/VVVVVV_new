@@ -128,13 +128,19 @@ protected:
 
 class SpriteComponent : public DrawableComponent
 {
-
 public:
-    SpriteComponent(const SDL_Point &tl, const std::vector<unsigned int> &sprite_idx,
-                    const std::vector<util::sdl::FlipStatus> &orientation,
-                    bool is_horizontal = true)
+    SpriteComponent(
+        const SDL_Point &tl, const std::vector<unsigned int> &sprite_idx,
+        const std::vector<FlipStatus> &orientations = std::vector<FlipStatus>(),
+        bool is_horizontal = true)
         : DrawableComponent(calc_rect(tl, sprite_idx.size(), is_horizontal))
+        , _sprite_idx(sprite_idx)
+        , _orientations(orientations)
     {
+        // if use default
+        if (orientations.size() != sprite_idx.size())
+            _orientations = std::vector<FlipStatus>(sprite_idx.size(), FlipStatus());
+
         auto get_tile =
             [&tiles = sprite_tile](
                 const unsigned int &idx,
@@ -144,8 +150,8 @@ public:
         };
 
         std::vector<SDL_Surface *> tiles;
-        for (auto i : util::range<int>(0, sprite_idx.size()))
-            tiles.push_back(get_tile(sprite_idx[i], orientation[i]));
+        for (auto i : util::range<int>(0, _sprite_idx.size()))
+            tiles.push_back(get_tile(_sprite_idx[i], _orientations[i]));
 
         for (int i = 0; i < tiles.size(); i++)
         {
@@ -173,6 +179,9 @@ private:
     }
 
 private:
+    std::vector<unsigned int> _sprite_idx;
+    std::vector<FlipStatus> _orientations;
+
     static constexpr int tilesize = 32;
     TileAsset sprite_tile{"graphics/sprites.png", SDL_Point{tilesize, tilesize}};
 };

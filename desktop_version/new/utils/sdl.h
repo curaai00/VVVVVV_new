@@ -39,3 +39,5 @@ SDL_Surface *rotate(SDL_Surface *surf, FlipStatus flip);
 }; // namespace sdl
 
 }; // namespace util
+
+using FlipStatus = util::sdl::FlipStatus;

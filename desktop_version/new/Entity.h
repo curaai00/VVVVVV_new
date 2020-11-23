@@ -58,3 +58,10 @@ public:
 protected:
     Drawable _drawable;
 };
+
+inline DrawableEntity *make_drawable_entity(DrawableComponent *comp)
+{
+    auto ent = new DrawableEntity{};
+    ent->add_drawable_component(comp);
+    return ent;
+}
