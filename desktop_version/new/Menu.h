@@ -11,6 +11,8 @@ public:
     {
         back_layer = new Layer;
         push(back_layer);
+        auto stripe_entity = make_drawable_entity(new StripeComponent);
+        back_layer->push_drawable_entity(stripe_entity);
 
         title_layer = new Layer;
         push(title_layer);
