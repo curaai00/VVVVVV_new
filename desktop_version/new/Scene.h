@@ -3,7 +3,7 @@
 #include "Components/DrawableComponent.h"
 #include "Layer.h"
 
-class Game : public Compositor<Layer, void>
+class Scene : public Compositor<Layer, void>
 {
 public:
     enum class State
@@ -13,13 +13,13 @@ public:
         PAUSED
     };
 
-    Game(State state)
+    Scene(State state)
         : Compositor<Layer>(&Layer::update)
         , _state(state)
     {
         clear = new ClearComponent{screen.surface()};
     }
-    ~Game() { delete clear; };
+    ~Scene() { delete clear; };
 
     SDL_Surface *surface(void)
     {

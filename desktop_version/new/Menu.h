@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Components/BackgroundComponent.h"
-#include "Game.h"
+#include "Scene.h"
 
-class Menu : public Game
+class Menu : public Scene
 {
 public:
     Menu()
-        : Game(State::MENU)
+        : Scene(State::MENU)
     {
         back_layer = new Layer;
         push(back_layer);
