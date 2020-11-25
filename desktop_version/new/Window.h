@@ -3,7 +3,11 @@
 #include "Entity.h"
 #include "Scene.h"
 
+#ifdef __APPLE__
 #include <SDL.h>
+#else
+#include <SDL2/SDL.h>
+#endif
 #include <vector>
 
 class Window
@@ -13,10 +17,10 @@ public:
     ~Window();
 
     void render(void);
-    void update(void) { game->update(); }
+    void update(void) { scene->update(); }
     // void key_event(const KeyPull &key_pull) { game->key_event(key_pull); }
 
-    void set_mode(Scene *_scene) { scene = _scene; }
+    void set_scene(Scene *_scene) { scene = _scene; }
 
     const int width = 320;
     const int height = 240;

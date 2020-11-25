@@ -16,13 +16,11 @@ public:
 
         title_layer = new Layer;
         push(title_layer);
-        auto spr_entity = make_drawable_entity(
+        title_layer->push_drawable_component(
             new SpriteComponent{{64, 50}, std::vector<unsigned int>(6, 23)});
-        title_layer->push_drawable_entity(spr_entity);
 
-        auto title_entity = make_drawable_entity(
+        title_layer->push_drawable_component(
             new MessageComponent{{5, 175}, "[Press ACTION to Start]", true});
-        title_layer->push_drawable_entity(title_entity);
     }
 
     ~Menu() {}

@@ -1,10 +1,14 @@
 #include <iostream>
 
+#include "Game.h"
 #include "KeyPull.h"
-#include "Menu.h"
 #include "Window.h"
 
+#ifdef __APPLE__
 #include <SDL.h>
+#else
+#include <SDL2/SDL.h>
+#endif
 #include <physfs.h>
 
 int main(int argc, char *argv[])
@@ -22,7 +26,7 @@ int main(int argc, char *argv[])
     auto win = Window();
     auto key = KeyPull();
 
-    win.set_game(new Menu{});
+    win.set_scene(new Game{});
 
     while (key.isUp(SDLK_SPACE))
     {

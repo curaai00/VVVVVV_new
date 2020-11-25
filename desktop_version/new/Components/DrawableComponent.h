@@ -6,7 +6,11 @@
 #include "../utils/sdl.h"
 #include "../utils/str.h"
 #include "Component.h"
-#include "SDL.h"
+#ifdef __APPLE__
+#include <SDL.h>
+#else
+#include <SDL2/SDL.h>
+#endif
 
 #include <iostream>
 #include <utf8/unchecked.h>

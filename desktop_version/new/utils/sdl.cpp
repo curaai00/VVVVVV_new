@@ -1,4 +1,5 @@
 #include "sdl.h"
+#include <functional>
 
 namespace util
 {

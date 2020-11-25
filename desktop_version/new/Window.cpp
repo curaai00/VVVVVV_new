@@ -23,7 +23,7 @@ Window::~Window()
 
 void Window::render(void)
 {
-    auto surface = game->surface();
+    auto surface = scene->surface();
 
     SDL_UpdateTexture(m_screenTexture, NULL, surface->pixels, surface->pitch);
     SDL_RenderCopy(m_renderer, m_screenTexture, NULL, NULL);

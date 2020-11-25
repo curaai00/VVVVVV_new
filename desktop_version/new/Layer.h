@@ -21,6 +21,11 @@ public:
             delete entity;
     }
 
+    void push_drawable_component(DrawableComponent *comp)
+    {
+        push_drawable_entity(make_drawable_entity(comp));
+    }
+
     void push_drawable_entity(DrawableEntity *entity)
     {
         entity->push(new DrawToComponent{entity->drawable(), drawable()});
