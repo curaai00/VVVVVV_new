@@ -1,9 +1,8 @@
 #pragma once
 
-#include "../util.h"
-
 class Component
 {
 public:
+    virtual ~Component() = default;
     virtual void update(void) = 0;
 };

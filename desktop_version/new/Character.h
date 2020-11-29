@@ -1,25 +1,25 @@
 #pragma once
 
 #include "Components/DrawableComponent.h"
-#include "Components/MoveComponent.h"
 #include "Entity.h"
+#include "Events/MoveEvent.h"
 
-class Character : public DrawableEntity
+class Character : public DrawableEntity, public EventEntity
 {
 public:
     Character(const SDL_Point &tl)
         : DrawableEntity()
+        , EventEntity()
     {
-        auto tile = TileAsset{"graphics/sprites.png", {32, 32}};
-        auto sprite = tile.tile(0);
-        SDL_SaveBMP(sprite, "temp.png");
+        auto sprite = TileAsset{"graphics/sprites.png", {32, 32}}.tile(0);
         auto tight_rect = util::sdl::getTightRect(sprite);
 
         _drawable.surface = util::sdl::patch(sprite, tight_rect);
         _drawable.rect = {tl.x, tl.y, tight_rect.w, tight_rect.h};
-        push(new MoveComponent{_drawable.rect});
+        move_evt = new MoveEvent{_drawable.rect};
+        EventEntity::push(move_evt);
     }
 
 protected:
-    MoveComponent *move_cpnt;
+    MoveEvent *move_evt;
 };

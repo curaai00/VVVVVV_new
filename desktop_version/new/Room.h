@@ -33,7 +33,8 @@ public:
 
     void set_character(Character *character)
     {
-        character->push(new DrawToComponent{character->drawable(), drawable()});
+        character->Entity::push(
+            new DrawToComponent{character->drawable(), drawable()});
         push(character);
     }
 

@@ -30,12 +30,13 @@ public:
     }
     void update(void) override
     {
-        SDL_BlitSurface(src.surface, NULL, dst.surface, &src.rect);
+        auto rect = src.rect;
+        SDL_BlitSurface(src.surface, NULL, dst.surface, &rect);
     }
 
 protected:
-    Drawable src;
-    Drawable dst;
+    const Drawable &src;
+    const Drawable &dst;
 };
 
 class ClearComponent : public DrawingComponent

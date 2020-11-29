@@ -4,6 +4,7 @@
 #include "Components/DrawableComponent.h"
 #include "Components/DrawingComponents.h"
 #include "Drawable.h"
+#include "Events/Event.h"
 #include "utils/Compositor.h"
 
 #include <vector>
@@ -61,3 +62,16 @@ inline DrawableEntity *make_drawable_entity(DrawableComponent *comp)
     ent->add_drawable_component(comp);
     return ent;
 }
+
+class EventEntity : public Compositor<Event, SDL_Keycode>
+{
+public:
+    EventEntity(const std::vector<Event *> &evts)
+        : EventEntity()
+    {
+    }
+    EventEntity(void)
+        : Compositor<Event, SDL_Keycode>(&Event::update)
+    {
+    }
+};

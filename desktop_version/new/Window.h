@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Entity.h"
+#include "Game.h"
+#include "KeyPull.h"
 #include "Scene.h"
 
 #ifdef __APPLE__
@@ -17,8 +19,15 @@ public:
     ~Window();
 
     void render(void);
-    void update(void) { scene->update(); }
-    // void key_event(const KeyPull &key_pull) { game->key_event(key_pull); }
+    // Update key based input first, input should pre-processed and rendering
+    void update(KeyPull &pull)
+    {
+        auto pressed_keys = pull.pressedKeys();
+        for (auto k : pressed_keys)
+            scene->EventEntities::update(k);
+
+        scene->Layers::update();
+    }
 
     void set_scene(Scene *_scene) { scene = _scene; }
 

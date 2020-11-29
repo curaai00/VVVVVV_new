@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     while (key.isUp(SDLK_SPACE))
     {
         key.pull();
-        win.update();
+        win.update(key);
         win.render();
         SDL_Delay(50);
     }

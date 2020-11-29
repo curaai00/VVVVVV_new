@@ -3,9 +3,13 @@
 #include "Components/DrawableComponent.h"
 #include "Layer.h"
 
-class Scene : public Compositor<Layer, void>
+class Scene : public Compositor<Layer, void>,
+              public Compositor<EventEntity, SDL_Keycode>
 {
 public:
+    using Layers = Compositor<Layer, void>;
+    using EventEntities = Compositor<EventEntity, SDL_Keycode>;
+
     enum class State
     {
         MENU,
@@ -15,6 +19,7 @@ public:
 
     Scene(State state)
         : Compositor<Layer>(&Layer::update)
+        , Compositor<EventEntity, SDL_Keycode>(&EventEntity::update)
         , _state(state)
     {
         clear = new ClearComponent{screen.surface()};
@@ -24,7 +29,7 @@ public:
     SDL_Surface *surface(void)
     {
         clear->update();
-        for (Layer *layer : _elements)
+        for (Layer *layer : Layers::_elements)
             SDL_BlitSurface(layer->surface(), NULL, screen.surface(), NULL);
         return screen.surface();
     }
