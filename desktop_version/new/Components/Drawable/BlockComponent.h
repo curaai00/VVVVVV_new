@@ -22,7 +22,7 @@ public:
         : FullScreenComponent()
         , _target_types(targets)
     {
-        auto contain = [](const std::set<auto> &indicies, auto var) -> bool {
+        auto contain = [](const std::set<ushort> &indicies, ushort var) -> bool {
             return indicies.find(var) != indicies.end();
         };
 

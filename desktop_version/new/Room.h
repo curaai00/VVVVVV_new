@@ -3,6 +3,7 @@
 #include "Components/Drawable/BlockComponent.h"
 #include "Components/DrawableComponent.h"
 
+#include "Character.h"
 #include "Layer.h"
 #include "util.h"
 
@@ -28,6 +29,12 @@ public:
         push_drawable_component(new WallComponent{_cells, _block_tile});
         push_drawable_component(new ThornComponent{_cells, _block_tile});
         push_drawable_component(new BackWallComponent{_cells, _block_tile});
+    }
+
+    void set_character(Character *character)
+    {
+        character->push(new DrawToComponent{character->drawable(), drawable()});
+        push(character);
     }
 
     SDL_Point str2pos(const std::string &name) { throw NotImplementedError(); }

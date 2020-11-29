@@ -21,9 +21,9 @@ public:
             delete entity;
     }
 
-    void push_drawable_component(DrawableComponent *comp)
+    void push_drawable_component(DrawableComponent *cpnt)
     {
-        push_drawable_entity(make_drawable_entity(comp));
+        push_drawable_entity(make_drawable_entity(cpnt));
     }
 
     void push_drawable_entity(DrawableEntity *entity)

@@ -41,6 +41,7 @@ void blit(SDL_Surface *src, const SDL_Rect *src_r, SDL_Surface *dst,
     }
 }
 
+// TODO: replace pointer to ref
 SDL_Surface *patch(SDL_Surface *src, const SDL_Rect *rect)
 {
     auto dst = CreateSurface(SDL_Point{rect->w, rect->h});

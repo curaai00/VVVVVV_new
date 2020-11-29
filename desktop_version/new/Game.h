@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Character.h"
 #include "Room.h"
 #include "Scene.h"
 
@@ -10,6 +11,8 @@ public:
         : Scene(State::GAME)
     {
         set_room(new Room{SDL_Point{114, 105}});
+        character = new Character{{290, 151}};
+        room->set_character(character);
     }
     ~Game();
 
@@ -21,5 +24,6 @@ public:
     }
 
 private:
+    Character *character = nullptr;
     Room *room = nullptr;
 };
