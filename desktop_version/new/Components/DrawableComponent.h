@@ -19,7 +19,7 @@ class DrawableComponent : public virtual Component
 {
 public:
     DrawableComponent(const SDL_Rect &rect)
-        : DrawableComponent(util::sdl::CreateSurface({rect.w, rect.h}), rect)
+        : DrawableComponent(util::sdl::create({rect.w, rect.h}), rect)
     {
     }
 
@@ -168,7 +168,7 @@ public:
         }
 
         for (auto tile : tiles)
-            util::sdl::DeleteSurface(tile);
+            util::sdl::destroy(tile);
     }
     ~SpriteComponent();
     void update(void) override { return; }

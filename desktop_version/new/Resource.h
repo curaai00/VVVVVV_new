@@ -90,16 +90,6 @@ public:
 protected:
     virtual void _load(unsigned char *fileIn, size_t length) override;
 
-private:
-    inline SDL_Surface *GetSubSurface(const SDL_Rect &area)
-    {
-        // we will slow things down.
-        SDL_Surface *preSurface = util::sdl::CreateSurface({area.w, area.h});
-        SDL_BlitSurface(asset, &area, preSurface, NULL);
-        return preSurface;
-    }
-
-private:
     std::vector<SDL_Surface *> tiles;
     SDL_Point _size;
 };

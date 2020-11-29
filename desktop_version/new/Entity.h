@@ -3,8 +3,9 @@
 #include "Components/Component.h"
 #include "Components/DrawableComponent.h"
 #include "Components/DrawingComponents.h"
-
 #include "Drawable.h"
+#include "utils/Compositor.h"
+
 #include <vector>
 
 // using Entity = Compositor<Component>;
@@ -18,11 +19,6 @@ public:
     Entity(void)
         : Compositor<Component>(&Component::update)
     {
-    }
-    ~Entity(void)
-    {
-        for (auto component : _elements)
-            delete component;
     }
 };
 

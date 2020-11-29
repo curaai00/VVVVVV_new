@@ -5,24 +5,26 @@ namespace util
 {
 namespace sdl
 {
-SDL_Surface *CreateSurface(const SDL_Point &size)
+SDL_Surface *create(const SDL_Point &size)
 {
     if (size.x == 0 || size.y == 0)
-        throw std::invalid_argument("Invalid size argument for CreateSurface");
+        throw std::invalid_argument("Invalid size argument for create");
     auto res =
         SDL_CreateRGBSurface(0, size.x, size.y, 32, R_MASK, G_MASK, B_MASK, A_MASK);
     SDL_FillRect(res, NULL, 0);
     return res;
 }
 
-void DeleteSurface(SDL_Surface *surface)
+void destroy(SDL_Surface *surface)
 {
     if (surface != nullptr) delete surface;
 }
 
-SDL_Surface *CopySurface(SDL_Surface *src, SDL_Surface *dst)
+void copyTo(SDL_Surface *src, SDL_Surface *dst) { blit(src, NULL, dst, NULL); }
+
+SDL_Surface *copy(SDL_Surface *src)
 {
-    if (dst == nullptr) dst = CreateSurface({src->w, src->h});
+    auto dst = create({src->w, src->h});
     blit(src, NULL, dst, NULL);
     return dst;
 }
@@ -41,15 +43,14 @@ void blit(SDL_Surface *src, const SDL_Rect *src_r, SDL_Surface *dst,
     }
 }
 
-// TODO: replace pointer to ref
-SDL_Surface *patch(SDL_Surface *src, const SDL_Rect *rect)
+SDL_Surface *patch(SDL_Surface *src, const SDL_Rect &rect)
 {
-    auto dst = CreateSurface(SDL_Point{rect->w, rect->h});
-    blit(src, rect, dst, NULL);
+    auto dst = create(SDL_Point{rect.w, rect.h});
+    blit(src, &rect, dst, NULL);
     return dst;
 }
 
-Uint32 ReadPixel(const SDL_Surface *_surface, int x, int y)
+Uint32 getPixel(const SDL_Surface *_surface, int x, int y)
 {
     int bpp = _surface->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to retrieve */
@@ -77,7 +78,7 @@ Uint32 ReadPixel(const SDL_Surface *_surface, int x, int y)
     }
 }
 
-void DrawPixel(SDL_Surface *_surface, int x, int y, Uint32 pixel)
+void setPixel(SDL_Surface *_surface, int x, int y, Uint32 pixel)
 {
     int bpp = _surface->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to set */
@@ -133,15 +134,15 @@ SDL_Color uint2color(const SDL_Surface *surface, const Uint32 &c)
     return color;
 }
 
-void BlitSurfaceColoured(SDL_Surface *surface, const SDL_Color &c)
+void fillColor(SDL_Surface *surface, const SDL_Color &c)
 {
     const SDL_PixelFormat &fmt = *(surface->format);
     auto u_color = color2uint(surface, c);
 
     for (int x = 0; x < surface->w; x++)
         for (int y = 0; y < surface->h; y++)
-            if (ReadPixel(surface, x, y) & fmt.Amask)
-                DrawPixel(surface, x, y, u_color);
+            if (getPixel(surface, x, y) & fmt.Amask)
+                setPixel(surface, x, y, u_color);
 }
 
 bool cmpColor(const SDL_Color &a, const SDL_Color &b)
@@ -164,12 +165,12 @@ SDL_Rect getTightRect(const SDL_Surface *surface)
 
     auto check_row = [](const SDL_Surface *surface, const int y) -> bool {
         for (int x = 0; x < surface->w; x++)
-            if (ReadPixel(surface, x, y) != 0) return true;
+            if (getPixel(surface, x, y) != 0) return true;
         return false;
     };
     auto check_col = [](const SDL_Surface *surface, const int x) -> bool {
         for (int y = 0; y < surface->h; y++)
-            if (ReadPixel(surface, x, y) != 0) return true;
+            if (getPixel(surface, x, y) != 0) return true;
         return false;
     };
     auto find_var = [&surface](check_func func, unsigned int max,
@@ -193,19 +194,20 @@ SDL_Rect getTightRect(const SDL_Surface *surface)
 
 SDL_Surface *rotate(SDL_Surface *surf, FlipStatus flip)
 {
-    auto temp = CreateSurface({surf->w, surf->h});
     if (flip.vertical == flip.horizontal && flip.vertical == false)
-        return CopySurface(surf, temp);
+        return copy(surf);
+
+    auto temp = create({surf->w, surf->h});
 
     for (int x = 0, rx = temp->w - 1; x < temp->w; x++, rx--)
     {
         for (int y = 0, ry = temp->h - 1; y < temp->h; y++, ry--)
         {
-            auto pixel = ReadPixel(surf, x, y);
+            auto pixel = getPixel(surf, x, y);
             auto tx = flip.horizontal ? ry : y;
             auto ty = flip.vertical ? rx : x;
 
-            DrawPixel(temp, tx, ty, pixel);
+            setPixel(temp, tx, ty, pixel);
         }
     }
     return temp;

@@ -63,7 +63,7 @@ public:
     void set_color(const SDL_Color &color)
     {
         _color = color;
-        util::sdl::BlitSurfaceColoured(_surface, _color);
+        util::sdl::fillColor(_surface, _color);
     }
 
 protected:
@@ -94,7 +94,7 @@ public:
         const int w = _surface->w;
         const int h = _surface->h;
 
-        auto flipped = CreateSurface({w, h});
+        auto flipped = create({w, h});
         for (int x = 0, rx = w - 1; x < w; x++, rx--)
         {
             for (int y = 0, ry = h - 1; y < h; y++, ry--)
@@ -102,10 +102,10 @@ public:
                 int dx = x;
                 int dy = y;
 
-                auto pixel = ReadPixel(_surface, x, y);
+                auto pixel = getPixel(_surface, x, y);
                 if (_state.x) dx = rx;
                 if (_state.y) dy = ry;
-                DrawPixel(flipped, dx, dy, pixel);
+                setPixel(flipped, dx, dy, pixel);
             }
         }
 

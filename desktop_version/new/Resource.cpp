@@ -185,14 +185,14 @@ TileAsset::~TileAsset()
 }
 
 TileAsset::TileAsset(const TileAsset &tileasset)
-    : TileAsset(tileasset.asset_path, _size)
+    : TileAsset(tileasset.asset_path, tileasset._size)
 {
 }
 
 TileAsset &TileAsset::operator=(TileAsset const &tileasset)
 {
-    TileAsset another(tileasset);
-    return another;
+    *this = TileAsset{tileasset.asset_path, tileasset._size};
+    return *this;
 }
 
 void TileAsset::_load(unsigned char *fileIn, size_t length)
@@ -201,7 +201,7 @@ void TileAsset::_load(unsigned char *fileIn, size_t length)
 
     for (int j = 0; j < asset->h; j += _size.x)
         for (int i = 0; i < asset->w; i += _size.y)
-            tiles.push_back(GetSubSurface(SDL_Rect{i, j, _size.x, _size.y}));
+            tiles.push_back(util::sdl::patch(asset, {i, j, _size.x, _size.y}));
 }
 
 SDL_Surface *TileAsset::tile(unsigned int i) { return tiles[i]; }

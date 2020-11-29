@@ -32,7 +32,7 @@ public:
 
         // _draw_rect = SDL_Rect{320, 240, 0, 0};
         SDL_Rect rect{0, 0, size.x, size.y};
-        for (int y = 0; rect.x = 0 || y < rows; y++, rect.y += size.x)
+        for (int y = 0; y < rows; y++, rect.y += size.x, rect.x = 0)
         {
             for (int x = 0; x < cols; x++, rect.x += size.x)
             {

@@ -11,7 +11,7 @@ public:
         : Scene(State::GAME)
     {
         set_room(new Room{SDL_Point{114, 105}});
-        character = new Character{{290, 151}};
+        character = new Character{{290, 162}};
         room->set_character(character);
     }
     ~Game();

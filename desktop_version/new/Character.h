@@ -15,7 +15,7 @@ public:
         SDL_SaveBMP(sprite, "temp.png");
         auto tight_rect = util::sdl::getTightRect(sprite);
 
-        _drawable.surface = util::sdl::patch(sprite, &tight_rect);
+        _drawable.surface = util::sdl::patch(sprite, tight_rect);
         _drawable.rect = {tl.x, tl.y, tight_rect.w, tight_rect.h};
         push(new MoveComponent{_drawable.rect});
     }
