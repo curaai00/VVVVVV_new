@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Components/DrawableComponent.h"
+#include "Components/GravityComponent.h"
 #include "Entity.h"
 #include "Events/MoveEvent.h"
 
@@ -11,7 +12,8 @@ public:
         : DrawableEntity()
         , EventEntity()
     {
-        auto sprite = TileAsset{"graphics/sprites.png", {32, 32}}.tile(0);
+        auto tile = TileAsset{"graphics/sprites.png", {32, 32}};
+        auto sprite = tile.tile(0);
         auto tight_rect = util::sdl::getTightRect(sprite);
 
         _drawable.surface = util::sdl::patch(sprite, tight_rect);
@@ -19,7 +21,9 @@ public:
         move_evt = new MoveEvent{_drawable.rect};
         EventEntity::push(move_evt);
     }
+    friend class Game;
+    friend class Room;
 
 protected:
-    MoveEvent *move_evt;
+    MoveEvent *move_evt = nullptr;
 };

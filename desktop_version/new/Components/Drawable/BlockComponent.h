@@ -13,6 +13,12 @@ struct BlockIndex
     ushort type;
 };
 
+enum class EBlockType
+{
+    FORE,
+    BACK
+};
+
 // TODO: Optimize screen region for only use
 class BlockComponent : public FullScreenComponent
 {
@@ -79,3 +85,21 @@ public:
     {
     }
 };
+
+inline std::vector<BlockComponent *> block_factory(const Cells &cells,
+                                                   TileAsset &tiles, EBlockType type)
+{
+    std::vector<BlockComponent *> res;
+    // TODO: Check block count for check empty block
+    switch (type)
+    {
+    case EBlockType::FORE:
+        res.push_back(new WallComponent{cells, tiles});
+        res.push_back(new ThornComponent{cells, tiles});
+        break;
+    case EBlockType::BACK:
+        res.push_back(new BackWallComponent{cells, tiles});
+        break;
+    }
+    return res;
+}

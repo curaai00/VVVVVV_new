@@ -26,9 +26,10 @@ int main(int argc, char *argv[])
     auto win = Window();
     auto key = KeyPull();
 
-    win.set_scene(new Game{});
+    auto game = new Game{};
+    win.set_scene(game);
 
-    while (key.isUp(SDLK_SPACE))
+    while (key.isUp(SDLK_ESCAPE))
     {
         key.pull();
         win.update(key);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Drawable.h"
 #include "../util.h"
 
 namespace util
@@ -36,6 +37,8 @@ bool cmpRect(const SDL_Rect &a, const SDL_Rect &b);
 
 SDL_Rect getTightRect(const SDL_Surface *surface);
 SDL_Surface *rotate(SDL_Surface *surf, FlipStatus flip);
+
+bool collision_check(const SDL_Surface *screen, const Drawable &drawble);
 
 }; // namespace sdl
 

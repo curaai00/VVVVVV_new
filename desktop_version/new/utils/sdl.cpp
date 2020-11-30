@@ -1,4 +1,5 @@
 #include "sdl.h"
+#include "func.h"
 #include <functional>
 
 namespace util
@@ -211,6 +212,12 @@ SDL_Surface *rotate(SDL_Surface *surf, FlipStatus flip)
         }
     }
     return temp;
+}
+
+// TODO: Legacy
+bool collision_check(const SDL_Surface *screen, const Drawable &drawble)
+{
+    return true;
 }
 
 }; // namespace sdl

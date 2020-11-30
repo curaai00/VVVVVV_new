@@ -70,4 +70,5 @@ std::vector<T> range(T N1, T N2)
 
     return numbers;
 }
+
 }; // namespace util
