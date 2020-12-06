@@ -2,10 +2,29 @@
 
 #include "../Drawable.h"
 #include "../util.h"
+#include <set>
+
+inline SDL_Point operator+(SDL_Point const &a, SDL_Point const &b)
+{
+    return {a.x + b.x, a.y + b.y};
+    // return a.x == b.x && a.y == b.y;
+}
+inline bool operator==(SDL_Point const &a, SDL_Point const &b)
+{
+    return a.x == b.x && a.y == b.y;
+}
+inline bool operator<(SDL_Point const &a, SDL_Point const &b)
+{
+    if (a.x > b.x)
+        return true;
+    else if (a.x == b.x)
+        return a.y > b.y;
+    else
+        return false;
+}
 
 namespace util
 {
-
 namespace sdl
 {
 struct FlipStatus
@@ -39,6 +58,7 @@ SDL_Rect getTightRect(const SDL_Surface *surface);
 SDL_Surface *rotate(SDL_Surface *surf, FlipStatus flip);
 
 bool collision_check(const SDL_Surface *screen, const Drawable &drawble);
+std::set<SDL_Point> boundary(const SDL_Surface *surface);
 
 }; // namespace sdl
 

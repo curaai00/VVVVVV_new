@@ -214,10 +214,37 @@ SDL_Surface *rotate(SDL_Surface *surf, FlipStatus flip)
     return temp;
 }
 
-// TODO: Legacy
-bool collision_check(const SDL_Surface *screen, const Drawable &drawble)
+std::set<SDL_Point> boundary(const SDL_Surface *surface)
 {
-    return true;
+    auto is_valid = [](const SDL_Surface *surface, SDL_Point p) -> bool {
+        return util::sdl::getPixel(surface, p.x, p.y) != 0;
+    };
+
+    auto check_row = [&](const std::vector<int> &range, const int y) -> int {
+        for (auto x : range)
+            if (is_valid(surface, {x, y})) return x;
+        return -1;
+    };
+    auto check_col = [&](const std::vector<int> &range, const int x) -> int {
+        for (auto y : range)
+            if (is_valid(surface, {x, y})) return y;
+        return -1;
+    };
+
+    auto cols = util::range(0, surface->w);
+    auto r_cols = util::func::reverse(cols);
+    auto rows = util::range(0, surface->h);
+    auto r_rows = util::func::reverse(rows);
+    std::set<SDL_Point> target;
+    for (auto _rows : {rows, r_rows})
+        for (auto col : cols)
+            target.insert(SDL_Point{col, check_col(_rows, col)});
+
+    for (auto _cols : {cols, r_cols})
+        for (auto row : rows)
+            target.insert(SDL_Point{row, check_row(_cols, row)});
+
+    return target;
 }
 
 }; // namespace sdl

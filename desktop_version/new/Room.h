@@ -37,14 +37,16 @@ public:
     void set_character(Character *character)
     {
 
-        collision_checker = new CollisionComponent{this, character->_drawable};
+        collision_checker = new CollisionComponent{surface(), character->_drawable};
+        character->DrawableEntity::push(collision_checker);
+
+        gravity_eventer = new GravityEvent{collision_checker};
+        character->EventEntity::push(gravity_eventer);
+
         gravity_updater =
             new GravityComponent{character->_drawable.rect, collision_checker,
-                                 EGravityOrientation::REVERSED};
+                                 gravity_eventer->get_orientation()};
         character->DrawableEntity::push(gravity_updater);
-
-        gravity_eventer = new GravityEvent{gravity_updater->get_gravity()};
-        character->EventEntity::push(gravity_eventer);
 
         character->Entity::push(
             new DrawToComponent{character->drawable(), drawable()});
