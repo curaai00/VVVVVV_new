@@ -18,9 +18,14 @@ public:
 
         _drawable.surface = util::sdl::patch(sprite, tight_rect);
         _drawable.rect = {tl.x, tl.y, tight_rect.w, tight_rect.h};
-        move_evt = new MoveEvent{_drawable.rect};
-        EventEntity::push(move_evt);
     }
+
+    void set_move_event(CollisionComponent* comp)
+    {
+        move_evt = new MoveEvent{comp, _drawable.rect};
+        EventEntity::push(move_evt);
+    };
+
     friend class Game;
     friend class Room;
 

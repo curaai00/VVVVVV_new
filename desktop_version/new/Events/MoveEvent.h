@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Components/GravityComponent.h"
 #include "Event.h"
 #include <math.h>
 
@@ -39,21 +40,25 @@ inline EMove convertMoveKey(SDL_Keycode k)
 class MoveEvent : public Event
 {
 public:
-    MoveEvent(SDL_Rect &pos)
+    MoveEvent(CollisionComponent *collision_checker, SDL_Rect &pos)
         : Event()
         , pos(pos)
+        , collision_checker(collision_checker)
     {
     }
     void update(SDL_Keycode k) override { move(convertMoveKey(k)); }
 
     void move(EMove m)
     {
+        auto is_collisioned = collision_checker->is_collisioned();
         switch (m)
         {
         case EMove::RIGHT:
+            if (is_collisioned & CollisionFlag::RIGHT) return;
             pos.x++;
             break;
         case EMove::LEFT:
+            if (is_collisioned & CollisionFlag::LEFT) return;
             pos.x--;
             break;
         case EMove::UP:
@@ -74,4 +79,5 @@ public:
 
 protected:
     SDL_Rect &pos;
+    CollisionComponent *collision_checker;
 };

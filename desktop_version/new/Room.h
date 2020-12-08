@@ -36,7 +36,6 @@ public:
 
     void set_character(Character *character)
     {
-
         collision_checker = new CollisionComponent{surface(), character->_drawable};
         character->DrawableEntity::push(collision_checker);
 
@@ -47,6 +46,8 @@ public:
             new GravityComponent{character->_drawable.rect, collision_checker,
                                  gravity_eventer->get_orientation()};
         character->DrawableEntity::push(gravity_updater);
+
+        character->set_move_event(collision_checker);
 
         character->Entity::push(
             new DrawToComponent{character->drawable(), drawable()});
