@@ -2,7 +2,7 @@
 
 #include "Components/Component.h"
 #include "Components/DrawableComponent.h"
-#include "Components/DrawingComponents.h"
+#include "Components/DrawingComponent.h"
 #include "Drawable.h"
 #include "Events/Event.h"
 #include "utils/Compositor.h"
@@ -37,10 +37,9 @@ public:
 
     void add_drawable_component(DrawableComponent *cmpt)
     {
-        set_drawable(cmpt->drawable());
+        _drawable = cmpt->drawable();
         push(cmpt);
     }
-    void set_drawable(Drawable drawable) { _drawable = drawable; }
     void set_color(const SDL_Color &color)
     {
         if (_drawable.surface == nullptr) throw "DrawableEntity: Set drawable first";
@@ -54,6 +53,24 @@ public:
 
 protected:
     Drawable _drawable;
+};
+
+class AnimatableEntity : public Entity
+{
+public:
+    AnimatableEntity()
+        : Entity()
+    {
+        _drawable = new Drawable{};
+    }
+    virtual ~AnimatableEntity() { delete _drawable; }
+
+    Drawable *drawable(void) { return _drawable; }
+    SDL_Surface *surface(void) { return _drawable->surface; }
+    SDL_Rect rect(void) const { return _drawable->rect; }
+
+protected:
+    Drawable *_drawable;
 };
 
 inline DrawableEntity *make_drawable_entity(DrawableComponent *comp)

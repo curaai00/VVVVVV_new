@@ -2,6 +2,7 @@
 
 #include "Components/Drawable/BlockComponent.h"
 #include "Components/DrawableComponent.h"
+#include "Components/DynamicDrawingComponent.h"
 #include "Events/GravityEvent.h"
 
 #include "Character.h"
@@ -36,21 +37,10 @@ public:
 
     void set_character(Character *character)
     {
-        collision_checker = new CollisionComponent{surface(), character->_drawable};
-        character->DrawableEntity::push(collision_checker);
-
-        gravity_eventer = new GravityEvent{collision_checker};
-        character->EventEntity::push(gravity_eventer);
-
-        gravity_updater =
-            new GravityComponent{character->_drawable.rect, collision_checker,
-                                 gravity_eventer->get_orientation()};
-        character->DrawableEntity::push(gravity_updater);
-
-        character->set_move_event(collision_checker);
+        character->generate_collision_component(surface());
 
         character->Entity::push(
-            new DrawToComponent{character->drawable(), drawable()});
+            new DynamicDrawToComponent{character->drawable(), drawable().surface});
         push(character);
     }
 
@@ -65,8 +55,4 @@ private:
 
     std::string _name;
     Cells _cells;
-
-    CollisionComponent *collision_checker = nullptr;
-    GravityComponent *gravity_updater = nullptr;
-    GravityEvent *gravity_eventer = nullptr;
 };

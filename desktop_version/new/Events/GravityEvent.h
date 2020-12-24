@@ -7,12 +7,14 @@
 class GravityEvent : public Event
 {
 public:
-    GravityEvent(CollisionComponent *collision_checker,
-                 EGravityOrientation ori = EGravityOrientation::NATURELY)
+    GravityEvent(Drawable *drawable, CollisionComponent *collision_checker,
+                 EGravityOrientation &ori)
         : Event()
         , collision_checker(collision_checker)
         , ori(ori)
+        , _drawable(drawable)
     {
+        // flip = new DynamicFlipComponent {}
     }
 
     void update(SDL_Keycode k)
@@ -23,18 +25,19 @@ public:
                             ? EGravityOrientation::REVERSED
                             : EGravityOrientation::NATURELY;
             auto is_collisioned = collision_checker->is_collisioned();
-            if (ori == EGravityOrientation::REVERSED &&
-                is_collisioned & CollisionFlag::UP)
+            if ((ori == EGravityOrientation::REVERSED &&
+                 is_collisioned & CollisionFlag::UP) ||
+                (ori == EGravityOrientation::NATURELY &&
+                 is_collisioned & CollisionFlag::DOWN))
+            {
                 ori = next;
-            else if (ori == EGravityOrientation::NATURELY &&
-                     is_collisioned & CollisionFlag::DOWN)
-                ori = next;
+            }
         }
     }
 
-    const EGravityOrientation &get_orientation(void) { return ori; }
-
 protected:
-    EGravityOrientation ori;
+    EGravityOrientation &ori;
     CollisionComponent *collision_checker;
+    Drawable *_drawable;
+    FlipComponent *flip;
 };

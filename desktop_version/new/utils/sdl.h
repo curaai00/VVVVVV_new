@@ -9,6 +9,10 @@ inline SDL_Point operator+(SDL_Point const &a, SDL_Point const &b)
     return {a.x + b.x, a.y + b.y};
     // return a.x == b.x && a.y == b.y;
 }
+inline bool operator==(SDL_Rect const &a, SDL_Rect const &b)
+{
+    return a.x == b.x && a.y == b.y && a.w == b.w && a.h == b.h;
+}
 inline bool operator==(SDL_Point const &a, SDL_Point const &b)
 {
     return a.x == b.x && a.y == b.y;

@@ -27,7 +27,7 @@ enum CollisionFlag : unsigned char
 class CollisionComponent : public Component
 {
 public:
-    CollisionComponent(SDL_Surface *world, Drawable &target)
+    CollisionComponent(SDL_Surface *world, const Drawable *target)
         : Component()
         , world(world)
         , target(target)
@@ -37,9 +37,10 @@ public:
     {
         using namespace std;
 
-        auto boundary = extended_boundary(target.surface, speed);
+        auto boundary =
+            extended_boundary(target->surface, speed); // speed -> move step
         auto check_collision = [&](const set<SDL_Point> &points) -> bool {
-            SDL_Point top_left{target.rect.x, target.rect.y};
+            SDL_Point top_left{target->rect.x, target->rect.y};
 
             auto is_valid = [&](const SDL_Surface *surface, SDL_Point p) -> bool {
                 return util::sdl::getPixel(surface, p.x, p.y) != 0;
@@ -50,9 +51,7 @@ public:
 
             for (auto pt : points)
             {
-
-                auto a = add(pt);
-                if (filter(a))
+                if (filter(add(pt)))
                 {
                     return true;
                 }
@@ -69,8 +68,8 @@ public:
 
         _is_collisioned |= assign(CollisionFlag::UP, boundary.up);
         _is_collisioned |= assign(CollisionFlag::DOWN, boundary.down);
-        _is_collisioned |= assign(CollisionFlag::LEFT, boundary.left);
-        _is_collisioned |= assign(CollisionFlag::RIGHT, boundary.right);
+        // _is_collisioned |= assign(CollisionFlag::LEFT, boundary.left);
+        // _is_collisioned |= assign(CollisionFlag::RIGHT, boundary.right);
     }
     void set_speed(unsigned int speed) { this->speed = speed; }
     unsigned int get_speed(void) { return speed; }
@@ -136,6 +135,7 @@ protected:
 
         auto _default = generate_default_boundary();
 
+        // TODO: This can dangerous for when exists space between user and something?
         res.up = added(_default, SDL_Point{0, -margin});
         res.down = added(_default, SDL_Point{0, margin});
         res.left = added(_default, SDL_Point{-margin, 0});
@@ -146,7 +146,7 @@ protected:
 
 protected:
     SDL_Surface *world;
-    Drawable &target;
+    const Drawable *target;
 
     EGravityOrientation ori;
     unsigned char _is_collisioned = 0;
@@ -156,14 +156,16 @@ protected:
 class GravityComponent : public Component
 {
 public:
-    GravityComponent(SDL_Rect &pos, CollisionComponent *collision_checker,
+    GravityComponent(Drawable *pos, CollisionComponent *collision_checker,
                      const EGravityOrientation &orientation)
         : Component()
         , collision_checker(collision_checker)
         , pos(pos)
         , orientation(orientation)
     {
+        collision_checker->set_speed(speed);
     }
+
     void update(void) override
     {
         // TODO: can be dangerous for when horizontal & vertical speed can be
@@ -179,12 +181,13 @@ public:
                                             ? CollisionFlag::DOWN
                                             : CollisionFlag::UP);
         if (can_update)
-            pos.y += orientation == EGravityOrientation::NATURELY ? speed : -speed;
+            pos->rect.y +=
+                orientation == EGravityOrientation::NATURELY ? speed : -speed;
     }
 
 protected:
     CollisionComponent *collision_checker;
-    SDL_Rect &pos;
+    Drawable *pos;
     const EGravityOrientation &orientation;
-    int speed = 1;
+    int speed = 3; // TODO: collision_checker's speed when own speed changed
 };

@@ -2,6 +2,7 @@
 
 #include "Character.h"
 #include "Components/GravityComponent.h"
+#include "KeyPull.h"
 #include "Room.h"
 #include "Scene.h"
 
@@ -30,8 +31,6 @@ public:
         fore_room = new Room{room_pos, EBlockType::FORE};
         Layers::push(fore_room);
         fore_room->set_character(character);
-
-        fore_room->update();
     }
 
 private:

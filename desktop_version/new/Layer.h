@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Components/DrawableComponent.h"
-#include "Components/DrawingComponents.h"
+#include "Components/DrawingComponent.h"
 #include "Entity.h"
 
 class Layer : public Compositor<Entity, void>
